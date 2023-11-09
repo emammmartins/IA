@@ -2,45 +2,83 @@ import networkx as nx
 import matplotlib.pyplot as plt
 import sys
 
-def cria_grafo_nao_orientado():
-    # Criar um grafo não orientado
-    G = nx.Graph()
+def cria_grafo():
 
-    # Adicionar freguesias de Braga como nós ao grafo
-    freguesias_braga = ['São Vicente', 'São Vítor', 'São João do Souto', 'Maximinos',
-                    'Santa Tecla', 'Cividade', 'Nogueiró', 'Fraião',
-                    'Gualtar', 'São Pedro', 'São José de São Lázaro', 'Lomar',
-                    'Real', 'Este', 'São Lourenço', 'São Tiago', 'Merelim São Pedro',
-                    'Merelim São Paio', 'Espinho', 'Padim da Graça']
+        # Criar um grafo valorado
+        G = nx.Graph()
 
-    G.add_nodes_from(freguesias_braga)
+        # Adicionar nós ao grafo
+        G.add_node("Armazem", label="Armazem")  # O nó "C" tem o nome "C"
+        G.add_node("Gualtar", label="Gualtar")  # O nó "C" tem o nome "C"
+        G.add_node("Este", label="Este")  # O nó "C" tem o nome "C"
+        G.add_node("Espinho", label="Espinho")  # O nó "C" tem o nome "C"
+        G.add_node("Espinho", label="Espinho")  # O nó "C" tem o nome "C"
+        G.add_node("Tenões", label="Tenões")  # O nó "C" tem o nome "C"
+        G.add_node("Nogueiró", label="Nogueiró")  # O nó "C" tem o nome "C"
+        G.add_node("Lamaçães", label="Lamaçães")  # O nó "C" tem o nome "C"
+        G.add_node("SãoVitor", label="SãoVitor")  # O nó "B" tem o nome "B"
+        G.add_node("SãoJoãoDoSouto", label="SãoJoãoDoSouto")  # O nó "C" tem o nome "C"
+        G.add_node("SãoVicente", label="SãoVicente")  # O nó "São Vicente" tem o nome "A"
+        G.add_node("Dume", label="Dume")  # O nó "São Vicente" tem o nome "A"
+        G.add_node("Frossos", label="Frossos")  # O nó "São Vicente" tem o nome "A"
+        G.add_node("Real", label="Real")  # O nó "São Vicente" tem o nome "A"
+        G.add_node("Semelhe", label="Semelhe")  # O nó "São Vicente" tem o nome "A"
+        G.add_node("Sé", label="Sé")  # O nó "São Vicente" tem o nome "A"
+        G.add_node("Cividade", label="Cividade")  # O nó "C" tem o nome "C"
+        G.add_node("Maximinos", label="Maximinos")  # O nó "C" tem o nome "C"
+        G.add_node("Ferreiros", label="Ferreiros")  # O nó "São Vicente" tem o nome "A"
+        G.add_node("Gondizalves", label="Gondizalves")  # O nó "B" tem o nome "B"
+        G.add_node("Lomar", label="Lomar")  # O nó "B" tem o nome "B"
+        G.add_node("Arcos", label="Arcos")  # O nó "B" tem o nome "B"
+        G.add_node("Nogueira", label="Nogueira")  # O nó "C" tem o nome "C"
+        G.add_node("Fraião", label="Fraião")  # O nó "C" tem o nome "C"
+        G.add_node("SãoLázaro", label="SãoLázaro")  # O nó "B" tem o nome "B"
 
-    # Adicionar arestas com distâncias fictícias entre as freguesias
-    arestas = [('São Vicente', 'São Vítor', {'distancia': 2}),
-            ('São Vicente', 'São João do Souto', {'distancia': 3}),
-            ('São Vítor', 'Maximinos', {'distancia': 4}),
-            ('São João do Souto', 'Maximinos', {'distancia': 5}),
-            ('Santa Tecla', 'Cividade', {'distancia': 6}),
-            ('Nogueiró', 'Fraião', {'distancia': 7}),
-            ('Gualtar', 'São Pedro', {'distancia': 8}),
-            ('São José de São Lázaro', 'Lomar', {'distancia': 9}),
-            ('Real', 'Este', {'distancia': 10}),
-            ('São Lourenço', 'São Tiago', {'distancia': 11}),
-            ('Merelim São Pedro', 'Merelim São Paio', {'distancia': 12}),
-            ('Espinho', 'Padim da Graça', {'distancia': 13}),
-            ('São Vítor', 'São Vicente', {'distancia': 2}),
-            ('São João do Souto', 'São Vicente', {'distancia': 3}),
-            ('Maximinos', 'São Vítor', {'distancia': 4}),
-            ('Maximinos', 'São João do Souto', {'distancia': 5}),
-            ('Cividade', 'Santa Tecla', {'distancia': 6}),
-            ('Fraião', 'Nogueiró', {'distancia': 7}),
-            ('São Pedro', 'Gualtar', {'distancia': 8}),
-            ('Lomar', 'São José de São Lázaro', {'distancia': 9}),
-            ('Este', 'Real', {'distancia': 10}),
-            ('São Tiago', 'São Lourenço', {'distancia': 11}),
-            ('Merelim São Paio', 'Merelim São Pedro', {'distancia': 12}),
-            ('Padim da Graça', 'Espinho', {'distancia': 13})
-    ]
 
-    G.add_edges_from(arestas)
-    return G
+
+        # Adicionar arestas valoradas ao grafo
+        G.add_edge("Armazem", "Gualtar", weight=6)
+        G.add_edge("Gualtar", "SãoVitor", weight=4)
+        G.add_edge("Gualtar", "Tenões", weight=4)
+        G.add_edge("Gualtar", "Este", weight=4)
+        G.add_edge("Este", "Espinho", weight=5)
+        G.add_edge("Este", "Tenões", weight=2)
+        G.add_edge("Espinho", "Nogueiró", weight=4)
+        G.add_edge("Tenões", "Nogueiró", weight=2)
+        G.add_edge("Nogueiró", "SãoVitor", weight=8)
+        G.add_edge("Lamaçães", "Nogueiró", weight=2)
+        G.add_edge("Lamaçães", "Fraião", weight=1)
+        G.add_edge("Fraião", "Nogueira", weight=2)
+        G.add_edge("Tenões", "SãoVitor", weight=4)
+        G.add_edge("SãoVitor", "Fraião", weight=6)
+        G.add_edge("SãoVitor", "Fraião", weight=6)
+        G.add_edge("SãoVitor", "Lamaçães", weight=4)
+        G.add_edge("SãoVicente", "SãoVitor", weight=4)
+        G.add_edge("Fraião", "SãoLázaro", weight=4)
+        G.add_edge("SãoLázaro", "Cividade", weight=2)
+        G.add_edge("SãoJoãoDoSouto", "Cividade", weight=1)
+        G.add_edge("SãoJoãoDoSouto", "SãoVicente", weight=3)
+        G.add_edge("Sé", "SãoVicente", weight=2)
+        G.add_edge("Sé", "SãoJoãoDoSouto", weight=1)
+        G.add_edge("Sé", "Cividade", weight=1)
+        G.add_edge("Cividade", "Maximinos", weight=2)
+        G.add_edge("Maximinos", "Sé", weight=3)
+        G.add_edge("Sé", "Real", weight=2)
+        G.add_edge("Real", "Frossos", weight=2)
+        G.add_edge("Real", "SãoVicente", weight=4)
+        G.add_edge("Real", "Dume", weight=4)
+        G.add_edge("Dume", "SãoVicente", weight=4)
+        G.add_edge("Dume", "Frossos", weight=4)
+        G.add_edge("Frossos", "Semelhe", weight=8)
+        G.add_edge("Semelhe", "Gondizalves", weight=2)
+        G.add_edge("Gondizalves", "Ferreiros", weight=4)
+        G.add_edge("Ferreiros", "Maximinos", weight=4)
+        G.add_edge("Maximinos", "Gondizalves", weight=2)
+        G.add_edge("Ferreiros", "Lomar", weight=3)
+        G.add_edge("Maximinos", "Lomar", weight=4)
+        G.add_edge("Lomar", "Arcos", weight=3)
+        G.add_edge("Nogueira", "Arcos", weight=6)
+        G.add_edge("Nogueira", "Lomar", weight=8)
+        G.add_edge("Lomar", "SãoLázaro", weight=6)
+
+        return G

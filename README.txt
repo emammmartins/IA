@@ -1,0 +1,2 @@
+-> Falta verificar se temos estafetas disponíveis desse tipo de transporte
+-> Se não tivermos, como fazer

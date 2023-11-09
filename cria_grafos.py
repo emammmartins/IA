@@ -2,13 +2,7 @@ import networkx as nx
 import matplotlib.pyplot as plt
 import sys
 
-def dijkstra(graph, start, end):
-    dist = nx.shortest_path_length(graph, source=start, target=end, weight='distancia')
-    path = nx.shortest_path(graph, source=start, target=end, weight='distancia')
-    print(path)
-    return dist, path
-
-def main():
+def cria_grafo_nao_orientado():
     # Criar um grafo não orientado
     G = nx.Graph()
 
@@ -49,13 +43,4 @@ def main():
     ]
 
     G.add_edges_from(arestas)
-
-    path = dijkstra(G, 'São Vicente', 'São João do Souto')
-    print(path[1])
-
-if __name__ == "__main__":
-    main()
-
-
-
-
+    return G

@@ -4,18 +4,31 @@ import health_planet as hp
 import estafeta as es
 import encomenda as en
 
+#Esta função deverá verificar se existem estafetas desse meio de transporte (1, 2 ou 3) no sistema,
+#escolher o que demora menos tempo a estar disponível e retornar esse tempo e o id do estafeta
+def disponibilidade(transporte):
+    return 2, id
+    #return 10**9 quando não for possível
+
+def verifica_disponibilidade (transporte, tempo_transporte, tempo_pretendido):
+    tempo_disponivel, estafeta_disponivel = disponibilidade(transporte)
+    tempo_necessario = (tempo_disponivel + tempo_transporte)
+    if (tempo_pretendido >= tempo_necessario):
+        #criar função que aumenta tempo_transporte (+margem) para o estafeta
+        return tempo_necessario
+    return -1
 
 def calculos(dist,tempo, peso, path):
     tempo_bicicleta=int(((dist/(10-(0.6*peso)))*60)+0.5) #0.5 para arredondar primeiro
     tempo_moto=int(((dist/(35-(0.5*peso)))*60)+0.5)
     tempo_carro=int(((dist/(50-(0.1*peso)))*60)+0.5)
 
-    if (peso<=5 and tempo_bicicleta<tempo):
-        print(f"Demora {tempo_bicicleta} minutos a sua entrega pelo seguinte percurso: {path}")
-    elif(peso<=20 and tempo_moto<tempo):
-        print(f"Demora {tempo_moto} minutos a sua entrega pelo seguinte percurso: {path}")
-    elif(tempo_carro<tempo):
-        print(f"Demora {tempo_carro} minutos a sua entrega pelo seguinte percurso: {path}")
+    if (peso<=5 and tempo_bicicleta<tempo and (tempo := verifica_disponibilidade (1, tempo_bicicleta, tempo))!= -1):
+        print(f"Demora {tempo_bicicleta} minutos a realizar a sua entrega de bicicleta pelo seguinte percurso: {path}, mas só é possível entregar daqui a {tempo} minutos")
+    elif(peso<=20 and tempo_moto<tempo  and (tempo := verifica_disponibilidade (2, tempo_moto, tempo))!= -1):
+        print(f"Demora {tempo_moto} minutos a realizar a sua entrega de moto pelo seguinte percurso: {path}, mas só é possível entregar daqui a {tempo} minutos")
+    elif(tempo_carro<tempo and (tempo := verifica_disponibilidade (3, tempo_carro, tempo))!= -1):
+        print(f"Demora {tempo_carro} minutos a realizar a sua entrega de carro pelo seguinte percurso: {path}, mas só é possível entregar daqui a {tempo} minutos")
     else:
         print("Nao é possivel entregar a encomenda no tempo pretendido")
 
@@ -65,8 +78,8 @@ def main():
                         j=int(input("Introduza uma das opcoes:"))
                         volume=int(input("Introduza o volume da encomenda:"))
                         peso=float(input("Introduza o peso da encomenda em Kg:"))
-                        tempo=int(input("Qual o tempo maximo em minutos:"))
-                        terra=input("Para onde deseja encomandar:")
+                        tempo=int(input("Qual o tempo máximo em minutos:"))
+                        terra=input("Para onde deseja encomendar:")
 
                         try:
                             encomenda=en.Encomenda(peso,volume, tempo)

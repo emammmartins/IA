@@ -22,6 +22,7 @@ def calculos(dist,tempo, peso, path):
     tempo_bicicleta=int(((dist/(10-(0.6*peso)))*60)+0.5) #0.5 para arredondar primeiro
     tempo_moto=int(((dist/(35-(0.5*peso)))*60)+0.5)
     tempo_carro=int(((dist/(50-(0.1*peso)))*60)+0.5)
+    print("O tempo de bicicleta é: " + str(tempo_bicicleta))
 
     if (peso<=5 and tempo_bicicleta<tempo and (tempo := verifica_disponibilidade (1, tempo_bicicleta, tempo))!= -1):
         print(f"Demora {tempo_bicicleta} minutos a realizar a sua entrega de bicicleta pelo seguinte percurso: {path}, mas só é possível entregar daqui a {tempo} minutos")
@@ -74,6 +75,7 @@ def main():
                 elif(i==4):
                     print("------ALGORITMO-----")
                     print("1-Dijkstra")
+                    print("2-Procura em profundidade(DFS)")
                     try:
                         j=int(input("Introduza uma das opcoes:"))
                         volume=int(input("Introduza o volume da encomenda:"))
@@ -92,7 +94,13 @@ def main():
                                         dist, path = ap.dijkstra(grafo,"Armazem",terra)
                                         calculos (dist, tempo, peso, path)
                                     except:
-                                        print("A terra não existe")
+                                        print("O destino selecionado não existe")
+                                elif (j==2):
+                                    try:
+                                        path, dist = ap.procura_em_profundidade(grafo, "Armazem", terra)
+                                        calculos (dist, tempo, peso, path)
+                                    except:
+                                        print("O destino selecionado não existe")
                                 else:
                                     print("O algoritmo escolhido não é válido")
 

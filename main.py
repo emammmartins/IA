@@ -22,7 +22,6 @@ def calculos(dist,tempo, peso, path):
     tempo_bicicleta=int(((dist/(10-(0.6*peso)))*60)+0.5) #0.5 para arredondar primeiro
     tempo_moto=int(((dist/(35-(0.5*peso)))*60)+0.5)
     tempo_carro=int(((dist/(50-(0.1*peso)))*60)+0.5)
-    print("O tempo de bicicleta é: " + str(tempo_bicicleta))
 
     if (peso<=5 and tempo_bicicleta<tempo and (tempo := verifica_disponibilidade (1, tempo_bicicleta, tempo))!= -1):
         print(f"Demora {tempo_bicicleta} minutos a realizar a sua entrega de bicicleta pelo seguinte percurso: {path}, mas só é possível entregar daqui a {tempo} minutos")

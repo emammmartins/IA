@@ -4,6 +4,7 @@ import health_planet as hp
 import estafeta as es
 import encomenda as en
 import interativo as finterativo
+import bidirecional as bidirecional
 
 #Esta função deverá verificar se existem estafetas desse meio de transporte (1, 2 ou 3) no sistema,
 #escolher o que demora menos tempo a estar disponível e retornar esse tempo e o id do estafeta
@@ -59,8 +60,7 @@ def main():
                         print(f"O estafeta {nome} foi adicionado com sucesso")
                     else:
                         print("Valor inválido")
-
-
+                        
                 elif(i==2):
                     health_planet.ver_estafetas()
 
@@ -75,13 +75,12 @@ def main():
                 elif(i==4):
                     print("------ALGORITMO-----")
                     print("1-Dijkstra")
-<<<<<<< HEAD
                     print("2-Interativo")
-=======
-                    print("2-Procura em profundidade(DFS)")
->>>>>>> 3f6289ff267f94248255e5105faed0c54e7fd683
+                    print("3-Procura em profundidade(DFS)")
+                    print("4-Procura Bidirecional")
+
                     try:
-                        j=int(input("Introduza uma das opcoes:"))
+                        opcao=int(input("Introduza uma das opcoes:"))
                         volume=int(input("Introduza o volume da encomenda:"))
                         peso=float(input("Introduza o peso da encomenda em Kg:"))
                         tempo=int(input("Qual o tempo máximo em minutos:"))
@@ -93,43 +92,40 @@ def main():
 
                             if (peso>0 and peso<=100):
                                 #.....................Varios algoritmos.................
-                                if (j==1):
+                                if (opcao==1):
                                     try:
                                         dist, path = ap.dijkstra(grafo,"Armazem",terra)
                                         calculos (dist, tempo, peso, path)
                                     except:
-<<<<<<< HEAD
                                         print("A terra não existe")
-                                if (j==2):
+                                if (opcao==2):
                                     try:
                                         dist, path = finterativo.iterative_deepening_dfs(grafo,"Armazem",terra)
-                                        print(dist)
-                                        print(path)
                                         calculos(dist,tempo,peso,path)
                                     except ValueError as e:
                                         print(f"Erro: {e}")
-=======
                                         print("O destino selecionado não existe")
-                                elif (j==2):
+                                elif (opcao==3):
                                     try:
                                         path, dist = ap.procura_em_profundidade(grafo, "Armazem", terra)
                                         calculos (dist, tempo, peso, path)
                                     except:
                                         print("O destino selecionado não existe")
->>>>>>> 3f6289ff267f94248255e5105faed0c54e7fd683
+                                elif (opcao==4):
+                                    try:
+                                        path, dist = bidirecional.bidirectional_search(grafo, "Armazem", terra)
+                                        calculos(dist, tempo, peso, path)
+                                    except:
+                                        print("O destino selecionado não existe")
                                 else:
                                     print("O algoritmo escolhido não é válido")
-
-                                #........................................................
-
-                                
+                                #........................................................                                
                             else:
                                     print("Peso impossivel")
                         except:
                             print("Não foi possível registar a encomenda")
                     except :
                         print("Os valores introduzidos sao inválidos")
-  
                 else:
                     print ("Introduza um valor válido")
 

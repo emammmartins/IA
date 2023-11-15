@@ -2,18 +2,27 @@ from collections import deque
 
 def build_path(graph, start, goal, meeting_point, parent_start, parent_goal):
     path_start = []
+    distance_start = 0  
     current = meeting_point
     while current is not None:
         path_start.insert(0, current)
+        if parent_start[current] is not None:
+            distance_start += graph[parent_start[current]][current]['weight']
         current = parent_start[current]
 
     path_goal = []
+    distance_goal = 0 
     current = parent_goal[meeting_point]
     while current is not None:
         path_goal.append(current)
+        if parent_goal[current] is not None:
+            distance_goal += graph[parent_goal[current]][current]['weight']
         current = parent_goal[current]
 
-    return path_start + path_goal
+    path = path_start + path_goal
+    distance = distance_start + distance_goal
+
+    return path, distance
 
 def bidirectional_search(graph, start, goal):
     start_queue = deque([(start, None)])
@@ -51,4 +60,4 @@ def bidirectional_search(graph, start, goal):
             if neighbor not in goal_explored:
                 goal_queue.append((neighbor, current_goal))
 
-    return None  # No path found
+    return None, 0  # No path found

@@ -98,7 +98,7 @@ def main():
                                         calculos (dist, tempo, peso, path)
                                     except:
                                         print("A terra não existe")
-                                if (opcao==2):
+                                elif (opcao==2):
                                     try:
                                         dist, path = finterativo.iterative_deepening_dfs(grafo,"Armazem",terra)
                                         calculos(dist,tempo,peso,path)

@@ -75,7 +75,11 @@ def main():
                 elif(i==4):
                     print("------ALGORITMO-----")
                     print("1-Dijkstra")
+<<<<<<< HEAD
                     print("2-Interativo")
+=======
+                    print("2-Procura em profundidade(DFS)")
+>>>>>>> 3f6289ff267f94248255e5105faed0c54e7fd683
                     try:
                         j=int(input("Introduza uma das opcoes:"))
                         volume=int(input("Introduza o volume da encomenda:"))
@@ -94,6 +98,7 @@ def main():
                                         dist, path = ap.dijkstra(grafo,"Armazem",terra)
                                         calculos (dist, tempo, peso, path)
                                     except:
+<<<<<<< HEAD
                                         print("A terra não existe")
                                 if (j==2):
                                     try:
@@ -103,6 +108,15 @@ def main():
                                         calculos(dist,tempo,peso,path)
                                     except ValueError as e:
                                         print(f"Erro: {e}")
+=======
+                                        print("O destino selecionado não existe")
+                                elif (j==2):
+                                    try:
+                                        path, dist = ap.procura_em_profundidade(grafo, "Armazem", terra)
+                                        calculos (dist, tempo, peso, path)
+                                    except:
+                                        print("O destino selecionado não existe")
+>>>>>>> 3f6289ff267f94248255e5105faed0c54e7fd683
                                 else:
                                     print("O algoritmo escolhido não é válido")
 

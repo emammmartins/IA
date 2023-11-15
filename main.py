@@ -3,6 +3,7 @@ import cria_grafos as cg
 import health_planet as hp
 import estafeta as es
 import encomenda as en
+import interativo as finterativo
 
 #Esta função deverá verificar se existem estafetas desse meio de transporte (1, 2 ou 3) no sistema,
 #escolher o que demora menos tempo a estar disponível e retornar esse tempo e o id do estafeta
@@ -74,6 +75,7 @@ def main():
                 elif(i==4):
                     print("------ALGORITMO-----")
                     print("1-Dijkstra")
+                    print("2-Interativo")
                     try:
                         j=int(input("Introduza uma das opcoes:"))
                         volume=int(input("Introduza o volume da encomenda:"))
@@ -93,6 +95,14 @@ def main():
                                         calculos (dist, tempo, peso, path)
                                     except:
                                         print("A terra não existe")
+                                if (j==2):
+                                    try:
+                                        dist, path = finterativo.iterative_deepening_dfs(grafo,"Armazem",terra)
+                                        print(dist)
+                                        print(path)
+                                        calculos(dist,tempo,peso,path)
+                                    except ValueError as e:
+                                        print(f"Erro: {e}")
                                 else:
                                     print("O algoritmo escolhido não é válido")
 

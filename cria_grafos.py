@@ -10,7 +10,6 @@ def cria_grafo():
         G.add_node("Gualtar", label="Gualtar")  # O nó "C" tem o nome "C"
         G.add_node("Este", label="Este")  # O nó "C" tem o nome "C"
         G.add_node("Espinho", label="Espinho")  # O nó "C" tem o nome "C"
-        G.add_node("Espinho", label="Espinho")  # O nó "C" tem o nome "C"
         G.add_node("Tenões", label="Tenões")  # O nó "C" tem o nome "C"
         G.add_node("Nogueiró", label="Nogueiró")  # O nó "C" tem o nome "C"
         G.add_node("Lamaçães", label="Lamaçães")  # O nó "C" tem o nome "C"
@@ -48,7 +47,6 @@ def cria_grafo():
         G.add_edge("Lamaçães", "Fraião", weight=1)
         G.add_edge("Fraião", "Nogueira", weight=2)
         G.add_edge("Tenões", "SãoVitor", weight=4)
-        G.add_edge("SãoVitor", "Fraião", weight=6)
         G.add_edge("SãoVitor", "Fraião", weight=6)
         G.add_edge("SãoVitor", "Lamaçães", weight=4)
         G.add_edge("SãoVicente", "SãoVitor", weight=4)

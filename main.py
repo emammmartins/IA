@@ -41,7 +41,7 @@ def main():
 
     i=-2
     while(i!=0):
-        print("------MENU-----")
+        print("\n------MENU-----")
         print("0-Sair")
         print("1-Adicionar estafeta")
         print("2-Visualizar estafetas")
@@ -51,7 +51,7 @@ def main():
         try:
             i=int(input("Introduza uma das opções: "))
             if (i!=0):
-                if i == 1:
+                if (i==1):
                     nome = input("Introduza o nome do estafeta: ")
                     meio_de_transporte = int(input("Indique o número do tipo de veículo \n1-Bicicleta\n2-Moto\n3-Carro:\n"))
                     if (meio_de_transporte>0 and meio_de_transporte<4):
@@ -73,7 +73,7 @@ def main():
                         print("Não foi possível remover o estafeta")
 
                 elif(i==4):
-                    print("------ALGORITMO-----")
+                    print("\n------ALGORITMO-----")
                     print("1-Dijkstra")
                     print("2-Interativo")
                     print("3-Procura em profundidade(DFS)")
@@ -81,10 +81,10 @@ def main():
 
                     try:
                         opcao=int(input("Introduza uma das opcoes:"))
-                        volume=int(input("Introduza o volume da encomenda:"))
-                        peso=float(input("Introduza o peso da encomenda em Kg:"))
-                        tempo=int(input("Qual o tempo máximo em minutos:"))
-                        terra=input("Para onde deseja encomendar:")
+                        volume=int(input("\nIntroduza o volume da encomenda:"))
+                        peso=float(input("\nIntroduza o peso da encomenda em Kg:"))
+                        tempo=int(input("\nQual o tempo máximo em minutos:"))
+                        terra=input("\nPara onde deseja encomendar:")
 
                         try:
                             encomenda=en.Encomenda(peso,volume, tempo)
@@ -99,7 +99,7 @@ def main():
                                         print("O destino selecionado não existe")
                                 elif (opcao==2):
                                     try:
-                                        dist, path = finterativo.iterative_deepening_dfs(grafo,"Armazem",terra)
+                                        path,dist = finterativo.iterative_deepening_dfs(grafo,"Armazem",terra)
                                         calculos(dist,tempo,peso,path)
                                     except ValueError as e:
                                         print(f"Erro: {e}")
@@ -114,7 +114,7 @@ def main():
                                     try:
                                         path, dist = bidirecional.bidirectional_search(grafo, "Armazem", terra)
                                         calculos(dist, tempo, peso, path)
-                                    except:
+                                    except :
                                         print("O destino selecionado não existe")
                                 else:
                                     print("O algoritmo escolhido não é válido")

@@ -1,63 +1,61 @@
-from collections import deque
-
-def build_path(graph, start, goal, meeting_point, parent_start, parent_goal):
-    path_start = []
-    distance_start = 0  
-    current = meeting_point
-    while current is not None:
-        path_start.insert(0, current)
-        if parent_start[current] is not None:
-            distance_start += graph[parent_start[current]][current]['weight']
-        current = parent_start[current]
-
-    path_goal = []
-    distance_goal = 0 
-    current = parent_goal[meeting_point]
-    while current is not None:
-        path_goal.append(current)
-        if parent_goal[current] is not None:
-            distance_goal += graph[parent_goal[current]][current]['weight']
-        current = parent_goal[current]
-
-    path = path_start + path_goal
-    distance = distance_start + distance_goal
-
-    return path, distance
+import networkx as nx
+from queue import Queue
 
 def bidirectional_search(graph, start, goal):
-    start_queue = deque([(start, None)])
-    goal_queue = deque([(goal, None)])
+    if start == goal:
+        return [start], 0
 
-    start_explored = set()
-    goal_explored = set()
+    forward_visited = set()
+    backward_visited = set()
 
-    while start_queue and goal_queue:
-        # Expand forward from the start
-        current_start, parent_start = start_queue.popleft()
-        start_explored.add(current_start)
-        if current_start == goal or current_start in goal_explored:
-            # Handle meeting point case
-            if current_start == goal:
-                return build_path(graph, start, goal, current_start, parent_start, {})
-            else:
-                return build_path(graph, start, goal, current_start, parent_start, goal_queue)
+    forward_queue = Queue()
+    backward_queue = Queue()
 
-        # Expand backward from the goal
-        current_goal, parent_goal = goal_queue.popleft()
-        goal_explored.add(current_goal)
-        if current_goal == start or current_goal in start_explored:
-            return build_path(graph, start, goal, current_goal, start_queue, parent_goal)
+    forward_parent = {start: None}
+    backward_parent = {goal: None}
 
-        # Expand neighbors from the start
-        start_neighbors = list(graph.neighbors(current_start))
-        for neighbor in start_neighbors:
-            if neighbor not in start_explored:
-                start_queue.append((neighbor, current_start))
+    forward_queue.put(start)
+    backward_queue.put(goal)
 
-        # Expand neighbors from the goal
-        goal_neighbors = list(graph.neighbors(current_goal))
-        for neighbor in goal_neighbors:
-            if neighbor not in goal_explored:
-                goal_queue.append((neighbor, current_goal))
+    while not forward_queue.empty() and not backward_queue.empty():
+        forward_current = forward_queue.get()
+        backward_current = backward_queue.get()
 
-    return None, 0  # No path found
+        forward_visited.add(forward_current)
+        backward_visited.add(backward_current)
+
+        common_node = set(forward_visited) & set(backward_visited)
+        if common_node:
+            common_node = common_node.pop()
+            path = reconstruct_path(forward_parent, backward_parent, common_node)
+            return path, len(path) - 1
+
+        for neighbor in graph.neighbors(forward_current):
+            if neighbor not in forward_visited:
+                forward_visited.add(neighbor)
+                forward_parent[neighbor] = forward_current
+                forward_queue.put(neighbor)
+
+        for neighbor in graph.neighbors(backward_current):
+            if neighbor not in backward_visited:
+                backward_visited.add(neighbor)
+                backward_parent[neighbor] = backward_current
+                backward_queue.put(neighbor)
+
+    return None, float('inf')
+
+def reconstruct_path(forward_parent, backward_parent, common_node):
+    forward_path = []
+    backward_path = []
+
+    current = common_node
+    while current is not None:
+        forward_path.append(current)
+        current = forward_parent[current]
+
+    current = common_node
+    while current is not None:
+        backward_path.append(current)
+        current = backward_parent[current]
+
+    return forward_path[::-1] + backward_path[1:]

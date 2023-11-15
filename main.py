@@ -8,7 +8,7 @@ import encomenda as en
 #escolher o que demora menos tempo a estar disponível e retornar esse tempo e o id do estafeta
 def disponibilidade(transporte):
     return 2, id
-    #return 10**9 quando não for possível
+    #return sys.maxint quando não for possível
 
 def verifica_disponibilidade (transporte, tempo_transporte, tempo_pretendido):
     tempo_disponivel, estafeta_disponivel = disponibilidade(transporte)

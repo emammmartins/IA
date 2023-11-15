@@ -100,7 +100,7 @@ def main():
                                         print("A terra não existe")
                                 if (opcao==2):
                                     try:
-                                        dist, path = finterativo.iterative_deepening_dfs(grafo,"Armazem",terra)
+                                        path,dist = finterativo.iterative_deepening_dfs(grafo,"Armazem",terra)
                                         calculos(dist,tempo,peso,path)
                                     except ValueError as e:
                                         print(f"Erro: {e}")

@@ -1,4 +1,3 @@
-import networkx as nx
 from queue import Queue
 
 def bidirectional_search(graph, start, goal):
@@ -14,6 +13,9 @@ def bidirectional_search(graph, start, goal):
     forward_parent = {start: None}
     backward_parent = {goal: None}
 
+    forward_cost = {start: 0}
+    backward_cost = {goal: 0}
+
     forward_queue.put(start)
     backward_queue.put(goal)
 
@@ -28,21 +30,24 @@ def bidirectional_search(graph, start, goal):
         if common_node:
             common_node = common_node.pop()
             path = reconstruct_path(forward_parent, backward_parent, common_node)
-            return path, len(path) - 1
+            total_edge_cost = forward_cost[common_node] + backward_cost[common_node]
+            return path, total_edge_cost
 
         for neighbor in graph.neighbors(forward_current):
             if neighbor not in forward_visited:
                 forward_visited.add(neighbor)
                 forward_parent[neighbor] = forward_current
+                forward_cost[neighbor] = forward_cost[forward_current] + graph.get_edge_data(forward_current, neighbor)['weight']
                 forward_queue.put(neighbor)
 
         for neighbor in graph.neighbors(backward_current):
             if neighbor not in backward_visited:
                 backward_visited.add(neighbor)
                 backward_parent[neighbor] = backward_current
+                backward_cost[neighbor] = backward_cost[backward_current] + graph.get_edge_data(backward_current, neighbor)['weight']
                 backward_queue.put(neighbor)
 
-    return None, float('inf')
+    return None, 0  # No path found
 
 def reconstruct_path(forward_parent, backward_parent, common_node):
     forward_path = []

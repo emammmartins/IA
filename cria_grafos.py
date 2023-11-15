@@ -50,7 +50,6 @@ def cria_grafo():
         G.add_edge("Fraião", "Nogueira", weight=2)
         G.add_edge("Tenões", "SãoVitor", weight=4)
         G.add_edge("SãoVitor", "Fraião", weight=6)
-        G.add_edge("SãoVitor", "Fraião", weight=6)
         G.add_edge("SãoVitor", "Lamaçães", weight=4)
         G.add_edge("SãoVicente", "SãoVitor", weight=4)
         G.add_edge("Fraião", "SãoLázaro", weight=4)

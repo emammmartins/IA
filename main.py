@@ -89,7 +89,6 @@ def main():
                         try:
                             encomenda=en.Encomenda(peso,volume, tempo)
                             health_planet.add_encomenda(encomenda.id,encomenda)
-
                             if (peso>0 and peso<=100):
                                 #.....................Varios algoritmos.................
                                 if (opcao==1):
@@ -97,7 +96,7 @@ def main():
                                         dist, path = ap.dijkstra(grafo,"Armazem",terra)
                                         calculos (dist, tempo, peso, path)
                                     except:
-                                        print("A terra não existe")
+                                        print("O destino selecionado não existe")
                                 elif (opcao==2):
                                     try:
                                         dist, path = finterativo.iterative_deepening_dfs(grafo,"Armazem",terra)
@@ -122,7 +121,7 @@ def main():
                                 #........................................................                                
                             else:
                                     print("Peso impossivel")
-                        except:
+                        except :
                             print("Não foi possível registar a encomenda")
                     except :
                         print("Os valores introduzidos sao inválidos")

@@ -3,19 +3,22 @@ import matplotlib.pyplot as plt
 import sys
 from queue import Queue
 #.................................................
-def dijkstra(graph, origem, destino):
-    dist = {node: float('inf') for node in graph} #dicionario onde todos os nos antes de serem visitados tem inf
-    queue = Queue()  #onde vao sendo colocados os elementos que se tem que visitar
-    predecessor = {} #dicionario onde se coloca os pais
+from queue import Queue
 
+def dijkstra(graph, origem, destino):
+    dist = {node: float('inf') for node in graph}
+    queue = Queue()
+    predecessor = {}
+    
     dist[origem] = 0
     queue.put(origem)
+    predecessor[origem] = None  # Definir o predecessor do nó de origem como None
 
     while not queue.empty():
         current_node = queue.get()
 
-        for neighbor in graph.neighbors(current_node):
-            weight = graph[current_node][neighbor].get('weight', 1)
+        for neighbor in nx.neighbors(graph,current_node):
+            weight = graph[current_node][neighbor]['weight']
             distance = dist[current_node] + weight
             if distance < dist[neighbor]:
                 dist[neighbor] = distance
@@ -23,17 +26,17 @@ def dijkstra(graph, origem, destino):
                 queue.put(neighbor)
 
     # Reconstrói o caminho mais curto
+    if destino not in predecessor:  # Se não há caminho para o destino
+       return float('inf'), []
+    
     path = []
     current = destino
     while current is not None:
-        path.insert(0, current)
-        current = predecessor.get(current)
+        path.append(current)
+        current = predecessor[current]
 
-    return path, dist[destino]
-
-
-#...............................................
-
+    return dist[destino],path
+#..............................................................................
 
 def procura_em_profundidade(grafo, inicio, destino):
     if inicio == destino:

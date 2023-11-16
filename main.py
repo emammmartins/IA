@@ -3,8 +3,6 @@ import cria_grafos as cg
 import health_planet as hp
 import estafeta as es
 import encomenda as en
-import interativo as finterativo
-import bidirecional as bidirecional
 
 #Esta função deverá verificar se existem estafetas desse meio de transporte (1, 2 ou 3) no sistema,
 #escolher o que demora menos tempo a estar disponível e retornar esse tempo e o id do estafeta
@@ -101,7 +99,7 @@ def main():
 
                                 elif (opcao==2):
                                     try:
-                                        path,dist = finterativo.iterative_deepening_dfs(grafo,"Armazem",terra)
+                                        path,dist = ap.iterative_deepening_dfs(grafo,"Armazem",terra)
                                         calculos(dist,tempo,peso,path)
                                     except ValueError as e:
                                         print(f"Erro: {e}")
@@ -116,7 +114,7 @@ def main():
 
                                 elif (opcao==4):
                                     try:
-                                        path, dist = bidirecional.bidirectional_search(grafo, "Armazem", terra)
+                                        path, dist = ap.bidirectional_search(grafo, "Armazem", terra)
                                         calculos(dist, tempo, peso, path)
                                     except :
                                         print("O destino selecionado não existe")

@@ -5,30 +5,24 @@ import estafeta as es
 import encomenda as en
 import povoar as p
 
-#Esta função deverá verificar se existem estafetas desse meio de transporte (1, 2 ou 3) no sistema,
-#escolher o que demora menos tempo a estar disponível e retornar esse tempo e o id do estafeta
-def disponibilidade(transporte):
-    return 2, id
-    #return sys.maxint quando não for possível
-
-def verifica_disponibilidade (transporte, tempo_transporte, tempo_pretendido):
-    tempo_disponivel, estafeta_disponivel = disponibilidade(transporte)
+def verifica_disponibilidade (transporte, tempo_transporte, tempo_pretendido,health_planet):
+    tempo_disponivel, estafeta_disponivel = health_planet.disponibilidade(transporte)
     tempo_necessario = (tempo_disponivel + tempo_transporte)
     if (tempo_pretendido >= tempo_necessario):
-        #criar função que aumenta tempo_transporte (+margem) para o estafeta
+        health_planet.atualiza_tempo_estafeta(estafeta_disponivel,2*tempo_transporte) #:::::::::::::::::::::MARGEM:::::::::::::
         return tempo_necessario
     return -1
 
-def calculos(dist,tempo, peso, path):
+def calculos(dist,tempo, peso, path,health_planet):
     tempo_bicicleta=int(((dist/(10-(0.6*peso)))*60)+0.5) #0.5 para arredondar primeiro
     tempo_moto=int(((dist/(35-(0.5*peso)))*60)+0.5)
     tempo_carro=int(((dist/(50-(0.1*peso)))*60)+0.5)
 
-    if (peso<=5 and tempo_bicicleta<tempo and (tempo := verifica_disponibilidade (1, tempo_bicicleta, tempo))!= -1):
+    if (peso<=5 and tempo_bicicleta<tempo and (tempo := verifica_disponibilidade (1, tempo_bicicleta, tempo,health_planet))!= -1):
         print(f"Demora {tempo_bicicleta} minutos a realizar a sua entrega de bicicleta pelo seguinte percurso: {path}, mas só é possível entregar daqui a {tempo} minutos")
-    elif(peso<=20 and tempo_moto<tempo  and (tempo := verifica_disponibilidade (2, tempo_moto, tempo))!= -1):
+    elif(peso<=20 and tempo_moto<tempo  and (tempo := verifica_disponibilidade (2, tempo_moto, tempo,health_planet))!= -1):
         print(f"Demora {tempo_moto} minutos a realizar a sua entrega de moto pelo seguinte percurso: {path}, mas só é possível entregar daqui a {tempo} minutos")
-    elif(tempo_carro<tempo and (tempo := verifica_disponibilidade (3, tempo_carro, tempo))!= -1):
+    elif(tempo_carro<tempo and (tempo := verifica_disponibilidade (3, tempo_carro, tempo,health_planet))!= -1):
         print(f"Demora {tempo_carro} minutos a realizar a sua entrega de carro pelo seguinte percurso: {path}, mas só é possível entregar daqui a {tempo} minutos")
     else:
         print("Nao é possivel entregar a encomenda no tempo pretendido")
@@ -95,14 +89,14 @@ def main():
                                 if (opcao==1):
                                     try:
                                         dist, path = ap.dijkstra(grafo,"Armazem",terra)
-                                        calculos (dist, tempo, peso, path)
+                                        calculos (dist, tempo, peso, path,health_planet)
                                     except:
                                         print("O destino selecionado não existe")
 
                                 elif (opcao==2):
                                     try:
                                         path,dist = ap.iterative_deepening_dfs(grafo,"Armazem",terra)
-                                        calculos(dist,tempo,peso,path)
+                                        calculos(dist,tempo,peso,path,health_planet)
                                     except ValueError as e:
                                         print(f"Erro: {e}")
                                         print("O destino selecionado não existe")
@@ -110,21 +104,21 @@ def main():
                                 elif (opcao==3):
                                     try:
                                         path, dist = ap.procura_em_profundidade(grafo, "Armazem", terra)
-                                        calculos (dist, tempo, peso, path)
+                                        calculos (dist, tempo, peso, path,health_planet)
                                     except:
                                         print("O destino selecionado não existe")
 
                                 elif (opcao==4):
                                     try:
                                         path, dist = ap.bidirectional_search(grafo, "Armazem", terra)
-                                        calculos(dist, tempo, peso, path)
+                                        calculos(dist, tempo, peso, path,health_planet)
                                     except :
                                         print("O destino selecionado não existe")
 
                                 elif (opcao==5):
                                     try:
                                         path, dist = ap.bfs(grafo, "Armazem", terra)
-                                        calculos(dist, tempo, peso, path)
+                                        calculos(dist, tempo, peso, path,health_planet)
                                     except :
                                         print("O destino selecionado não existe")
 

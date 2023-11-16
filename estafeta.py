@@ -5,6 +5,7 @@ class Estafeta:
         Estafeta.gera_ids+=1
         self.nome=nome
         self.meio_de_transporte=meio_de_transporte
+        self.tempo_disponivel=None
 
     def __str__(self):
         if(self.meio_de_transporte==1):
@@ -14,4 +15,10 @@ class Estafeta:
         elif(self.meio_de_transporte==3):
             transporte="Carro"
         return f"ID: {self.id}, Nome: {self.nome}, Meio de Transporte: {transporte}"
+    
+    def atualiza_tempo_disponivel(self,tempo):
+        if(self.tempo_disponivel==None):
+            self.tempo_disponivel=tempo
+        else:
+            self.tempo_disponivel+=tempo
 

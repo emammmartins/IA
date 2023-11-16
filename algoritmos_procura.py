@@ -33,7 +33,7 @@ def dijkstra(graph, origem, destino):
         path.append(current)
         current = predecessor[current]
 
-    return dist[destino],path
+    return dist[destino],path.reverse()
 #..............................................................................
 
 def procura_em_profundidade(grafo, inicio, destino):
@@ -65,7 +65,6 @@ def procura_em_profundidade(grafo, inicio, destino):
  #.....................................................................................................
 
 def bfs (graph, start, end):
-    print ("bfs")
     #fila de nodos a visitar
     queue = Queue()
     queue.put(start)
@@ -85,11 +84,9 @@ def bfs (graph, start, end):
     atual = ""
     while not queue.empty() and atual != end:
         atual = queue.get()
-        print("while")
         for adjacente in nx.neighbors(graph,atual):
             peso = graph[atual][adjacente]['weight']
             if adjacente not in visitados:
-                print (adjacente)
                 queue.put(adjacente)
                 pais[adjacente] = atual
                 custo[adjacente] = custo[atual] + peso

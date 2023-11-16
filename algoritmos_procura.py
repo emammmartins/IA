@@ -65,7 +65,7 @@ def procura_em_profundidade(grafo, inicio, destino):
 
 
 def bfs (graph, start, end):
-    
+    print ("bfs")
     #fila de nodos a visitar
     queue = Queue()
     queue.put(start)
@@ -78,24 +78,31 @@ def bfs (graph, start, end):
     pais = dict()
     pais[start] = None
 
-    atual = queue.get()
+    #custo para chegar ao nodo
+    custo = dict()
+    custo[start] = 0
+
+    atual = ""
     while not queue.empty() and atual != end:
-        for adjacente in graph[atual]:
-            if adjacente not in visitados:
-                pais[adjacente] = atual
-                queue.put(adjacente)
-                visitados.add(adjacente)
         atual = queue.get()
+        print("while")
+        for adjacente in nx.neighbors(graph,atual):
+            peso = graph[atual][adjacente]['weight']
+            if adjacente not in visitados:
+                print (adjacente)
+                queue.put(adjacente)
+                pais[adjacente] = atual
+                custo[adjacente] = custo[atual] + peso
+                visitados.add(adjacente)
 
     path = []
-    custo = 0
+    c = 0
     if (atual==end):
+        c = custo[end]
         path.append(end)
         while pais[end] != None: #is not
             end = pais[end]
             path.append(end)
         path.reverse()
-        # funçao calcula custo caminho
-        #custo = graph.calcula_custo(path)
 
-    return (path, custo)
+    return (path, c)

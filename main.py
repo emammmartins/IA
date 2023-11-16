@@ -3,6 +3,7 @@ import cria_grafos as cg
 import health_planet as hp
 import estafeta as es
 import encomenda as en
+import povoar as p
 
 #Esta função deverá verificar se existem estafetas desse meio de transporte (1, 2 ou 3) no sistema,
 #escolher o que demora menos tempo a estar disponível e retornar esse tempo e o id do estafeta
@@ -35,6 +36,7 @@ def calculos(dist,tempo, peso, path):
 
 def main():
     health_planet = hp.Health_Planet()
+    p.povoa_estafetas(health_planet)
     grafo = cg.cria_grafo()
 
     i=-2

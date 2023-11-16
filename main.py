@@ -78,6 +78,7 @@ def main():
                     print("2-Interativo")
                     print("3-Procura em profundidade(DFS)")
                     print("4-Procura Bidirecional")
+                    print("5-Procura em largura(BFS)")
 
                     try:
                         opcao=int(input("Introduza uma das opcoes:"))
@@ -98,6 +99,7 @@ def main():
                                         calculos (dist, tempo, peso, path)
                                     except:
                                         print("A terra não existe")
+
                                 if (opcao==2):
                                     try:
                                         path,dist = finterativo.iterative_deepening_dfs(grafo,"Armazem",terra)
@@ -105,18 +107,28 @@ def main():
                                     except ValueError as e:
                                         print(f"Erro: {e}")
                                         print("O destino selecionado não existe")
+
                                 elif (opcao==3):
                                     try:
                                         path, dist = ap.procura_em_profundidade(grafo, "Armazem", terra)
                                         calculos (dist, tempo, peso, path)
                                     except:
                                         print("O destino selecionado não existe")
+
                                 elif (opcao==4):
                                     try:
                                         path, dist = bidirecional.bidirectional_search(grafo, "Armazem", terra)
                                         calculos(dist, tempo, peso, path)
                                     except :
                                         print("O destino selecionado não existe")
+
+                                elif (opcao==5):
+                                    try:
+                                        path, dist = ap.bfs(grafo, "Armazem", terra)
+                                        calculos(dist, tempo, peso, path)
+                                    except :
+                                        print("O destino selecionado não existe")
+
                                 else:
                                     print("O algoritmo escolhido não é válido")
                                 #........................................................                                

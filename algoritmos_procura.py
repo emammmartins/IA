@@ -39,8 +39,8 @@ def procura_em_profundidade(grafo, inicio, destino):
 def bfs (graph, start, end):
     
     #fila de nodos a visitar
-    fila = Queue()
-    fila.put(start)
+    queue = Queue()
+    queue.put(start)
 
     #Nodos já visitados
     visitados = set()
@@ -50,46 +50,24 @@ def bfs (graph, start, end):
     pais = dict()
     pais[start] = None
 
+    atual = queue.get()
+    while not queue.empty() and atual != end:
+        for adjacente in graph[atual]:
+            if adjacente not in visitados:
+                pais[adjacente] = atual
+                queue.put(adjacente)
+                visitados.add(adjacente)
+        atual = queue.get()
 
-def procura_BFS(self, start, end):
-        # definir nodos visitados para evitar ciclos
-        visited = set()
-        fila = Queue()
-
-        # adicionar o nodo inicial à fila e aos visitados
-        fila.put(start)
-        visited.add(start)
-
-        # garantir que o start node nao tem pais...
-        parent = dict()
-        parent[start] = None
-
-        path_found = False
-        while not fila.empty() and path_found == False:
-            nodo_atual = fila.get()
-            if nodo_atual == end:
-                path_found = True
-            else:
-                for (adjacente, peso) in self.m_graph[nodo_atual]:
-                    if adjacente not in visited:
-                        fila.put(adjacente)
-                        parent[adjacente] = nodo_atual
-                        visited.add(adjacente)
-
-
-
-        # Reconstruir o caminho
-
-        path = []
-        if path_found:
+    path = []
+    custo = 0
+    if (atual==end):
+        path.append(end)
+        while pais[end] != None: #is not
+            end = pais[end]
             path.append(end)
-            while parent[end] is not None:
-                path.append(parent[end])
-                end = parent[end]
-            path.reverse()
-            # funçao calcula custo caminho
-            custo = self.calcula_custo(path)
-        return (path, custo)
+        path.reverse()
+        # funçao calcula custo caminho
+        #custo = graph.calcula_custo(path)
 
-
-
+    return (path, custo)

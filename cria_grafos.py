@@ -77,4 +77,13 @@ def cria_grafo():
         G.add_edge("Nogueira", "Lomar", weight=8)
         G.add_edge("Lomar", "SãoLázaro", weight=6)
 
+        G.nodes['Armazem']['heuristica'] = {'SãoVicente': 5.8, 'Gualtar': 3, "Este":2,"SãoVitor":5.2,"SãoJoãoDoSouto":6,"Tenões":4.8,"Espinho":5.9,"SãoLázaro":7,"Lamaçães":6.4,"Nogueiró":5.9,"Fraião":7.5}
+        G.nodes['SãoVicente']['heuristica']={"Gualtar":2.5,"SãoVitor":2,"Este":4.5,"SãoJoãoDoSouto":1.5,"Tenões":3.7,"SãoVicente":3.6,"Nogueiró":5.4,"Lamaçães":4.4,"Fraião":5,"SãoLázara":3.1}
+        G.nodes['Gualtar']['heuristica']={"SãoVitor":2.4,"SãoJoãoDoSouto":3.2,"Este":2,"Tenões":2,"Espinho":4.5,"Nogueiró":3.7,"Lamaçães":3.5,"Faião":4.5,"SãoLázaro":3.7}
+        G.nodes['SãoVitor']['heuristica']={"SãoJoãoDoSouto":1.9,"Tenões":2.2,"Espinho":2.2,"Nogueiró":3.5,"Lamaçães":2.5,"Fraião":3,"SãoLázaro":1.5,"Este":3.5}
+        G.nodes['SãoJoãoDoSouto']['heuristica']={"SãoLázaro":2,"Fraião":4,"Lamaçães":3.6,"Nogueiró":5,"Espinho":6.6,"Tenões":3.5,"Este":4.6}
+        G.nodes['SãoLázaro']['heuristica']={"Tenões":2.9,"Este":4.3,"Espinho":5.5,"Nogueiró":3.6,"Lamaçães":2.2,"Fraião":1.9}
+        G.nodes[]
+
+
         return G

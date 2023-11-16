@@ -3,10 +3,38 @@ import matplotlib.pyplot as plt
 import sys
 from queue import Queue
 
-def dijkstra(graph, start, end):
-    dist = nx.shortest_path_length(graph, source=start, target=end, weight='distancia')
-    path = nx.shortest_path(graph, source=start, target=end, weight='distancia')
-    return dist, path
+def dijkstra(graph, origem, destino):
+    dist = {node: float('inf') for node in graph}
+    queue = Queue()
+    predecessor = {}
+    
+    dist[origem] = 0
+    queue.put(origem)
+    predecessor[origem] = None  # Definir o predecessor do nó de origem como None
+
+    while not queue.empty():
+        current_node = queue.get()
+
+        for neighbor in nx.neighbors(graph,current_node):
+            weight = graph[current_node][neighbor]['weight']
+            distance = dist[current_node] + weight
+            if distance < dist[neighbor]:
+                dist[neighbor] = distance
+                predecessor[neighbor] = current_node
+                queue.put(neighbor)
+
+    # Reconstrói o caminho mais curto
+    if destino not in predecessor:  # Se não há caminho para o destino
+       return float('inf'), []
+    
+    path = []
+    current = destino
+    while current is not None:
+        path.append(current)
+        current = predecessor[current]
+
+    return dist[destino],path
+#..............................................................................
 
 def procura_em_profundidade(grafo, inicio, destino):
     if inicio == destino:

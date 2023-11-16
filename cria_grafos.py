@@ -1,6 +1,4 @@
 import networkx as nx
-import matplotlib.pyplot as plt
-import sys
 
 def cria_grafo():
 

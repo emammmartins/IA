@@ -229,8 +229,7 @@ def greedy_shortest_path(graph, origem, destino):
 
         for neighbor in neighbors:
             if 'heuristica' in graph.nodes[neighbor]:
-                heuristic_value = graph[neighbor]['heuristica'].get(destino)
-                print(heuristic_value)
+                heuristic_value = graph.nodes[current_node]['heuristica'].get(destino)
                 if heuristic_value < min_heuristic:
                     min_heuristic = heuristic_value
                     next_node = neighbor

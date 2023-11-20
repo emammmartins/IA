@@ -242,3 +242,48 @@ def greedy_shortest_path(graph, origem, destino):
         current_node = next_node
 
     return path, cost
+#.............................................................................
+def algoritmoAEstrela (graph, origem, destino):
+    
+    if origem not in graph or destino not in graph:
+        return None
+    
+    # Set de nodos que ainda estamos a verificar
+    toCheck = {origem}
+    #Set de nodos que já foram verificados
+    checked = set()
+    # Dicionário de distâncias à origem
+    dist = {}
+    dist[origem] = 0
+    # Dicionário dos nodos anteriores
+    pais = {}
+    pais[origem] = None
+    while len(toCheck)>0:
+        
+        checking = None
+        for node in toCheck:
+            if checking == None or (dist[node]+graph[node]['heuristica'].get(destino)) < (dist[checking]+graph[checking]['heuristica'].get(destino)):
+                checking = node
+        if checking == destino:
+            path = []
+            path.append(checking)
+            while pais[checking] != None: #is not
+                checking = pais[checking]
+                path.append(checking)
+            path.reverse()
+            return path, dist[destino]
+        for n in list(nx.neighbors(graph,checking)):
+            if n not in toCheck and n not in checked:
+                toCheck.add(n)
+                pais[n] = checking
+                dist[n] = dist[checking] + graph[checking][n]['weight']
+            else: #está numa das listas -> ver se encontramos um caminho mais rápido
+                if dist[n] > (dist[checking] + graph[checking][n]['weight']):
+                    dist[n] = dist[checking] + graph[checking][n]['weight']
+                    pais[n] = checking
+                    if n in checked:
+                        checked.remove(n)
+                        toCheck.add(n)
+        toCheck.remove(checking)
+        checked.add(checking)
+    return None

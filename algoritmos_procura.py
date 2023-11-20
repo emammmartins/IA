@@ -65,6 +65,9 @@ def procura_em_profundidade(grafo, inicio, destino):
  #.....................................................................................................
 
 def bfs (graph, start, end):
+    if start == end:
+        return [start], 0
+
     #fila de nodos a visitar
     queue = Queue()
     queue.put(start)
@@ -101,6 +104,9 @@ def bfs (graph, start, end):
             end = pais[end]
             path.append(end)
         path.reverse()
+    else:
+        return None
+    
     return (path, c)
 
 #.................................................................

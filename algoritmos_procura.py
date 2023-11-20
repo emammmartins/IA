@@ -65,6 +65,9 @@ def procura_em_profundidade(grafo, inicio, destino):
  #.....................................................................................................
 
 def bfs (graph, start, end):
+    if start == end:
+        return [start], 0
+
     #fila de nodos a visitar
     queue = Queue()
     queue.put(start)
@@ -101,6 +104,9 @@ def bfs (graph, start, end):
             end = pais[end]
             path.append(end)
         path.reverse()
+    else:
+        return None
+    
     return (path, c)
 
 #.................................................................
@@ -206,7 +212,7 @@ def depth_limited_dfs(graph, current, goal, depth_limit, path=None, cost=0):
 #.................................................................................................
 def greedy_shortest_path(graph, origem, destino):
     if origem not in graph or destino not in graph:
-        return float('inf'), []
+        return float('inf'), [] #ORDEM TROCADA
     
     path = []
     current_node = origem
@@ -215,7 +221,7 @@ def greedy_shortest_path(graph, origem, destino):
     while current_node != destino:
         neighbors = list(nx.neighbors(graph,current_node))
         if not neighbors:
-            return float('inf'), []
+            return float('inf'), [] #ORDEM TROCADA
 
         next_node = None
         min_weight = float('inf')
@@ -227,9 +233,66 @@ def greedy_shortest_path(graph, origem, destino):
                 next_node = neighbor
         
         if next_node is None:
-            return float('inf'), []
+            return float('inf'), [] #ORDEM TROCADA
 
         path.append(next_node)
         current_node = next_node
 
     return path, sum(graph[path[i]][path[i+1]]['weight'] for i in range(len(path)-1))
+
+
+#.................................................................................................
+def algoritmoAEstrela (graph, origem, destino):
+    
+    if origem not in graph or destino not in graph:
+        return None
+    
+    # Set de nodos que ainda estamos a verificar
+    toCheck = {origem}
+
+    #Set de nodos que já foram verificados
+    checked = set()
+
+    # Dicionário de distâncias à origem
+    dist = {}
+    dist[origem] = 0
+
+    # Dicionário dos nodos anteriores
+    pais = {}
+    pais[origem] = None
+
+    while len(toCheck)>0:
+        
+        checking = None
+
+        for node in toCheck:
+            if checking == None or (dist[node]+graph[node]['heuristica'].get(destino)) < (dist[checking]+graph[checking]['heuristica'].get(destino)):
+                checking = node
+
+        if checking == destino:
+            path = []
+            path.append(checking)
+            while pais[checking] != None: #is not
+                checking = pais[checking]
+                path.append(checking)
+            path.reverse()
+            return path, dist[destino]
+
+        for n in list(nx.neighbors(graph,checking)):
+            if n not in toCheck and n not in checked:
+                toCheck.add(n)
+                pais[n] = checking
+                dist[n] = dist[checking] + graph[checking][n]['weight']
+
+            else: #está numa das listas -> ver se encontramos um caminho mais rápido
+                if dist[n] > (dist[checking] + graph[checking][n]['weight']):
+                    dist[n] = dist[checking] + graph[checking][n]['weight']
+                    pais[n] = checking
+                    if n in checked:
+                        checked.remove(n)
+                        toCheck.add(n)
+
+        toCheck.remove(checking)
+        checked.add(checking)
+
+    return None

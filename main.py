@@ -74,6 +74,7 @@ def main():
                     print("4-Procura Bidirecional")
                     print("5-Procura em largura(BFS)")
                     print("6-Procura Gulosa")
+                    print("7-Procura A*")
 
                     try:
                         opcao=int(input("Introduza uma das opcoes:"))
@@ -122,9 +123,17 @@ def main():
                                         calculos(dist, tempo, peso, path,health_planet)
                                     except :
                                         print("O destino selecionado não existe")
+
                                 elif (opcao==6):
                                     try:
                                         path, dist = ap.greedy_shortest_path(grafo, "Armazem", terra)
+                                        calculos(dist, tempo, peso, path,health_planet)
+                                    except :
+                                        print("O destino selecionado não existe")
+
+                                elif (opcao==7):
+                                    try:
+                                        path, dist = ap.algoritmoAEstrela(grafo, "Armazem", terra)
                                         calculos(dist, tempo, peso, path,health_planet)
                                     except :
                                         print("O destino selecionado não existe")

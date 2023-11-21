@@ -211,9 +211,10 @@ def depth_limited_dfs(graph, current, goal, depth_limit, path=None, cost=0):
 
 #.................................................................................................
 def greedy_shortest_path(graph, origem, destino):
+    cost=0
     if origem not in graph or destino not in graph:
-        return [],float('inf')
-    
+        return [], float('inf')
+
     path = []
     current_node = origem
     path.append(current_node)
@@ -227,21 +228,21 @@ def greedy_shortest_path(graph, origem, destino):
         min_heuristic = float('inf')
 
         for neighbor in neighbors:
-            heuristic = graph[current_node][neighbor]['heuristica']
-            if heuristic < min_heuristic:
-                min_heuristic = heuristic
-                next_node = neighbor
+            if 'heuristica' in graph.nodes[neighbor]:
+                heuristic_value = graph.nodes[current_node]['heuristica'].get(destino)
+                if heuristic_value < min_heuristic:
+                    min_heuristic = heuristic_value
+                    next_node = neighbor
         
         if next_node is None:
-            return [],float('inf')
+            return [], float('inf')
 
         path.append(next_node)
+        cost+= graph[current_node][next_node]['weight']
         current_node = next_node
 
-    return path, sum(graph[path[i]][path[i+1]]['heuristica'] for i in range(len(path)-1))
-
-
-#.................................................................................................
+    return path, cost
+#.............................................................................
 def algoritmoAEstrela (graph, origem, destino):
     
     if origem not in graph or destino not in graph:
@@ -249,26 +250,20 @@ def algoritmoAEstrela (graph, origem, destino):
     
     # Set de nodos que ainda estamos a verificar
     toCheck = {origem}
-
     #Set de nodos que já foram verificados
     checked = set()
-
     # Dicionário de distâncias à origem
     dist = {}
     dist[origem] = 0
-
     # Dicionário dos nodos anteriores
     pais = {}
     pais[origem] = None
-
     while len(toCheck)>0:
         
         checking = None
-
         for node in toCheck:
             if checking == None or (dist[node]+graph.nodes[node]['heuristica'][destino]) < (dist[checking]+graph.nodes[checking]['heuristica'][destino]):
                 checking = node
-
         if checking == destino:
             path = []
             path.append(checking)
@@ -277,13 +272,11 @@ def algoritmoAEstrela (graph, origem, destino):
                 path.append(checking)
             path.reverse()
             return path, dist[destino]
-
         for n in list(nx.neighbors(graph,checking)):
             if n not in toCheck and n not in checked:
                 toCheck.add(n)
                 pais[n] = checking
                 dist[n] = dist[checking] + graph[checking][n]['weight']
-
             else: #está numa das listas -> ver se encontramos um caminho mais rápido
                 if dist[n] > (dist[checking] + graph[checking][n]['weight']):
                     dist[n] = dist[checking] + graph[checking][n]['weight']
@@ -291,8 +284,6 @@ def algoritmoAEstrela (graph, origem, destino):
                     if n in checked:
                         checked.remove(n)
                         toCheck.add(n)
-
         toCheck.remove(checking)
         checked.add(checking)
-
     return None

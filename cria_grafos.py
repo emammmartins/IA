@@ -77,6 +77,7 @@ def cria_grafo():
         G.add_edge("Nogueira", "Lomar", weight=8)
         G.add_edge("Lomar", "SãoLázaro", weight=6)
 
+        #Heurísticas
         G.nodes['Armazem']['heuristica'] = {'Armazem':0, 'SãoVicente':9.1, 'Gualtar':5.8, "Este":6.8,"SãoVitor":10,"SãoJoãoDoSouto":11.5,"Tenões":9,"Espinho":11.4,"SãoLázaro":11,"Lamaçães":12.4,"Nogueiró":11.8,"Fraião":14.9}
         G.nodes['SãoVicente']['heuristica']={'Armazem':9.1, 'SãoVicente':0, "Gualtar":4.7,"Este":8.3,"SãoVitor":3.6,"SãoJoãoDoSouto":2.8,"Tenões":7.2,"Espinho":13,"SãoLázaro":6,"Lamaçães":8.3,"Nogueiró":10.2,"Fraião":9.6}
         G.nodes['Gualtar']['heuristica']= {'Armazem':5.8, 'SãoVicente':4.7, "Gualtar":0,"Este":3.6,"SãoVitor":4,"SãoJoãoDoSouto":5.9,"Tenões":3.8,"Espinho":8.5,"SãoLázaro":7.1,"Lamaçães":6.6,"Nogueiró":6.7,"Fraião":8.8}

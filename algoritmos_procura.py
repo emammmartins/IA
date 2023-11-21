@@ -266,7 +266,7 @@ def algoritmoAEstrela (graph, origem, destino):
         checking = None
 
         for node in toCheck:
-            if checking == None or (dist[node]+graph[node]['heuristica'].get(destino)) < (dist[checking]+graph[checking]['heuristica'].get(destino)):
+            if checking == None or (dist[node]+graph.nodes[node]['heuristica'][destino]) < (dist[checking]+graph.nodes[checking]['heuristica'][destino]):
                 checking = node
 
         if checking == destino:

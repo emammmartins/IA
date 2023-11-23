@@ -211,7 +211,7 @@ def depth_limited_dfs(graph, current, goal, depth_limit, path=None, cost=0):
 
 #.................................................................................................
 def greedy_shortest_path(graph, origem, destino):
-    cost=0
+    cost = 0
     if origem not in graph or destino not in graph:
         return [], float('inf')
 
@@ -220,7 +220,7 @@ def greedy_shortest_path(graph, origem, destino):
     path.append(current_node)
 
     while current_node != destino:
-        neighbors = list(nx.neighbors(graph,current_node))
+        neighbors = list(graph.neighbors(current_node))
         if not neighbors:
             return [], float('inf')
 
@@ -228,17 +228,16 @@ def greedy_shortest_path(graph, origem, destino):
         min_heuristic = float('inf')
 
         for neighbor in neighbors:
-            if 'heuristica' in graph.nodes[neighbor]:
-                heuristic_value = graph.nodes[current_node]['heuristica'].get(destino)
-                if heuristic_value < min_heuristic:
-                    min_heuristic = heuristic_value
-                    next_node = neighbor
+            heuristic_value = graph.nodes[neighbor]['heuristica'].get(destino, float('inf'))
+            if heuristic_value < min_heuristic:
+                min_heuristic = heuristic_value
+                next_node = neighbor
         
         if next_node is None:
             return [], float('inf')
 
         path.append(next_node)
-        cost+= graph[current_node][next_node]['weight']
+        cost += graph[current_node][next_node]['weight']
         current_node = next_node
 
     return path, cost

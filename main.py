@@ -7,11 +7,11 @@ import povoar as p
 import threading
 
 
-def verifica_disponibilidade (transporte, tempo_transporte, tempo_pretendido,health_planet):
+def verifica_disponibilidade (transporte, tempo_transporte, tempo_pretendido,health_planet,velocidade,caminho):
     tempo_disponivel, estafeta_disponivel = health_planet.disponibilidade(transporte)
     tempo_necessario = (tempo_disponivel + tempo_transporte)
     if (tempo_pretendido >= tempo_necessario):
-        health_planet.atualiza_tempo_estafeta(estafeta_disponivel,2*tempo_transporte) #:::::::::::::::::::::MARGEM:::::::::::::
+        health_planet.atualiza_estafeta(estafeta_disponivel,2*tempo_transporte,velocidade,caminho) #:::::::::::::::::::::MARGEM:::::::::::::
         return tempo_necessario
     return -1
 
@@ -19,19 +19,18 @@ def calculos(dist,tempo, peso, path,health_planet):
     tempo_bicicleta=int(((dist/(10-(0.6*peso)))*60)+0.5) #0.5 para arredondar primeiro
     tempo_moto=int(((dist/(35-(0.5*peso)))*60)+0.5)
     tempo_carro=int(((dist/(50-(0.1*peso)))*60)+0.5)
-
-    if (peso<=5 and tempo_bicicleta<tempo and (tempo := verifica_disponibilidade (1, tempo_bicicleta, tempo,health_planet))!= -1):
+    if (peso<=5 and tempo_bicicleta<tempo and (tempo := verifica_disponibilidade (1, tempo_bicicleta, tempo,health_planet,10-(0.6*peso),path)!= -1)):
         print(f"Demora {tempo_bicicleta} minutos a realizar a sua entrega de bicicleta pelo seguinte percurso: {path}, mas só é possível entregar daqui a {tempo} minutos")
-    elif(peso<=20 and tempo_moto<tempo  and (tempo := verifica_disponibilidade (2, tempo_moto, tempo,health_planet))!= -1):
+    elif(peso<=20 and tempo_moto<tempo  and (tempo := verifica_disponibilidade (2, tempo_moto, tempo,health_planet,35-(0.5*peso),path))!= -1):
         print(f"Demora {tempo_moto} minutos a realizar a sua entrega de moto pelo seguinte percurso: {path}, mas só é possível entregar daqui a {tempo} minutos")
-    elif(tempo_carro<tempo and (tempo := verifica_disponibilidade (3, tempo_carro, tempo,health_planet))!= -1):
+    elif(tempo_carro<tempo and (tempo := verifica_disponibilidade (3, tempo_carro, tempo,health_planet,dist/50-(0.1*peso),path)!= -1)):
         print(f"Demora {tempo_carro} minutos a realizar a sua entrega de carro pelo seguinte percurso: {path}, mas só é possível entregar daqui a {tempo} minutos")
     else:
         print("Nao é possivel entregar a encomenda no tempo pretendido")
 
-def avanca_tempo_virtual(health_planet):
+def avanca_tempo_virtual(health_planet,grafo):
     while(1):
-        health_planet.atualiza_estado()
+        health_planet.atualiza_estado(grafo)
 
     
 def main():
@@ -39,7 +38,7 @@ def main():
     p.povoa_estafetas(health_planet)
     grafo = cg.cria_grafo()
 
-    thread = threading.Thread(target=avanca_tempo_virtual(health_planet))
+    thread = threading.Thread(target=avanca_tempo_virtual, args=(health_planet, grafo))
 
     i=-2
     while(i!=0):

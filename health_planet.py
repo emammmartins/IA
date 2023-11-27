@@ -29,32 +29,40 @@ class Health_Planet:
         else:
             print(f"Encomenda com ID {encomenda_id} não encontrada.")
 
-    def disponibilidade(self,meio_transporte):
-        tempo_minimo=sys.maxsize
-        id_condutor_min_tempo=None
-        for condutor in self.dict_estafetas.values():
-            if(condutor.meio_de_transporte==meio_transporte):
-                if(condutor.tempo_disponivel==None):
-                    return 0 ,condutor.id
-                elif (condutor.tempo_disponivel<tempo_minimo):
-                    tempo_minimo=condutor.tempo_disponivel
-                    id_condutor_min_tempo=condutor.id
+    def disponibilidade(self, meio_transporte):
+        tempo_minimo = float('inf')
+        id_condutor_min_tempo = None
+
+        for condutor in self.estafetas:
+            if condutor.meio_de_transporte == meio_transporte:
+                if condutor.tempo_transporte == 0:
+                    return 0, condutor.id
+                elif condutor.tempo_transporte < tempo_minimo:
+                    tempo_minimo = condutor.tempo_transporte
+                    id_condutor_min_tempo = condutor.id
+
         return tempo_minimo, id_condutor_min_tempo
     
-    def atualiza_tempo_estafeta(self,id_estafeta,tempo):
-        self.dict_estafetas[id_estafeta].atualiza_tempo_disponivel(tempo)
+    def atualiza_estafeta(self,id_estafeta,tempo,velocida,caminho):
+        print(caminho)
+        self.dict_estafetas[id_estafeta].atualiza_estafeta(tempo,velocida,caminho)
 
-    def atualiza_estado(self):
+    def atualiza_estado(self,grafo):
         time.sleep(2)
-
         self.tempo_virtual+=1
+
         for estafeta in self.dict_estafetas.values():
             if estafeta.tempo_transporte!=0:
                 estafeta.tempo_transporte-=1
                 estafeta.tempo_que_percorreu+=1
 
-                tempo=0
-                while(tempo<estafeta.tempo_que_percorreu):
-                    pass
-                    #falta ver onde o mano esta
+                tempo_acumulado=0
+                posicao=0
+                while(tempo_acumulado<estafeta.tempo_que_percorreu and posicao + 1 < len(estafeta.caminho)):
+                    distancia=grafo[posicao][posicao+1]['weight']
+                    tempo_aresta=(distancia/velocidade)*60
+                    tempo_acumulado+=tempo_aresta
+                    posicao+=posicao+1
+                estafeta.ultimo_local_passou = estafeta.caminho[posicao] if posicao < len(estafeta.caminho) else None
+                
 

@@ -1,9 +1,11 @@
 import sys
+import time
 
 class Health_Planet:
     def __init__(self):
         self.dict_estafetas = {}  # Mapa de estafetas com ID como chave
         self.dict_encomendas = {}  # Mapa de encomendas com ID como chave
+        self.tempo_virtual=0
 
     def add_estafeta(self, estafeta_id, estafeta_data):
         self.dict_estafetas[estafeta_id] = estafeta_data
@@ -41,3 +43,18 @@ class Health_Planet:
     
     def atualiza_tempo_estafeta(self,id_estafeta,tempo):
         self.dict_estafetas[id_estafeta].atualiza_tempo_disponivel(tempo)
+
+    def atualiza_estado(self):
+        time.sleep(2)
+
+        self.tempo_virtual+=1
+        for estafeta in self.dict_estafetas.values():
+            if estafeta.tempo_transporte!=0:
+                estafeta.tempo_transporte-=1
+                estafeta.tempo_que_percorreu+=1
+
+                tempo=0
+                while(tempo<estafeta.tempo_que_percorreu):
+                    pass
+                    #falta ver onde o mano esta
+

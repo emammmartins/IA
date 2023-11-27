@@ -4,6 +4,8 @@ import health_planet as hp
 import estafeta as es
 import encomenda as en
 import povoar as p
+import threading
+
 
 def verifica_disponibilidade (transporte, tempo_transporte, tempo_pretendido,health_planet):
     tempo_disponivel, estafeta_disponivel = health_planet.disponibilidade(transporte)
@@ -27,11 +29,17 @@ def calculos(dist,tempo, peso, path,health_planet):
     else:
         print("Nao é possivel entregar a encomenda no tempo pretendido")
 
+def avanca_tempo_virtual(health_planet):
+    while(1):
+        health_planet.atualiza_estado()
 
+    
 def main():
     health_planet = hp.Health_Planet()
     p.povoa_estafetas(health_planet)
     grafo = cg.cria_grafo()
+
+    thread = threading.Thread(target=avanca_tempo_virtual(health_planet))
 
     i=-2
     while(i!=0):

@@ -25,11 +25,11 @@ class Estafeta:
 
         return f"ID: {self.id}, Nome: {self.nome}, Meio de Transporte: {meio_transporte}\n Último Local: {self.ultimo_local_passou}, Tempo de Transporte Restante: {self.tempo_transporte}, Tempo Percorrido: {self.tempo_que_percorreu}, Caminho: {self.caminho} "
     
-    def atualiza_tempo_disponivel(self,tempo,velocida,caminho):
+    def atualiza_estafeta(self,tempo,velocida,caminho):
         self.tempo_transporte=tempo
         self.tempo_que_percorreu=0
         self.caminho=caminho
         self.ultimo_local_passou=None
         self.velocidade_media=velocida
-        print(caminho)
+        print("Sera")
 

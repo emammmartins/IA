@@ -32,8 +32,7 @@ class Health_Planet:
     def disponibilidade(self, meio_transporte):
         tempo_minimo = float('inf')
         id_condutor_min_tempo = None
-
-        for condutor in self.estafetas:
+        for condutor in self.dict_estafetas.values():
             if condutor.meio_de_transporte == meio_transporte:
                 if condutor.tempo_transporte == 0:
                     return 0, condutor.id
@@ -44,7 +43,6 @@ class Health_Planet:
         return tempo_minimo, id_condutor_min_tempo
     
     def atualiza_estafeta(self,id_estafeta,tempo,velocida,caminho):
-        print(caminho)
         self.dict_estafetas[id_estafeta].atualiza_estafeta(tempo,velocida,caminho)
 
     def atualiza_estado(self,grafo):

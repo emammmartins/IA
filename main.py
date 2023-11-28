@@ -11,7 +11,7 @@ def verifica_disponibilidade (transporte, tempo_transporte, tempo_pretendido,hea
     tempo_disponivel, estafeta_disponivel = health_planet.disponibilidade(transporte)
     tempo_necessario = (tempo_disponivel + tempo_transporte)
     if (tempo_pretendido >= tempo_necessario):
-        health_planet.atualiza_estafeta(estafeta_disponivel,2*tempo_transporte,velocidade,caminho) #:::::::::::::::::::::MARGEM:::::::::::::
+        health_planet.atualiza_estafeta_inicio(estafeta_disponivel,2*tempo_transporte,velocidade,caminho) #:::::::::::::::::::::MARGEM:::::::::::::
         return tempo_necessario
     return -1
 

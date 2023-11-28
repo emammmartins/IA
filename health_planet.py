@@ -42,8 +42,8 @@ class Health_Planet:
 
         return tempo_minimo, id_condutor_min_tempo
     
-    def atualiza_estafeta(self,id_estafeta,tempo,velocida,caminho):
-        self.dict_estafetas[id_estafeta].atualiza_estafeta(tempo,velocida,caminho)
+    def atualiza_estafeta_inicio(self,id_estafeta,tempo,velocida,caminho):
+        self.dict_estafetas[id_estafeta].atualiza_estafeta_inicio(tempo,velocida,caminho)
 
     def atualiza_estado(self,grafo):
         time.sleep(2)

@@ -26,9 +26,16 @@ class Estafeta:
         return f"ID: {self.id}, Nome: {self.nome}, Meio de Transporte: {meio_transporte}\n Último Local: {self.ultimo_local_passou}, Tempo de Transporte Restante: {self.tempo_transporte}, Tempo Percorrido: {self.tempo_que_percorreu}, Caminho: {self.caminho} "
     
     def atualiza_estafeta_inicio(self,tempo,velocida,caminho):
+        self.ultimo_local_passou="Armazem"
         self.tempo_transporte=tempo
         self.tempo_que_percorreu=0
         self.caminho=caminho
-        self.ultimo_local_passou=None
         self.velocidade_media=velocida
+
+    def atualiza_estafeta_meio(self,posicao):
+        if self.tempo_transporte!=0:
+                self.tempo_transporte-=1
+                self.tempo_que_percorreu+=1
+        self.ultimo_local_passou=posicao
+
 

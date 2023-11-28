@@ -1,6 +1,3 @@
-import sys
-import time
-
 class Health_Planet:
     def __init__(self):
         self.dict_estafetas = {}  # Mapa de estafetas com ID como chave
@@ -46,21 +43,20 @@ class Health_Planet:
         self.dict_estafetas[id_estafeta].atualiza_estafeta_inicio(tempo,velocida,caminho)
 
     def atualiza_estado(self,grafo):
-        time.sleep(2)
         self.tempo_virtual+=1
 
         for estafeta in self.dict_estafetas.values():
-            if estafeta.tempo_transporte!=0:
-                estafeta.tempo_transporte-=1
-                estafeta.tempo_que_percorreu+=1
-
                 tempo_acumulado=0
                 posicao=0
+                ultimo_lugar=None
+                
                 while(tempo_acumulado<estafeta.tempo_que_percorreu and posicao + 1 < len(estafeta.caminho)):
-                    distancia=grafo[posicao][posicao+1]['weight']
-                    tempo_aresta=(distancia/velocidade)*60
+                    distancia=grafo[estafeta.caminho[posicao]][estafeta.caminho[posicao+1]]['weight']
+                    tempo_aresta=(distancia/estafeta.velocidade_media)*60
                     tempo_acumulado+=tempo_aresta
-                    posicao+=posicao+1
-                estafeta.ultimo_local_passou = estafeta.caminho[posicao] if posicao < len(estafeta.caminho) else None
+                    posicao+=1
+                ultimo_lugar = estafeta.caminho[posicao-1] if posicao > 0 else None
+
+                estafeta.atualiza_estafeta_meio(ultimo_lugar)
                 
 

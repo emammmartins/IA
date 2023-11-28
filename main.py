@@ -5,6 +5,7 @@ import estafeta as es
 import encomenda as en
 import povoar as p
 import threading
+import time
 
 
 def verifica_disponibilidade (transporte, tempo_transporte, tempo_pretendido,health_planet,velocidade,caminho):
@@ -28,17 +29,19 @@ def calculos(dist,tempo, peso, path,health_planet):
     else:
         print("Nao é possivel entregar a encomenda no tempo pretendido")
 
-def avanca_tempo_virtual(health_planet,grafo):
-    while(1):
+def avanca_tempo_virtual(health_planet, grafo, encerrar_thread):
+    while not encerrar_thread.is_set():
+        time.sleep(2)
         health_planet.atualiza_estado(grafo)
-
     
 def main():
     health_planet = hp.Health_Planet()
     p.povoa_estafetas(health_planet)
     grafo = cg.cria_grafo()
 
-    thread = threading.Thread(target=avanca_tempo_virtual, args=(health_planet, grafo))
+    encerrar_thread = threading.Event()  # Criando um evento para encerrar a thread
+    thread = threading.Thread(target=avanca_tempo_virtual, args=(health_planet, grafo, encerrar_thread))
+    thread.start()
 
     i=-2
     while(i!=0):
@@ -156,11 +159,11 @@ def main():
                         print("Os valores introduzidos sao inválidos")
                 else:
                     print ("Introduza um valor válido")
-
+            else:
+                encerrar_thread.set()
         except ValueError:
             print("Introduza um valor válido")
             i=-2
-    
 
 if __name__ == "__main__":
     main()

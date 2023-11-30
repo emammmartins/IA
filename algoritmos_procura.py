@@ -3,6 +3,12 @@ import matplotlib.pyplot as plt
 import sys
 from queue import Queue
 
+
+def trajeto_completo_estafeta(lista):
+    lista_reversa = lista[::-1]  # Reverter a lista
+    lista_concatenada = lista + lista_reversa[1:]  # Concatenar a lista original com o seu reverso, excluindo o primeiro elemento do reverso
+    return lista_concatenada
+
 def dijkstra(graph, origem, destino):
     dist = {node: float('inf') for node in graph}
     queue = Queue()
@@ -240,7 +246,7 @@ def greedy_shortest_path(graph, origem, destino):
         cost += graph[current_node][next_node]['weight']
         current_node = next_node
 
-    return path, cost
+    return trajeto_completo_estafeta(path), cost
 #.............................................................................
 def algoritmoAEstrela (graph, origem, destino):
     

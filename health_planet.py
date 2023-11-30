@@ -55,8 +55,7 @@ class Health_Planet:
                     tempo_aresta=(distancia/estafeta.velocidade_media)*60
                     tempo_acumulado+=tempo_aresta
                     posicao+=1
-                ultimo_lugar = estafeta.caminho[posicao-1] if posicao > 0 else None
-
+                ultimo_lugar = estafeta.caminho[posicao-1] if posicao > 0 else "Armazem"
                 estafeta.atualiza_estafeta_meio(ultimo_lugar)
                 
 

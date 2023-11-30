@@ -1,3 +1,4 @@
+import threading
 import algoritmos_procura as ap
 import cria_grafos as cg
 import health_planet as hp
@@ -12,7 +13,7 @@ def verifica_disponibilidade (transporte, tempo_transporte, tempo_pretendido,hea
     tempo_disponivel, estafeta_disponivel = health_planet.disponibilidade(transporte)
     tempo_necessario = (tempo_disponivel + tempo_transporte)
     if (tempo_pretendido >= tempo_necessario):
-        health_planet.atualiza_estafeta_inicio(estafeta_disponivel,2*tempo_transporte,velocidade,caminho) #:::::::::::::::::::::MARGEM:::::::::::::
+        health_planet.atualiza_estafeta_inicial(estafeta_disponivel,2*tempo_transporte,velocidade,caminho) #:::::::::::::::::::::MARGEM:::::::::::::
         return tempo_necessario
     return -1
 
@@ -29,18 +30,22 @@ def calculos(dist,tempo, peso, path,health_planet):
     else:
         print("Nao é possivel entregar a encomenda no tempo pretendido")
 
-def avanca_tempo_virtual(health_planet, grafo, encerrar_thread):
+def avanca_tempo_virtual(health_planet, grafo, encerrar_thread,lock):
     while not encerrar_thread.is_set():
-        time.sleep(2)
-        health_planet.atualiza_estado(grafo)
+        time.sleep(1) 
+        with lock:
+            health_planet.atualiza_estado(grafo) 
+
     
 def main():
     health_planet = hp.Health_Planet()
     p.povoa_estafetas(health_planet)
     grafo = cg.cria_grafo()
 
+    lock = threading.Lock()
+
     encerrar_thread = threading.Event()  # Criando um evento para encerrar a thread
-    thread = threading.Thread(target=avanca_tempo_virtual, args=(health_planet, grafo, encerrar_thread))
+    thread = threading.Thread(target=avanca_tempo_virtual, args=(health_planet, grafo, encerrar_thread,lock))
     thread.start()
 
     i=-2
@@ -66,7 +71,8 @@ def main():
                         print("Valor inválido")
                         
                 elif(i==2):
-                    health_planet.ver_estafetas()
+                    with lock:
+                        health_planet.ver_estafetas()
 
                 elif(i==3):
                     id=int(input("Introduza o id do estafeta: "))

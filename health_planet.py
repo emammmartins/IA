@@ -50,12 +50,13 @@ class Health_Planet:
                 posicao=0
                 ultimo_lugar=None
                 
-                while(tempo_acumulado<estafeta.tempo_que_percorreu and posicao + 1 < len(estafeta.caminho)):
+                while(tempo_acumulado<=estafeta.tempo_que_percorreu and posicao + 1 < len(estafeta.caminho)):
                     distancia=grafo[estafeta.caminho[posicao]][estafeta.caminho[posicao+1]]['weight']
                     tempo_aresta=(distancia/estafeta.velocidade_media)*60
                     tempo_acumulado+=tempo_aresta
                     posicao+=1
                 ultimo_lugar = estafeta.caminho[posicao-1] if posicao > 0 else "Armazem"
+
                 estafeta.atualiza_estafeta_meio(ultimo_lugar)
                 
 

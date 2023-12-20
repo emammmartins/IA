@@ -1,6 +1,5 @@
 import networkx as nx
 import matplotlib.pyplot as plt
-import sys
 from queue import Queue
 
 
@@ -21,7 +20,7 @@ def dijkstra(graph, origem, destino):
     while not queue.empty():
         current_node = queue.get()
 
-        for neighbor in nx.neighbors(graph,current_node):
+        for neighbor in nx.neighbors(graph, current_node):
             weight = graph[current_node][neighbor]['weight']
             distance = dist[current_node] + weight
             if distance < dist[neighbor]:
@@ -31,15 +30,18 @@ def dijkstra(graph, origem, destino):
 
     # Reconstrói o caminho mais curto
     if destino not in predecessor:  # Se não há caminho para o destino
-       return float('inf'), []
-    
+        return float('inf'), []
+
     path = []
     current = destino
     while current is not None:
         path.append(current)
         current = predecessor[current]
 
-    return dist[destino],path.reverse()
+    path.reverse()  # Revertendo a lista 'path'
+
+    return trajeto_completo_estafeta(path), dist[destino]
+
 #..............................................................................
 
 def procura_em_profundidade(grafo, inicio, destino):
@@ -63,7 +65,7 @@ def procura_em_profundidade(grafo, inicio, destino):
                     custo_total = sum(grafo[no_atual][vizinho]['weight'] for no_atual, vizinho in zip(novo_caminho, novo_caminho[1:]))
                     #print(novo_caminho)
                     #print(custo_total)
-                    return novo_caminho, custo_total
+                    return trajeto_completo_estafeta(novo_caminho), custo_total
 
             visitados.add(no_atual)
 
@@ -113,7 +115,7 @@ def bfs (graph, start, end):
     else:
         return None
     
-    return (path, c)
+    return trajeto_completo_estafeta(path), c
 
 #.................................................................
 def bidirectional_search(graph, start, goal):
@@ -147,7 +149,7 @@ def bidirectional_search(graph, start, goal):
             common_node = common_node.pop()
             path = reconstruct_path(forward_parent, backward_parent, common_node)
             total_edge_cost = forward_cost[common_node] + backward_cost[common_node]
-            return path, total_edge_cost
+            return trajeto_completo_estafeta(path), total_edge_cost
 
         for neighbor in graph.neighbors(forward_current):
             if neighbor not in forward_visited:
@@ -200,7 +202,7 @@ def depth_limited_dfs(graph, current, goal, depth_limit, path=None, cost=0):
         path = [current]
 
     if current == goal:
-        return path, cost
+        return trajeto_completo_estafeta(path), cost
 
     if depth_limit == 0:
         return None
@@ -276,7 +278,7 @@ def algoritmoAEstrela (graph, origem, destino):
                 checking = pais[checking]
                 path.append(checking)
             path.reverse()
-            return path, dist[destino]
+            return trajeto_completo_estafeta(path), dist[destino]
         for n in list(nx.neighbors(graph,checking)):
             if n not in toCheck and n not in checked:
                 toCheck.add(n)

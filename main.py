@@ -43,9 +43,8 @@ def altera_velocidade(meteorologia,altura_do_dia,path, vel, grafo):
         tempo += int(((distancia / vel_aresta) * 60) + 0.5)
         vel_medias.append(vel_aresta)
         posicao += 1
-
-    
-    return tempo, vel_medias + vel_medias[::-1]
+        
+    return tempo/2, vel_medias + vel_medias[::-1]
 
 def verifica_disponibilidade (transporte, tempo_transporte, velocidades_medias, tempo_pretendido,health_planet,caminho):
     tempo_disponivel, estafeta_disponivel = health_planet.disponibilidade(transporte)
@@ -197,7 +196,8 @@ def main():
                                 #.....................Varios algoritmos.................
                                 if (opcao==1):
                                     try:
-                                        dist, path = ap.dijkstra(grafo,"Armazem",terra)
+                                        path,dist = ap.dijkstra(grafo,"Armazem",terra)
+                                        print(path)
                                         calculos (dist,meteorologia,altura_do_dia, tempo, peso, path,health_planet,grafo)
                                     except:
                                         print("O destino selecionado não existe")
@@ -234,6 +234,7 @@ def main():
                                 elif (opcao==6):
                                     try:
                                         path, dist = ap.greedy_shortest_path(grafo, "Armazem", terra)
+                                        print(path)
                                         calculos(dist,meteorologia,altura_do_dia, tempo, peso, path,health_planet,grafo)
                                     except :
                                         print("O destino selecionado não existe")

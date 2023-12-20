@@ -39,8 +39,8 @@ class Health_Planet:
 
         return tempo_minimo, id_condutor_min_tempo
     
-    def atualiza_estafeta_inicial(self,id_estafeta,tempo,velocidade,caminho):
-        self.dict_estafetas[id_estafeta].atualiza_estafeta_inicio(tempo,velocidade,caminho)
+    def atualiza_estafeta_inicial(self,id_estafeta,tempo,velocidades_medias,caminho):
+        self.dict_estafetas[id_estafeta].atualiza_estafeta_inicio(tempo,velocidades_medias,caminho)
 
     def atualiza_estado(self,grafo):
         self.tempo_virtual+=1
@@ -52,7 +52,7 @@ class Health_Planet:
                 
                 while(tempo_acumulado<=estafeta.tempo_que_percorreu and posicao + 1 < len(estafeta.caminho)):
                     distancia=grafo[estafeta.caminho[posicao]][estafeta.caminho[posicao+1]]['weight']
-                    tempo_aresta=(distancia/estafeta.velocidade_media)*60
+                    tempo_aresta=(distancia/estafeta.velocidades_medias[posicao])*60
                     tempo_acumulado+=tempo_aresta
                     posicao+=1
                 ultimo_lugar = estafeta.caminho[posicao-1] if posicao > 0 else "Armazem"

@@ -8,29 +8,70 @@ import povoar as p
 import threading
 import time
 
+def altera_velocidade(meteorologia,altura_do_dia,path, vel, grafo):
+    tempo = 0
+    vel_medias = []
 
-def verifica_disponibilidade (transporte, tempo_transporte, tempo_pretendido,health_planet,velocidade,caminho):
+    if meteorologia == 1:
+        pass
+    elif meteorologia == 2:
+        vel -= vel * 0.04
+    elif meteorologia == 3:
+        vel -= vel * 0.08
+    elif meteorologia == 4:
+        vel -= vel * 0.12
+    elif meteorologia == 5:
+        vel -= vel * 0.16
+
+    if altura_do_dia == 1:
+        pass
+    elif altura_do_dia == 2:
+        vel -= vel * 0.04
+
+    posicao = 0
+    while posicao + 1 < len(path):
+        vel_aresta = vel
+        distancia = grafo[path[posicao]][path[posicao + 1]]['weight']
+
+        if grafo[path[posicao]][path[posicao + 1]]['estrada'] == "terra":
+            vel_aresta -= vel_aresta * 0.1
+        elif grafo[path[posicao]][path[posicao + 1]]['estrada'] == "paralelo":
+            vel_aresta -= vel_aresta * 0.05
+
+        vel_aresta -= vel_aresta * (grafo[path[posicao]][path[posicao + 1]]['transito'])
+
+        tempo += int(((distancia / vel_aresta) * 60) + 0.5)
+        vel_medias.append(vel_aresta)
+        posicao += 1
+
+    
+    return tempo, vel_medias + vel_medias[::-1]
+
+def verifica_disponibilidade (transporte, tempo_transporte, velocidades_medias, tempo_pretendido,health_planet,caminho):
     tempo_disponivel, estafeta_disponivel = health_planet.disponibilidade(transporte)
     tempo_necessario = (tempo_disponivel + tempo_transporte)
     if (tempo_pretendido >= tempo_necessario):
-        health_planet.atualiza_estafeta_inicial(estafeta_disponivel,2*tempo_transporte,velocidade,caminho) 
+        health_planet.atualiza_estafeta_inicial(estafeta_disponivel,2*tempo_transporte,velocidades_medias,caminho) 
         #:::::::::::::::::::::MARGEM:::::::::::::
         return tempo_necessario
     return -1
 
-def calculos(dist,tempo, peso, path,health_planet):
-    tempo_bicicleta=int(((dist/(10-(0.6*peso)))*60)+0.5) #0.5 para arredondar primeiro
-    tempo_moto=int(((dist/(35-(0.5*peso)))*60)+0.5)
-    tempo_carro=int(((dist/(50-(0.1*peso)))*60)+0.5)
-    if (peso<=5 and tempo_bicicleta<tempo and (tempo_necessario := verifica_disponibilidade (1, tempo_bicicleta, tempo,health_planet,10-(0.6*peso),path))!= -1):
-        print(f"Demora {tempo_bicicleta} minutos a realizar a sua entrega de bicicleta pelo seguinte percurso: {path}, mas só é possível entregar daqui a {tempo_necessario} minutos")
-    elif(peso<=20 and tempo_moto<tempo  and (tempo_necessario := verifica_disponibilidade (2, tempo_moto, tempo,health_planet,35-(0.5*peso),path))!= -1):
-        print(f"Demora {tempo_moto} minutos a realizar a sua entrega de moto pelo seguinte percurso: {path}, mas só é possível entregar daqui a {tempo_necessario} minutos")
-    elif(tempo_carro<tempo and (tempo_necessario := verifica_disponibilidade (3, tempo_carro, tempo,health_planet,50-(0.1*peso),path))!= -1):
-        print(tempo_necessario)
-        print(f"Demora {tempo_carro} minutos a realizar a sua entrega de carro pelo seguinte percurso: {path}, mas só é possível entregar daqui a {tempo_necessario} minutos")
+def calculos(dist,meteorologia,altura_do_dia,tempo_pedido, peso, path,health_planet,grafo):
+
+    tempo, velocidades_medias = altera_velocidade(meteorologia,altura_do_dia,path,10-(0.6*peso), grafo)
+    if (peso<=5 and tempo<tempo_pedido and (tempo_necessario := verifica_disponibilidade (1, tempo, velocidades_medias, tempo_pedido,health_planet,path))!= -1):
+        print(f"Demora {tempo} minutos a realizar a sua entrega de bicicleta pelo seguinte percurso: {path}, mas só é possível entregar daqui a {tempo_necessario} minutos")
+
     else:
-        print("Nao é possivel entregar a encomenda no tempo pretendido")
+        tempo, velocidades_medias = altera_velocidade(meteorologia,altura_do_dia,path,35-(0.5*peso), grafo)
+        if(peso<=20 and tempo<tempo_pedido  and (tempo_necessario := verifica_disponibilidade (2, tempo, velocidades_medias, tempo_pedido,health_planet,path))!= -1):
+            print(f"Demora {tempo} minutos a realizar a sua entrega de moto pelo seguinte percurso: {path}, mas só é possível entregar daqui a {tempo_necessario} minutos")
+        else:
+            tempo, velocidades_medias = altera_velocidade(meteorologia,altura_do_dia,path,50-(0.1*peso), grafo)
+            if (tempo<tempo_pedido and (tempo_necessario := verifica_disponibilidade (3, tempo, velocidades_medias, tempo_pedido,health_planet,path))!= -1):
+                print(f"Demora {tempo} minutos a realizar a sua entrega de carro pelo seguinte percurso: {path}, mas só é possível entregar daqui a {tempo_necessario} minutos")
+            else:
+                print("Nao é possivel entregar a encomenda no tempo pretendido")
 
 def avanca_tempo_virtual(health_planet, grafo, encerrar_thread,lock):
     while not encerrar_thread.is_set():
@@ -50,6 +91,9 @@ def main():
     thread = threading.Thread(target=avanca_tempo_virtual, args=(health_planet, grafo, encerrar_thread,lock))
     thread.start()
 
+    meteorologia=1
+    altura_do_dia=1
+
     i=-2
     while(i!=0):
         print("\n------MENU-----")
@@ -57,7 +101,10 @@ def main():
         print("1-Adicionar estafeta")
         print("2-Visualizar estafetas")
         print("3-Remover estafeta")
-        print("4-Realizar encomenda")
+        print("4-Alterar Meteorologia")
+        print("5-Alterar altura do dia")
+        print("6-Realizar encomenda")
+        
 
         try:
             i=int(input("Introduza uma das opções: "))
@@ -85,6 +132,48 @@ def main():
                         print("Não foi possível remover o estafeta")
 
                 elif(i==4):
+                    try:
+                        met = int(input("Condicoes meteorológicas (1-sol, 2-vento, 3-chuva, 4-nevoeiro, 5-tempestade): "))
+                        if(met>0 and met<6):
+                            meteorologia=met
+                        else:
+                            print("Valor nao é válido")
+                    except:
+                        print("Introduza um valor inteiro")
+                elif(i==5):
+                    try:
+                        altura_dia = int(input("Altura do dia: (1-Dia, 2-Noite): "))
+                        if (altura_dia==1 or altura_dia==2):
+                            altura_do_dia=altura_dia
+                        else:
+                            print("Valor invalido")
+                    except:
+                        print("Introduza um valor inteiro")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                elif(i==6):
                     print("\n------ALGORITMO-----")
                     print("1-Dijkstra")
                     print("2-Interativo")
@@ -109,14 +198,14 @@ def main():
                                 if (opcao==1):
                                     try:
                                         dist, path = ap.dijkstra(grafo,"Armazem",terra)
-                                        calculos (dist, tempo, peso, path,health_planet)
+                                        calculos (dist,meteorologia,altura_do_dia, tempo, peso, path,health_planet,grafo)
                                     except:
                                         print("O destino selecionado não existe")
 
                                 elif (opcao==2):
                                     try:
                                         path,dist = ap.iterative_deepening_dfs(grafo,"Armazem",terra)
-                                        calculos(dist,tempo,peso,path,health_planet)
+                                        calculos(dist,meteorologia,altura_do_dia,tempo,peso,path,health_planet,grafo)
                                     except ValueError as e:
                                         print(f"Erro: {e}")
                                         print("O destino selecionado não existe")
@@ -124,35 +213,35 @@ def main():
                                 elif (opcao==3):
                                     try:
                                         path, dist = ap.procura_em_profundidade(grafo, "Armazem", terra)
-                                        calculos (dist, tempo, peso, path,health_planet)
+                                        calculos (dist,meteorologia,altura_do_dia, tempo, peso, path,health_planet,grafo)
                                     except:
                                         print("O destino selecionado não existe")
 
                                 elif (opcao==4):
                                     try:
                                         path, dist = ap.bidirectional_search(grafo, "Armazem", terra)
-                                        calculos(dist, tempo, peso, path,health_planet)
+                                        calculos(dist,meteorologia,altura_do_dia, tempo, peso, path,health_planet,grafo)
                                     except :
                                         print("O destino selecionado não existe")
 
                                 elif (opcao==5):
                                     try:
                                         path, dist = ap.bfs(grafo, "Armazem", terra)
-                                        calculos(dist, tempo, peso, path,health_planet)
+                                        calculos(dist,meteorologia,altura_do_dia, tempo, peso, path,health_planet,grafo)
                                     except :
                                         print("O destino selecionado não existe")
 
                                 elif (opcao==6):
                                     try:
                                         path, dist = ap.greedy_shortest_path(grafo, "Armazem", terra)
-                                        calculos(dist, tempo, peso, path,health_planet)
+                                        calculos(dist,meteorologia,altura_do_dia, tempo, peso, path,health_planet,grafo)
                                     except :
                                         print("O destino selecionado não existe")
 
                                 elif (opcao==7):
                                     try:
                                         path, dist = ap.algoritmoAEstrela(grafo, "Armazem", terra)
-                                        calculos(dist, tempo, peso, path,health_planet)
+                                        calculos(dist,meteorologia,altura_do_dia, tempo, peso, path,health_planet,grafo)
                                     except :
                                         print("O destino selecionado não existe")
 

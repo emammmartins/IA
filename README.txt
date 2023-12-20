@@ -1,6 +1,15 @@
--> Falta verificar se temos estafetas disponíveis desse tipo de transporte
--> Se não tivermos, como fazer
-
-->Meter o tempo a andar mais rapido
-->Meter os atributos nos estafetas
 ->Tirar os pontos do grafo que ja nao interessam
+
+............................................................................
+O que ter em conta no peso das arestas:
+
+Interfere na velocidade media:
+    Tipo de terreno: Terra, Paralelo(), Alcatrao(nao altera) 
+    Condicoes metereologicas: Tempestade, Nevoeiro, Chuva, Vento, Sol(nao altera)
+    Altura do dia: Noite, Dias
+    Transito: Para cada estrada uma percentagem
+
+
+..................................................................
+Estradas cortadas
+Autoestradas

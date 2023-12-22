@@ -100,9 +100,10 @@ def main():
         print("1-Adicionar estafeta")
         print("2-Visualizar estafetas")
         print("3-Remover estafeta")
-        print("4-Alterar Meteorologia")
-        print("5-Alterar altura do dia")
-        print("6-Realizar encomenda")
+        print("4-Atrasar estafeta")
+        print("5-Alterar Meteorologia")
+        print("6-Alterar altura do dia")
+        print("7-Realizar encomenda")
         
 
         try:
@@ -132,6 +133,17 @@ def main():
 
                 elif(i==4):
                     try:
+                        id = int(input("Indique o id do estafeta que se encontra atrasado: "))
+                        if not health_planet.existe_estafeta(id):
+                            print("O estafeta não existe")
+                        else:
+                            atraso = int(input("Indique o tempo de atraso do estafeta: "))
+                            health_planet.dict_estafetas.get(id).aumenta_pausa(atraso)
+                    except:
+                        print("Não foi possível registar o atraso do estafeta")
+
+                elif(i==5):
+                    try:
                         met = int(input("Condicoes meteorológicas (1-sol, 2-vento, 3-chuva, 4-nevoeiro, 5-tempestade): "))
                         if(met>0 and met<6):
                             meteorologia=met
@@ -139,7 +151,7 @@ def main():
                             print("Valor nao é válido")
                     except:
                         print("Introduza um valor inteiro")
-                elif(i==5):
+                elif(i==6):
                     try:
                         altura_dia = int(input("Altura do dia: (1-Dia, 2-Noite): "))
                         if (altura_dia==1 or altura_dia==2):
@@ -172,7 +184,7 @@ def main():
 
 
 
-                elif(i==6):
+                elif(i==7):
                     print("\n------ALGORITMO-----")
                     print("1-Dijkstra")
                     print("2-Interativo")

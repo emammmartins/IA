@@ -17,6 +17,11 @@ class Health_Planet:
         for estafeta in self.dict_estafetas.values():
             print(estafeta)
 
+    def existe_estafeta(self,id):
+        if id in self.dict_estafetas.keys():
+            return True
+        return False
+
     def add_encomenda(self, encomenda_id, encomenda_data):
         self.dict_encomendas[encomenda_id] = encomenda_data
 

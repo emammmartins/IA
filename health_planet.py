@@ -55,7 +55,7 @@ class Health_Planet:
                 posicao=0
                 ultimo_lugar=None
                 
-                while(tempo_acumulado<=estafeta.tempo_que_percorreu and posicao + 1 < len(estafeta.caminho)):
+                while(tempo_acumulado<=(estafeta.tempo_previsto-estafeta.tempo_transporte) and posicao + 1 < len(estafeta.caminho)):
                     distancia=grafo[estafeta.caminho[posicao]][estafeta.caminho[posicao+1]]['weight']
                     tempo_aresta=(distancia/estafeta.velocidades_medias[posicao])*60
                     tempo_acumulado+=tempo_aresta

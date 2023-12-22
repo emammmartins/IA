@@ -55,6 +55,7 @@ class Estafeta:
     def atualiza_estafeta_meio(self,posicao):
         if self.pausa>0:
             self.pausa-=1
+            self.tempo_que_percorreu+=1
         else:
             if self.tempo_transporte!=0:
                 self.tempo_que_percorreu+=1
@@ -66,7 +67,8 @@ class Estafeta:
                     self.destino = "Armazem"
                     self.chegou_ao_destino = True
                     #Alterar estado da encomenda
-                    if atraso:= self.tempo_que_percorreu-(self.tempo_previsto/2) > 0:
+                    if (atraso:= self.tempo_que_percorreu-(self.tempo_previsto/2)) > 0:
+                        print (f'atraso {atraso}')
                         self.n_viagens+=1
                         atraso = atraso-5 #Tolerância de 5 minutos para atrasos
                         if atraso<0:
@@ -76,6 +78,7 @@ class Estafeta:
                             classificacao=0
                         self.soma_classificacoes+=classificacao
                     else:
+                        print("Sem atraso")
                         self.n_viagens+=1
                         self.soma_classificacoes+=5
 

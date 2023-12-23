@@ -32,17 +32,22 @@ class Health_Planet:
             print(f"Encomenda com ID {encomenda_id} não encontrada.")
 
     def disponibilidade(self, meio_transporte):
-        tempo_minimo = float('inf')
-        id_condutor_min_tempo = None
+        tempo_minimo_eletrico = float('inf')
+        id_condutor_min_tempo_eletrico = None
+
+        tempo_minimo_sem_ser_eletrico = float('inf')
+        id_condutor_min_tempo_sem_ser_eletrico = None
+
         for condutor in self.dict_estafetas.values():
             if condutor.meio_de_transporte == meio_transporte:
-                if condutor.tempo_transporte == 0:
-                    return 0, condutor.id
-                elif condutor.tempo_transporte < tempo_minimo:
-                    tempo_minimo = condutor.tempo_transporte
-                    id_condutor_min_tempo = condutor.id
+                if condutor.tempo_transporte < tempo_minimo_eletrico and condutor.eletrico==True:
+                    tempo_minimo_eletrico = condutor.tempo_transporte
+                    id_condutor_min_tempo_eletrico = condutor.id
+                elif(condutor.tempo_transporte < tempo_minimo_sem_ser_eletrico and condutor.eletrico==False):
+                    tempo_minimo_sem_ser_eletrico=condutor.tempo_transporte
+                    id_condutor_min_tempo_sem_ser_eletrico=condutor.id
 
-        return tempo_minimo, id_condutor_min_tempo
+        return tempo_minimo_eletrico, id_condutor_min_tempo_eletrico, tempo_minimo_sem_ser_eletrico, id_condutor_min_tempo_sem_ser_eletrico
     
     def atualiza_estafeta_inicial(self,id_estafeta,tempo,velocidades_medias,caminho):
         self.dict_estafetas[id_estafeta].atualiza_estafeta_inicio(tempo,velocidades_medias,caminho)

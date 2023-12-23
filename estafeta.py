@@ -1,10 +1,11 @@
 class Estafeta:
     gera_ids=1
-    def __init__(self,nome,meio_de_transporte):
+    def __init__(self,nome,meio_de_transporte,eletrico):
         self.id=Estafeta.gera_ids
         Estafeta.gera_ids+=1
         self.nome=nome
         self.meio_de_transporte=meio_de_transporte
+        self.eletrico=eletrico
         self.soma_classificacoes = 0
         self.n_viagens = 0
 

@@ -112,10 +112,18 @@ def main():
                 if (i==1):
                     nome = input("Introduza o nome do estafeta: ")
                     meio_de_transporte = int(input("Indique o número do tipo de veículo \n1-Bicicleta\n2-Moto\n3-Carro:\n"))
+                    eletrico = int(input("O veiculo é eletrico (1-Sim, 2-Nao)"))
                     if (meio_de_transporte>0 and meio_de_transporte<4):
-                        estafeta = es.Estafeta(nome, meio_de_transporte)
-                        health_planet.add_estafeta(estafeta.id, estafeta)
-                        print(f"O estafeta {nome} foi adicionado com sucesso")
+                        if(eletrico==1 or eletrico==2):
+                            if eletrico==1:
+                                estafeta = es.Estafeta(nome, meio_de_transporte,True)
+                                health_planet.add_estafeta(estafeta.id, estafeta)
+                            else:
+                                estafeta = es.Estafeta(nome, meio_de_transporte,False)
+                                health_planet.add_estafeta(estafeta.id, estafeta)
+                            print(f"O estafeta {nome} foi adicionado com sucesso")
+                        else:
+                            print("Valor inválido")
                     else:
                         print("Valor inválido")
                         

@@ -46,28 +46,47 @@ def altera_velocidade(meteorologia,altura_do_dia,path, vel, grafo):
         
     return tempo/2, vel_medias + vel_medias[::-1]
 
-def verifica_disponibilidade (transporte, tempo_transporte, velocidades_medias, tempo_pretendido,health_planet,caminho,id_encomenda):
-    tempo_disponivel, estafeta_disponivel = health_planet.disponibilidade(transporte)
-    tempo_necessario = (tempo_disponivel + tempo_transporte)
-    if (tempo_pretendido >= tempo_necessario):
-        health_planet.atualiza_inicial(estafeta_disponivel,2*tempo_transporte,velocidades_medias,caminho,id_encomenda) 
-        #:::::::::::::::::::::MARGEM:::::::::::::
-        return tempo_necessario
-    return -1
+def verifica_disponibilidade (transporte, tempo_transporte, velocidades_medias, tempo_pretendido,health_planet,caminho,queremosEletrico,id_encomenda):
+    tempo_disponivel_eletrico, estafeta_disponivel_eletrico, tempo_disponivel_sem_ser_eletrico, estafeta_disponivel_eletrico_sem_ser_eletrico = health_planet.disponibilidade(transporte)
+
+    tempo_necessario_eletrico = (tempo_disponivel_eletrico + tempo_transporte)
+    tempo_necessario_sem_ser_eletrico = (tempo_disponivel_sem_ser_eletrico + tempo_transporte) 
+
+
+    if(queremosEletrico==True):
+        if (tempo_pretendido >= tempo_necessario_eletrico):
+            health_planet.atualiza_inicial(estafeta_disponivel_eletrico,2*tempo_transporte,velocidades_medias,caminho,id_encomenda) 
+            #:::::::::::::::::::::MARGEM:::::::::::::
+            return tempo_necessario_eletrico
+        elif(tempo_pretendido >= tempo_necessario_sem_ser_eletrico):
+            health_planet.atualiza_inicial(estafeta_disponivel_eletrico_sem_ser_eletrico,2*tempo_transporte,velocidades_medias,caminho,id_encomenda) 
+            #:::::::::::::::::::::MARGEM:::::::::::::
+            return tempo_necessario_sem_ser_eletrico
+        return -1
+    else:
+        if(tempo_pretendido >= tempo_necessario_sem_ser_eletrico):
+            health_planet.atualiza_inicial(estafeta_disponivel_eletrico_sem_ser_eletrico,2*tempo_transporte,velocidades_medias,caminho,id_encomenda) 
+            #:::::::::::::::::::::MARGEM:::::::::::::
+            return tempo_necessario_sem_ser_eletrico
+        elif(tempo_pretendido >= tempo_necessario_eletrico):
+            health_planet.atualiza_inicial(estafeta_disponivel_eletrico,2*tempo_transporte,velocidades_medias,caminho,id_encomenda) 
+            #:::::::::::::::::::::MARGEM:::::::::::::
+            return tempo_necessario_eletrico
+        return -1
 
 def calculos(dist,meteorologia,altura_do_dia,tempo_pedido, peso, path,health_planet,grafo,id_encomenda):
 
     tempo, velocidades_medias = altera_velocidade(meteorologia,altura_do_dia,path,10-(0.6*peso), grafo)
-    if (peso<=5 and tempo<tempo_pedido and (tempo_necessario := verifica_disponibilidade (1, tempo, velocidades_medias, tempo_pedido,health_planet,path,id_encomenda))!= -1):
+    if (peso<=5 and tempo<tempo_pedido and (tempo_necessario := verifica_disponibilidade (1, tempo, velocidades_medias, tempo_pedido,health_planet,path,False,id_encomenda))!= -1):
         print(f"Demora {tempo} minutos a realizar a sua entrega de bicicleta pelo seguinte percurso: {path}, mas só é possível entregar daqui a {tempo_necessario} minutos")
 
     else:
         tempo, velocidades_medias = altera_velocidade(meteorologia,altura_do_dia,path,35-(0.5*peso), grafo)
-        if(peso<=20 and tempo<tempo_pedido  and (tempo_necessario := verifica_disponibilidade (2, tempo, velocidades_medias, tempo_pedido,health_planet,path,id_encomenda))!= -1):
+        if(peso<=20 and tempo<tempo_pedido  and (tempo_necessario := verifica_disponibilidade (2, tempo, velocidades_medias, tempo_pedido,health_planet,path,True,id_encomenda))!= -1):
             print(f"Demora {tempo} minutos a realizar a sua entrega de moto pelo seguinte percurso: {path}, mas só é possível entregar daqui a {tempo_necessario} minutos")
         else:
             tempo, velocidades_medias = altera_velocidade(meteorologia,altura_do_dia,path,50-(0.1*peso), grafo)
-            if (tempo<tempo_pedido and (tempo_necessario := verifica_disponibilidade (3, tempo, velocidades_medias, tempo_pedido,health_planet,path,id_encomenda))!= -1):
+            if (tempo<tempo_pedido and (tempo_necessario := verifica_disponibilidade (3, tempo, velocidades_medias, tempo_pedido,health_planet,path,True,id_encomenda))!= -1):
                 print(f"Demora {tempo} minutos a realizar a sua entrega de carro pelo seguinte percurso: {path}, mas só é possível entregar daqui a {tempo_necessario} minutos")
             else:
                 print("Nao é possivel entregar a encomenda no tempo pretendido")
@@ -113,10 +132,18 @@ def main():
                 if (i==1):
                     nome = input("Introduza o nome do estafeta: ")
                     meio_de_transporte = int(input("Indique o número do tipo de veículo \n1-Bicicleta\n2-Moto\n3-Carro:\n"))
+                    eletrico = int(input("O veiculo é eletrico (1-Sim, 2-Nao)"))
                     if (meio_de_transporte>0 and meio_de_transporte<4):
-                        estafeta = es.Estafeta(nome, meio_de_transporte)
-                        health_planet.add_estafeta(estafeta.id, estafeta)
-                        print(f"O estafeta {nome} foi adicionado com sucesso")
+                        if(eletrico==1 or eletrico==2):
+                            if eletrico==1:
+                                estafeta = es.Estafeta(nome, meio_de_transporte,True)
+                                health_planet.add_estafeta(estafeta.id, estafeta)
+                            else:
+                                estafeta = es.Estafeta(nome, meio_de_transporte,False)
+                                health_planet.add_estafeta(estafeta.id, estafeta)
+                            print(f"O estafeta {nome} foi adicionado com sucesso")
+                        else:
+                            print("Valor inválido")
                     else:
                         print("Valor inválido")
                         

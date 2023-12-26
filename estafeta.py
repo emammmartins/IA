@@ -33,7 +33,7 @@ class Estafeta:
             return self.soma_classificacoes/self.n_viagens
 
     def calcula_tempo_ate_disponivel(self):
-        return 0
+        return self.encomenda_atual.tempo_transporte
     
     def aumenta_pausa(self, atraso):
         self.pausa += atraso

@@ -46,7 +46,7 @@ class Health_Planet:
             if condutor.meio_de_transporte == meio_transporte:
                 tempo_ate_disponivel = condutor.calcula_tempo_ate_disponivel()
                 if tempo_ate_disponivel < tempo_minimo_eletrico and condutor.eletrico==True:
-                    tempo_minimo_eletrico = condutor.tempo_transporte
+                    tempo_minimo_eletrico = tempo_ate_disponivel
                     id_condutor_min_tempo_eletrico = condutor.id
                 elif(tempo_ate_disponivel < tempo_minimo_sem_ser_eletrico and condutor.eletrico==False):
                     tempo_minimo_sem_ser_eletrico=tempo_ate_disponivel

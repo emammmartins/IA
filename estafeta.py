@@ -23,7 +23,7 @@ class Estafeta:
         elif self.meio_de_transporte == 3:
             meio_transporte = "Carro"
 
-        return f"ID: {self.id}, Nome: {self.nome}, Meio de Transporte: {meio_transporte}, Classificação: {self.calcula_classificacao()}\n Encomenda: {self.encomenda_atual}"
+        return f"ID: {self.id}, Nome: {self.nome}, Meio de Transporte: {meio_transporte}, Elétrico: {self.eletrico}, Classificação: {self.calcula_classificacao()}\n Encomenda: {self.encomenda_atual}"
     
 
     def calcula_classificacao(self):

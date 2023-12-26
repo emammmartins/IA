@@ -10,14 +10,7 @@ class Estafeta:
 
         #Cenas para o avancar no tempo
         self.pausa=0
-        self.tempo_previsto=0
-        self.tempo_transporte=0
-        self.tempo_que_percorreu=0
-        self.caminho=[]
-        self.ultimo_local_passou="Armazem"
-        self.velocidades_medias=[]
-        self.chegou_ao_destino = False
-        self.destino = None
+        self.encomenda_atual = None
 
 
     def __str__(self):
@@ -29,7 +22,7 @@ class Estafeta:
         elif self.meio_de_transporte == 3:
             meio_transporte = "Carro"
 
-        return f"ID: {self.id}, Nome: {self.nome}, Meio de Transporte: {meio_transporte}\n Último Local: {self.ultimo_local_passou}, Tempo de Transporte Previsto: {self.tempo_previsto}, Tempo Percorrido: {self.tempo_que_percorreu}, Caminho: {self.caminho},\nEncomenda Entregue: {self.chegou_ao_destino}, Classificação: {self.calcula_classificacao()}\n "
+        return f"ID: {self.id}, Nome: {self.nome}, Meio de Transporte: {meio_transporte}, Classificação: {self.calcula_classificacao()}\n Encomenda: {self.encomenda_atual}"
     
 
     def calcula_classificacao(self):
@@ -38,57 +31,34 @@ class Estafeta:
         else:
             return self.soma_classificacoes/self.n_viagens
 
-
+    def calcula_tempo_ate_disponivel(self):
+        return 0
+    
     def aumenta_pausa(self, atraso):
         self.pausa += atraso
 
-    def atualiza_estafeta_inicio(self,tempo,velocidades_medias,caminho):
-        self.ultimo_local_passou="Armazem"
-        self.tempo_transporte=tempo
-        self.tempo_previsto=tempo
-        self.tempo_que_percorreu=0
-        self.caminho=caminho
-        self.velocidades_medias=velocidades_medias
-        self.chegou_ao_destino=False
-        self.destino = caminho[int((len(caminho)-1)/2)]
+    def atualiza_estafeta_inicio(self,encomenda):
+        self.encomenda_atual = encomenda
 
     def atualiza_estafeta_meio(self,posicao):
         if self.pausa>0:
             self.pausa-=1
-            self.tempo_que_percorreu+=1
+            self.encomenda_atual.tempo_que_percorreu+=1
         else:
-            if self.tempo_transporte!=0:
-                self.tempo_que_percorreu+=1
-                self.tempo_transporte-=1
-                self.ultimo_local_passou=posicao
-                if self.chegou_ao_destino == False and posicao==self.destino:
-                    print("A encomenda chegou ao destino")
-                    print(self.destino)
-                    self.destino = "Armazem"
-                    self.chegou_ao_destino = True
-                    #Alterar estado da encomenda
-                    if (atraso:= self.tempo_que_percorreu-(self.tempo_previsto/2)) > 0:
-                        print (f'atraso {atraso}')
-                        self.n_viagens+=1
-                        atraso = atraso-5 #Tolerância de 5 minutos para atrasos
-                        if atraso<0:
-                            atraso=0
-                        classificacao = 5-(atraso*0.1)
-                        if classificacao<0:
-                            classificacao=0
-                        self.soma_classificacoes+=classificacao
-                    else:
-                        print("Sem atraso")
-                        self.n_viagens+=1
-                        self.soma_classificacoes+=5
-
-            else:
-                self.ultimo_local_passou="Armazem"
-                self.tempo_que_percorreu=0
-                self.tempo_transporte=0
-                self.tempo_previsto=0
-                self.caminho=[]
-                self.velocidades_medias=[]
-        
-
-
+            if (atraso:=self.encomenda_atual.atualiza_encomenda_meio(posicao))>=0:
+                print (f'atraso {atraso}')
+                if atraso > 0:
+                    self.n_viagens+=1
+                    atraso = atraso-5 #Tolerância de 5 minutos para atrasos
+                    if atraso<0:
+                        atraso=0
+                    classificacao = 5-(atraso*0.1)
+                    if classificacao<0:
+                        classificacao=0
+                    self.soma_classificacoes+=classificacao
+                else:
+                    print("Sem atraso")
+                    self.n_viagens+=1
+                    self.soma_classificacoes+=5
+            elif atraso==-2:
+                self.encomenda_atual = None

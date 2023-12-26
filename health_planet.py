@@ -31,36 +31,45 @@ class Health_Planet:
         else:
             print(f"Encomenda com ID {encomenda_id} não encontrada.")
 
+    def ver_encomendas(self):
+        for encomenda in self.dict_encomendas.values():
+            print(encomenda)
+
     def disponibilidade(self, meio_transporte):
         tempo_minimo = float('inf')
         id_condutor_min_tempo = None
         for condutor in self.dict_estafetas.values():
             if condutor.meio_de_transporte == meio_transporte:
-                if condutor.tempo_transporte == 0:
+                tempo_ate_disponivel = condutor.calcula_tempo_ate_disponivel()
+                if tempo_ate_disponivel == 0:
                     return 0, condutor.id
-                elif condutor.tempo_transporte < tempo_minimo:
-                    tempo_minimo = condutor.tempo_transporte
+                elif tempo_ate_disponivel < tempo_minimo:
+                    tempo_minimo = tempo_ate_disponivel
                     id_condutor_min_tempo = condutor.id
 
         return tempo_minimo, id_condutor_min_tempo
     
-    def atualiza_estafeta_inicial(self,id_estafeta,tempo,velocidades_medias,caminho):
-        self.dict_estafetas[id_estafeta].atualiza_estafeta_inicio(tempo,velocidades_medias,caminho)
+    def atualiza_inicial(self,id_estafeta,tempo,velocidades_medias,caminho,id_encomenda):
+        encomenda = self.dict_encomendas.get(id_encomenda)
+        if encomenda is not None:
+            encomenda.atualiza_encomenda_inicio(tempo,velocidades_medias,caminho,id_estafeta)
+            self.dict_estafetas[id_estafeta].atualiza_estafeta_inicio(encomenda)
 
     def atualiza_estado(self,grafo):
         self.tempo_virtual+=1
 
         for estafeta in self.dict_estafetas.values():
+            if estafeta.encomenda_atual is not None:
                 tempo_acumulado=0
                 posicao=0
                 ultimo_lugar=None
                 
-                while(tempo_acumulado<=(estafeta.tempo_previsto-estafeta.tempo_transporte) and posicao + 1 < len(estafeta.caminho)):
-                    distancia=grafo[estafeta.caminho[posicao]][estafeta.caminho[posicao+1]]['weight']
-                    tempo_aresta=(distancia/estafeta.velocidades_medias[posicao])*60
+                while(tempo_acumulado<=(estafeta.encomenda_atual.tempo_previsto-estafeta.encomenda_atual.tempo_transporte) and posicao + 1 < len(estafeta.encomenda_atual.caminho)):
+                    distancia=grafo[estafeta.encomenda_atual.caminho[posicao]][estafeta.encomenda_atual.caminho[posicao+1]]['weight']
+                    tempo_aresta=(distancia/estafeta.encomenda_atual.velocidades_medias[posicao])*60
                     tempo_acumulado+=tempo_aresta
                     posicao+=1
-                ultimo_lugar = estafeta.caminho[posicao-1] if posicao > 0 else "Armazem"
+                ultimo_lugar = estafeta.encomenda_atual.caminho[posicao-1] if posicao > 0 else "Armazem"
 
                 estafeta.atualiza_estafeta_meio(ultimo_lugar)
                 

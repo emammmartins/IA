@@ -9,6 +9,10 @@ import threading
 import time
 import networkx as nx
 
+def trajeto_completo_estafeta(lista1,lista2):
+    lista_concatenada = lista1 + lista2[1:]
+    return lista_concatenada
+
 def altera_velocidade(meteorologia,altura_do_dia,path, vel, grafo):
     tempo = 0
     vel_medias = []
@@ -207,6 +211,10 @@ def main():
                     cg.str_arestas_grafo(grafo)
                     id = int(input("Introduza a estrada que vai ser cortada:"))
                     cg.mover_aresta_entre_grafos(id,grafo,grafo_cortadas)
+                    encerrar_thread.set()
+                    #Codigo para mudar os manos
+                    encerrar_thread.clear()
+
 
 
 
@@ -255,50 +263,64 @@ def main():
                         #.....................Varios algoritmos.................
                         if (opcao==1):
                             try:
-                                path,dist = ap.dijkstra(grafo,"Armazem",terra)
+                                path1,dist = ap.dijkstra(grafo,"Armazem",terra)
+                                path2,_=ap.dijkstra(grafo,terra,"Armazem")
+                                path=trajeto_completo_estafeta(path1,path2)
                                 calculos (dist,meteorologia,altura_do_dia, tempo, peso, path,health_planet,grafo,encomenda.id)
                             except:
                                 print("O destino selecionado não existe")
 
                         elif (opcao==2):
                             try:
-                                path,dist = ap.iterative_deepening_dfs(grafo,"Armazem",terra)
+                                path1,dist = ap.dijkstra(grafo,"Armazem",terra)
+                                path2,_=ap.dijkstra(grafo,terra,"Armazem")
+                                path=trajeto_completo_estafeta(path1,path2)
                                 calculos(dist,meteorologia,altura_do_dia,tempo,peso,path,health_planet,grafo,encomenda.id)
                             except:
                                 print("O destino selecionado não existe")
 
                         elif (opcao==3):
                             try:
-                                path, dist = ap.procura_em_profundidade(grafo, "Armazem", terra)
+                                path1,dist = ap.dijkstra(grafo,"Armazem",terra)
+                                path2,_=ap.dijkstra(grafo,terra,"Armazem")
+                                path=trajeto_completo_estafeta(path1,path2)
                                 calculos (dist,meteorologia,altura_do_dia, tempo, peso, path,health_planet,grafo,encomenda.id)
                             except:
                                 print("O destino selecionado não existe")
 
                         elif (opcao==4):
                             try:
-                                path, dist = ap.bidirectional_search(grafo, "Armazem", terra)
-                                calculos(dist,meteorologia,altura_do_dia, tempo, peso, path,health_planet,grafo,encomenda.id)
+                                path1,dist = ap.dijkstra(grafo,"Armazem",terra)
+                                path2,_=ap.dijkstra(grafo,terra,"Armazem")
+                                path=trajeto_completo_estafeta(path1,path2)
+                                calculos (dist,meteorologia,altura_do_dia, tempo, peso, path,health_planet,grafo,encomenda.id)
                             except :
                                 print("O destino selecionado não existe")
 
                         elif (opcao==5):
                             try:
-                                path, dist = ap.bfs(grafo, "Armazem", terra)
-                                calculos(dist,meteorologia,altura_do_dia, tempo, peso, path,health_planet,grafo,encomenda.id)
+                                path1,dist = ap.dijkstra(grafo,"Armazem",terra)
+                                path2,_=ap.dijkstra(grafo,terra,"Armazem")
+                                path=trajeto_completo_estafeta(path1,path2)
+                                calculos (dist,meteorologia,altura_do_dia, tempo, peso, path,health_planet,grafo,encomenda.id)
                             except :
                                 print("O destino selecionado não existe")
 
                         elif (opcao==6):
                             try:
-                                path, dist = ap.greedy_shortest_path(grafo, "Armazem", terra)
-                                calculos(dist,meteorologia,altura_do_dia, tempo, peso, path,health_planet,grafo,encomenda.id)
+                                path1,dist = ap.dijkstra(grafo,"Armazem",terra)
+                                path2,_=ap.dijkstra(grafo,terra,"Armazem")
+                                path=trajeto_completo_estafeta(path1,path2)
+                                calculos (dist,meteorologia,altura_do_dia, tempo, peso, path,health_planet,grafo,encomenda.id)
                             except :
                                 print("O destino selecionado não existe")
 
                         elif (opcao==7):
                             #try:
-                                path, dist = ap.algoritmoAEstrela(grafo, "Armazem", terra)
-                                calculos(dist,meteorologia,altura_do_dia, tempo, peso, path,health_planet,grafo,encomenda.id)
+                                path1,dist = ap.dijkstra(grafo,"Armazem",terra)
+                                path2,_=ap.dijkstra(grafo,terra,"Armazem")
+                                path=trajeto_completo_estafeta(path1,path2)
+                                calculos (dist,meteorologia,altura_do_dia, tempo, peso, path,health_planet,grafo,encomenda.id)
                             #except :
                             #    print("O destino selecionado não existe")
 

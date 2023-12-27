@@ -2,12 +2,6 @@ import networkx as nx
 import matplotlib.pyplot as plt
 from queue import Queue
 
-
-def trajeto_completo_estafeta(lista):
-    lista_reversa = lista[::-1]  # Reverter a lista
-    lista_concatenada = lista + lista_reversa[1:]  # Concatenar a lista original com o seu reverso, excluindo o primeiro elemento do reverso
-    return lista_concatenada
-
 def dijkstra(graph, origem, destino):
     dist = {node: float('inf') for node in graph}
     queue = Queue()
@@ -40,7 +34,7 @@ def dijkstra(graph, origem, destino):
 
     path.reverse()  # Revertendo a lista 'path'
 
-    return trajeto_completo_estafeta(path), dist[destino]
+    return path, dist[destino]
 
 #..............................................................................
 
@@ -65,7 +59,7 @@ def procura_em_profundidade(grafo, inicio, destino):
                     custo_total = sum(grafo[no_atual][vizinho]['weight'] for no_atual, vizinho in zip(novo_caminho, novo_caminho[1:]))
                     #print(novo_caminho)
                     #print(custo_total)
-                    return trajeto_completo_estafeta(novo_caminho), custo_total
+                    return novo_caminho, custo_total
 
             visitados.add(no_atual)
 
@@ -115,7 +109,7 @@ def bfs (graph, start, end):
     else:
         return None
     
-    return trajeto_completo_estafeta(path), c
+    return path, c
 
 #.................................................................
 def bidirectional_search(graph, start, goal):
@@ -149,7 +143,7 @@ def bidirectional_search(graph, start, goal):
             common_node = common_node.pop()
             path = reconstruct_path(forward_parent, backward_parent, common_node)
             total_edge_cost = forward_cost[common_node] + backward_cost[common_node]
-            return trajeto_completo_estafeta(path), total_edge_cost
+            return path, total_edge_cost
 
         for neighbor in graph.neighbors(forward_current):
             if neighbor not in forward_visited:
@@ -202,7 +196,7 @@ def depth_limited_dfs(graph, current, goal, depth_limit, path=None, cost=0):
         path = [current]
 
     if current == goal:
-        return trajeto_completo_estafeta(path), cost
+        return path, cost
 
     if depth_limit == 0:
         return None
@@ -248,7 +242,7 @@ def greedy_shortest_path(graph, origem, destino):
         cost += graph[current_node][next_node]['weight']
         current_node = next_node
 
-    return trajeto_completo_estafeta(path), cost
+    return path, cost
 #.............................................................................
 def algoritmoAEstrela (graph, origem, destino):
     
@@ -278,7 +272,7 @@ def algoritmoAEstrela (graph, origem, destino):
                 checking = pais[checking]
                 path.append(checking)
             path.reverse()
-            return trajeto_completo_estafeta(path), dist[destino]
+            return path, dist[destino]
         for n in list(nx.neighbors(graph,checking)):
             if n not in toCheck and n not in checked:
                 toCheck.add(n)

@@ -7,6 +7,7 @@ import encomenda as en
 import povoar as p
 import threading
 import time
+import networkx as nx
 
 def altera_velocidade(meteorologia,altura_do_dia,path, vel, grafo):
     tempo = 0
@@ -98,6 +99,7 @@ def main():
     health_planet = hp.Health_Planet()
     p.povoa_estafetas(health_planet)
     grafo = cg.cria_grafo()
+    grafo_cortadas = nx.Graph()
 
     lock = threading.Lock()
 
@@ -120,7 +122,8 @@ def main():
             print("6-Alterar altura do dia")
             print("7-Visualizar encomendas")
             print("8-Visualizar fila de encomendas estafeta")
-            print("9-Realizar encomenda")
+            print("9-Estrada Cortada")
+            print("10-Realizar encomenda")
         
 
         #try:
@@ -200,30 +203,35 @@ def main():
                     except:
                         print("Não foi possível apresentar o solicitado")
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
                 elif(i==9):
+                    cg.str_arestas_grafo(grafo)
+                    id = int(input("Introduza a estrada que vai ser cortada:"))
+                    cg.mover_aresta_entre_grafos(id,grafo,grafo_cortadas)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                elif(i==10):
                     print("\n------ALGORITMO-----")
                     print("1-Dijkstra")
                     print("2-Interativo")

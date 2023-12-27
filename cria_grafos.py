@@ -143,5 +143,3 @@ def mover_aresta_entre_grafos(numero, grafo1, grafo2):
     
     # Remove a aresta do grafo1
     grafo1.remove_edge(origem, destino)
-    
-    print(f"Aresta removida do grafo1 e adicionada ao grafo2: Origem: {origem}, Destino: {destino}")

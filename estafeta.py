@@ -81,7 +81,7 @@ class Estafeta:
             self.encomenda_atual.tempo_que_percorreu+=1
         else:
             if (atraso:=self.encomenda_atual.atualiza_encomenda_meio(posicao))>=0:
-                print (f'atraso {atraso}')
+                #print (f'atraso {atraso}')
                 if atraso > 0:
                     self.n_viagens+=1
                     atraso = atraso-5 #Tolerância de 5 minutos para atrasos
@@ -92,7 +92,7 @@ class Estafeta:
                         classificacao=0
                     self.soma_classificacoes+=classificacao
                 else:
-                    print("Sem atraso")
+                    #print("Sem atraso")
                     self.n_viagens+=1
                     self.soma_classificacoes+=5
             elif atraso==-2:

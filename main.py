@@ -123,7 +123,8 @@ def main():
         print("5-Alterar Meteorologia")
         print("6-Alterar altura do dia")
         print("7-Visualizar encomendas")
-        print("8-Realizar encomenda")
+        print("8-Visualizar fila de encomendas estafeta")
+        print("9-Realizar encomenda")
         
 
         try:
@@ -193,30 +194,40 @@ def main():
                     with lock:
                         health_planet.ver_encomendas()
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
                 elif(i==8):
+                    try:
+                        id = int(input("Indique o id do estafeta de que pretende ver a fila de encomendas em espera: "))
+                        if not health_planet.existe_estafeta(id):
+                            print("O estafeta não existe")
+                        else:
+                            health_planet.ver_fila_estafeta(id)
+                    except:
+                        print("Não foi possível apresentar o solicitado")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                elif(i==9):
                     print("\n------ALGORITMO-----")
                     print("1-Dijkstra")
                     print("2-Interativo")

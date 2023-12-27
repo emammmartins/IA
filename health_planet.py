@@ -35,6 +35,9 @@ class Health_Planet:
         for encomenda in self.dict_encomendas.values():
             print(encomenda)
 
+    def ver_fila_estafeta(self, id_estafeta):
+        self.dict_estafetas[id_estafeta].ver_encomendas_em_fila()
+
     def disponibilidade(self, meio_transporte):
         tempo_minimo_eletrico = float('inf')
         id_condutor_min_tempo_eletrico = None
@@ -62,20 +65,11 @@ class Health_Planet:
 
     def atualiza_estado(self,grafo):
         self.tempo_virtual+=1
-
         for estafeta in self.dict_estafetas.values():
             if estafeta.encomenda_atual is not None:
-                tempo_acumulado=0
-                posicao=0
-                ultimo_lugar=None
-                
-                while(tempo_acumulado<=(estafeta.encomenda_atual.tempo_previsto-estafeta.encomenda_atual.tempo_transporte) and posicao + 1 < len(estafeta.encomenda_atual.caminho)):
-                    distancia=grafo[estafeta.encomenda_atual.caminho[posicao]][estafeta.encomenda_atual.caminho[posicao+1]]['weight']
-                    tempo_aresta=(distancia/estafeta.encomenda_atual.velocidades_medias[posicao])*60
-                    tempo_acumulado+=tempo_aresta
-                    posicao+=1
-                ultimo_lugar = estafeta.encomenda_atual.caminho[posicao-1] if posicao > 0 else "Armazem"
-
+                ultimo_lugar = estafeta.encomenda_atual.get_posicao(grafo)
                 estafeta.atualiza_estafeta_meio(ultimo_lugar)
+            else:
+                estafeta.comecar_nova_encomenda()
                 
 

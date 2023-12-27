@@ -39,7 +39,8 @@ class Estafeta:
             return self.soma_classificacoes/self.n_viagens
 
     def calcula_tempo_ate_disponivel(self):
-        tempo_acumulado = 0 
+        tempo_acumulado = 0
+        tempo_acumulado += self.pausa
         copia_fila = list(self.fila_encomendas.queue)
         for encomenda in copia_fila:
             tempo_acumulado += encomenda.tempo_previsto

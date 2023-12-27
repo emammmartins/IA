@@ -57,10 +57,10 @@ class Health_Planet:
 
         return tempo_minimo_eletrico, id_condutor_min_tempo_eletrico, tempo_minimo_sem_ser_eletrico, id_condutor_min_tempo_sem_ser_eletrico
     
-    def atualiza_inicial(self,id_estafeta,tempo,velocidades_medias,caminho,id_encomenda):
+    def atualiza_inicial(self,id_estafeta,tempo,velocidades_medias,caminho,id_encomenda,veiculo,eletrico,distancia):
         encomenda = self.dict_encomendas.get(id_encomenda)
         if encomenda is not None:
-            encomenda.atualiza_encomenda_inicio(tempo,velocidades_medias,caminho,id_estafeta)
+            encomenda.atualiza_encomenda_inicio(tempo,velocidades_medias,caminho,id_estafeta,veiculo,eletrico,distancia)
             self.dict_estafetas[id_estafeta].atualiza_estafeta_inicio(encomenda)
 
     def atualiza_estado(self,grafo):

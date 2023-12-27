@@ -116,6 +116,32 @@ def cria_grafo():
         G.nodes["Nogueiró"]['heuristica']= {"Armazem":11.8, "SãoVicente":10.2, "Gualtar":6.7,"Este":4.4,"SãoVitor":6.8,"SãoJoãoDoSouto":9.4,"Tenões":2.7,"Espinho":3.8,"SãoLázaro":7,"Lamaçães":2.8,"Nogueiró":0,"Fraião":4.6,"Cividade":9.7}
         G.nodes["Fraião"]['heuristica']= {"Armazem":14.9, "SãoVicente":9.6, "Gualtar":8.8,"Este":8,"SãoVitor":6,"SãoJoãoDoSouto":7.5,"Tenões":5,"Espinho":8.5,"SãoLázaro":3.6,"Lamaçães":1.7,"Nogueiró":4.6,"Fraião":0,"Cividade":6.4}
         G.nodes["Cividade"]['heuristica']= {"Armazem":13.4, "SãoVicente":4.8, "Gualtar":8.6,"Este":10.1,"SãoVitor":3.5,"SãoJoãoDoSouto":1.9,"Tenões":7,"Espinho":12.9,"SãoLázaro":2.8,"Lamaçães":6.7,"Nogueiró":9.7,"Fraião":6.4,"Cividade":0}
-        
+
 
         return G
+
+def str_arestas_grafo(grafo):
+        edges = grafo.edges(data=True)
+        i=1
+        for edge in edges:
+                origin = edge[0]
+                destination = edge[1]
+                weight = edge[2]['weight']
+                print(f"{i}-Origem: {origin}, Destino: {destination}, Peso: {weight}")
+                i+=1
+
+def mover_aresta_entre_grafos(numero, grafo1, grafo2):
+    edges = list(grafo1.edges(data=True))
+    
+    aresta_selecionada = edges[numero-1]  
+    origem = aresta_selecionada[0]
+    destino = aresta_selecionada[1]
+    
+    # Adiciona a aresta ao grafo2
+    dados_aresta = aresta_selecionada[2] if len(aresta_selecionada) > 2 else {}
+    grafo2.add_edge(origem, destino, **dados_aresta)
+    
+    # Remove a aresta do grafo1
+    grafo1.remove_edge(origem, destino)
+    
+    print(f"Aresta removida do grafo1 e adicionada ao grafo2: Origem: {origem}, Destino: {destino}")

@@ -114,20 +114,20 @@ def main():
 
     i=-2
     while(i!=0):
-        print("\n------MENU-----")
-        print("0-Sair")
-        print("1-Adicionar estafeta")
-        print("2-Visualizar estafetas")
-        print("3-Remover estafeta")
-        print("4-Atrasar estafeta")
-        print("5-Alterar Meteorologia")
-        print("6-Alterar altura do dia")
-        print("7-Visualizar encomendas")
-        print("8-Visualizar fila de encomendas estafeta")
-        print("9-Realizar encomenda")
+            print("\n------MENU-----")
+            print("0-Sair")
+            print("1-Adicionar estafeta")
+            print("2-Visualizar estafetas")
+            print("3-Remover estafeta")
+            print("4-Atrasar estafeta")
+            print("5-Alterar Meteorologia")
+            print("6-Alterar altura do dia")
+            print("7-Visualizar encomendas")
+            print("8-Visualizar fila de encomendas estafeta")
+            print("9-Realizar encomenda")
         
 
-        try:
+        #try:
             i=int(input("Introduza uma das opções: "))
             if (i!=0):
                 if (i==1):
@@ -237,86 +237,83 @@ def main():
                     print("6-Procura Gulosa")
                     print("7-Procura A*")
 
-                    try:
-                        opcao=int(input("Introduza uma das opcoes:"))
-                        volume=int(input("\nIntroduza o volume da encomenda:"))
-                        peso=float(input("\nIntroduza o peso da encomenda em Kg:"))
-                        tempo=int(input("\nQual o tempo máximo em minutos:"))
-                        terra=input("\nPara onde deseja encomendar:")
+                    #try:
+                    opcao=int(input("Introduza uma das opcoes:"))
+                    volume=int(input("\nIntroduza o volume da encomenda:"))
+                    peso=float(input("\nIntroduza o peso da encomenda em Kg:"))
+                    tempo=int(input("\nQual o tempo máximo em minutos:"))
+                    terra=input("\nPara onde deseja encomendar:")
 
-                        try:
-                            encomenda=en.Encomenda(peso,volume, tempo)
-                            health_planet.add_encomenda(encomenda.id,encomenda)
-                            if (peso>0 and peso<=100):
-                                #.....................Varios algoritmos.................
-                                if (opcao==1):
-                                    try:
-                                        path,dist = ap.dijkstra(grafo,"Armazem",terra)
-                                        print(path)
-                                        calculos (dist,meteorologia,altura_do_dia, tempo, peso, path,health_planet,grafo,encomenda.id)
-                                    except:
-                                        print("O destino selecionado não existe")
+                        #try:
+                    encomenda=en.Encomenda(peso,volume, tempo)
+                    health_planet.add_encomenda(encomenda.id,encomenda)
+                    if (peso>0 and peso<=100):
+                        #.....................Varios algoritmos.................
+                        if (opcao==1):
+                            try:
+                                path,dist = ap.dijkstra(grafo,"Armazem",terra)
+                                calculos (dist,meteorologia,altura_do_dia, tempo, peso, path,health_planet,grafo,encomenda.id)
+                            except:
+                                print("O destino selecionado não existe")
 
-                                elif (opcao==2):
-                                    try:
-                                        path,dist = ap.iterative_deepening_dfs(grafo,"Armazem",terra)
-                                        calculos(dist,meteorologia,altura_do_dia,tempo,peso,path,health_planet,grafo,encomenda.id)
-                                    except ValueError as e:
-                                        print(f"Erro: {e}")
-                                        print("O destino selecionado não existe")
+                        elif (opcao==2):
+                            try:
+                                path,dist = ap.iterative_deepening_dfs(grafo,"Armazem",terra)
+                                calculos(dist,meteorologia,altura_do_dia,tempo,peso,path,health_planet,grafo,encomenda.id)
+                            except:
+                                print("O destino selecionado não existe")
 
-                                elif (opcao==3):
-                                    try:
-                                        path, dist = ap.procura_em_profundidade(grafo, "Armazem", terra)
-                                        calculos (dist,meteorologia,altura_do_dia, tempo, peso, path,health_planet,grafo,encomenda.id)
-                                    except:
-                                        print("O destino selecionado não existe")
+                        elif (opcao==3):
+                            try:
+                                path, dist = ap.procura_em_profundidade(grafo, "Armazem", terra)
+                                calculos (dist,meteorologia,altura_do_dia, tempo, peso, path,health_planet,grafo,encomenda.id)
+                            except:
+                                print("O destino selecionado não existe")
 
-                                elif (opcao==4):
-                                    try:
-                                        path, dist = ap.bidirectional_search(grafo, "Armazem", terra)
-                                        calculos(dist,meteorologia,altura_do_dia, tempo, peso, path,health_planet,grafo,encomenda.id)
-                                    except :
-                                        print("O destino selecionado não existe")
+                        elif (opcao==4):
+                            try:
+                                path, dist = ap.bidirectional_search(grafo, "Armazem", terra)
+                                calculos(dist,meteorologia,altura_do_dia, tempo, peso, path,health_planet,grafo,encomenda.id)
+                            except :
+                                print("O destino selecionado não existe")
 
-                                elif (opcao==5):
-                                    try:
-                                        path, dist = ap.bfs(grafo, "Armazem", terra)
-                                        calculos(dist,meteorologia,altura_do_dia, tempo, peso, path,health_planet,grafo,encomenda.id)
-                                    except :
-                                        print("O destino selecionado não existe")
+                        elif (opcao==5):
+                            try:
+                                path, dist = ap.bfs(grafo, "Armazem", terra)
+                                calculos(dist,meteorologia,altura_do_dia, tempo, peso, path,health_planet,grafo,encomenda.id)
+                            except :
+                                print("O destino selecionado não existe")
 
-                                elif (opcao==6):
-                                    try:
-                                        path, dist = ap.greedy_shortest_path(grafo, "Armazem", terra)
-                                        print(path)
-                                        calculos(dist,meteorologia,altura_do_dia, tempo, peso, path,health_planet,grafo,encomenda.id)
-                                    except :
-                                        print("O destino selecionado não existe")
+                        elif (opcao==6):
+                            try:
+                                path, dist = ap.greedy_shortest_path(grafo, "Armazem", terra)
+                                calculos(dist,meteorologia,altura_do_dia, tempo, peso, path,health_planet,grafo,encomenda.id)
+                            except :
+                                print("O destino selecionado não existe")
 
-                                elif (opcao==7):
-                                    try:
-                                        path, dist = ap.algoritmoAEstrela(grafo, "Armazem", terra)
-                                        calculos(dist,meteorologia,altura_do_dia, tempo, peso, path,health_planet,grafo,encomenda.id)
-                                    except :
-                                        print("O destino selecionado não existe")
+                        elif (opcao==7):
+                            #try:
+                                path, dist = ap.algoritmoAEstrela(grafo, "Armazem", terra)
+                                calculos(dist,meteorologia,altura_do_dia, tempo, peso, path,health_planet,grafo,encomenda.id)
+                            #except :
+                            #    print("O destino selecionado não existe")
 
-                                else:
-                                    print("O algoritmo escolhido não é válido")
-                                #........................................................                                
-                            else:
-                                    print("Peso impossivel")
-                        except :
-                                print("Não foi possível registar a encomenda")
-                    except :
-                        print("Os valores introduzidos sao inválidos")
+                        else:
+                            print("O algoritmo escolhido não é válido")
+                        #........................................................                                
+                    else:
+                            print("Peso impossivel")
+                        #except :
+                        #        print("Não foi possível registar a encomenda")
+                    #except :
+                    #    print("Os valores introduzidos sao inválidos")
                 else:
                     print ("Introduza um valor válido")
             else:
                     encerrar_thread.set()
-        except ValueError:
-            print("Introduza um valor válido")
-            i=-2
+        #except ValueError:
+        #    print("Introduza um valor válido")
+        #    i=-2
 
 if __name__ == "__main__":
     main()

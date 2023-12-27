@@ -1,9 +1,5 @@
 Estradas cortadas
 Autoestradas
-............................................................................
-
-Heurísticas / parâmetros relacionados com a poluição
-    Desistimos da ideia?
 
 ............................................................................
 

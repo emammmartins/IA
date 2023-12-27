@@ -39,12 +39,15 @@ class Estafeta:
             return self.soma_classificacoes/self.n_viagens
 
     def calcula_tempo_ate_disponivel(self):
-        tempo_acumulado = 2 #Margem entrega atual
+        tempo_acumulado = 0 
         copia_fila = list(self.fila_encomendas.queue)
         for encomenda in copia_fila:
             tempo_acumulado += encomenda.tempo_previsto
             tempo_acumulado += 2 #Margem por entrega
-        return tempo_acumulado + self.encomenda_atual.tempo_transporte
+        if self.encomenda_atual is not None:
+            tempo_acumulado += self.encomenda_atual.tempo_transporte
+            tempo_acumulado += 2 #Margem entrega atual
+        return tempo_acumulado
     
     #Queue
     def push_encomenda(self, encomenda):

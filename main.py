@@ -241,7 +241,6 @@ def main():
                                 if (opcao==1):
                                     try:
                                         path,dist = ap.dijkstra(grafo,"Armazem",terra)
-                                        print(path)
                                         calculos (dist,meteorologia,altura_do_dia, tempo, peso, path,health_planet,grafo,encomenda.id)
                                     except:
                                         print("O destino selecionado não existe")

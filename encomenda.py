@@ -22,8 +22,21 @@ class Encomenda:
     def __str__(self):
         return f"ID: {self.id}, Peso: {self.peso}, Volume: {self.volume}, Tempo máximo: {self.tempo}, Id do Estafeta: {self.id_estafeta},\nEncomenda Entregue: {self.chegou_ao_destino}, Último Local: {self.ultimo_local_passou}, Caminho: {self.caminho},\n Tempo de Transporte Previsto: {self.tempo_previsto}, Tempo total decorrido: {self.tempo_que_percorreu}, Tempo que ainda falta percorrer: {self.tempo_transporte}\n"
 
-    def calcula_preco(self, meio_transporte):
-        pass
+    def calcula_preco(self, meio_transporte, eletrico, distancia):
+        if (meio_transporte==1 and eletrico==False):
+           return 0.15*distancia
+        elif (meio_transporte==1 and eletrico==True):
+            return 0.20*distancia
+        elif (meio_transporte==2 and eletrico==False):
+            return 0.25*distancia
+        elif (meio_transporte==2 and eletrico==True):
+            return 0.3*distancia
+        elif (meio_transporte==3 and eletrico==False):
+            return 0.35*distancia
+        elif (meio_transporte==3 and eletrico==True):
+            return 0.4*distancia
+        else:
+            return 0
 
     def get_posicao(self,grafo):
         tempo_acumulado=0

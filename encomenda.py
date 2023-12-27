@@ -23,6 +23,8 @@ class Encomenda:
     def __str__(self):
         return f"ID: {self.id}, Peso: {self.peso}, Volume: {self.volume}, Tempo máximo: {self.tempo}, Id do Estafeta: {self.id_estafeta},\nEncomenda Entregue: {self.chegou_ao_destino}, Último Local: {self.ultimo_local_passou}, Caminho: {self.caminho},\n Tempo de Transporte Previsto: {self.tempo_previsto}, Tempo total decorrido: {self.tempo_que_percorreu}, Tempo que ainda falta percorrer: {self.tempo_transporte}, Preco: {self.preco}\n"
 
+    def get_caminho(self):
+        return self.caminho
 
     def get_posicao(self,grafo):
         tempo_acumulado=0

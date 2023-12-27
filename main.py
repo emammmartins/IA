@@ -49,7 +49,7 @@ def altera_velocidade(meteorologia,altura_do_dia,path, vel, grafo):
         vel_medias.append(vel_aresta)
         posicao += 1
         
-    return tempo/2, vel_medias + vel_medias[::-1]
+    return tempo/2, vel_medias
 
 def verifica_disponibilidade (transporte, tempo_transporte, velocidades_medias, tempo_pretendido,health_planet,caminho,queremosEletrico,id_encomenda,distancia):
     tempo_disponivel_eletrico, estafeta_disponivel_eletrico, tempo_disponivel_sem_ser_eletrico, estafeta_disponivel_eletrico_sem_ser_eletrico = health_planet.disponibilidade(transporte)
@@ -212,7 +212,32 @@ def main():
                     id = int(input("Introduza a estrada que vai ser cortada:"))
                     cg.mover_aresta_entre_grafos(id,grafo,grafo_cortadas)
                     encerrar_thread.set()
-                    #Codigo para mudar os manos
+                    
+                    #O que temos de atualizar no estafeta
+                    for estafeta in health_planet.dict_estafetas.values():
+                        if(estafeta.encomenda_atual!=None):
+                            caminho_antigo=estafeta.encomenda_atual.caminho
+                            posicao_atual=estafeta.encomenda_atual.get_posicao(grafo)
+                            indice_elemento = caminho_antigo.index(posicao_atual)
+                            caminho_antigo = caminho_antigo[indice_elemento:]
+                            path1,_ = ap.dijkstra(grafo,posicao_atual,terra)
+                            path2,_=ap.dijkstra(grafo,terra,posicao_atual)
+                            path=trajeto_completo_estafeta(path1,path2)
+
+                            if estafeta.meio_de_transporte==1:
+                                tempo, vel_medias=altera_velocidade(meteorologia,altura_do_dia,path, 10-(0.6*estafeta.encomenda_atual.peso), grafo)
+                            elif estafeta.meio_de_transporte==2:
+                                tempo, vel_medias=altera_velocidade(meteorologia,altura_do_dia,path, 35-(0.5*estafeta.encomenda_atual.peso), grafo)
+                            else:
+                                tempo, vel_medias=altera_velocidade(meteorologia,altura_do_dia,path, 50-(0.1*estafeta.encomenda_atual.peso), grafo)
+        
+                            estafeta.encomenda_atual.velocidades_medias=vel_medias
+                            estafeta.encomenda_atual.tempo_transporte=tempo
+                            estafeta.encomenda_atual.caminho=path
+
+
+
+                    #Para voltar a correr a thread
                     encerrar_thread.clear()
 
 

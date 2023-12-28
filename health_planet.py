@@ -63,11 +63,11 @@ class Health_Planet:
             encomenda.atualiza_encomenda_inicio(tempo,velocidades_medias,caminho,id_estafeta,veiculo,eletrico,distancia)
             self.dict_estafetas[id_estafeta].atualiza_estafeta_inicio(encomenda)
 
-    def atualiza_estado(self,grafo):
+    def atualiza_estado(self,grafo,grafo_cortadas):
         self.tempo_virtual+=1
         for estafeta in self.dict_estafetas.values():
             if estafeta.encomenda_atual is not None:
-                ultimo_lugar = estafeta.encomenda_atual.get_posicao(grafo)
+                ultimo_lugar = estafeta.encomenda_atual.get_posicao(grafo,grafo_cortadas)
                 estafeta.atualiza_estafeta_meio(ultimo_lugar)
             else:
                 estafeta.comecar_nova_encomenda()

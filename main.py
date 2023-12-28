@@ -11,11 +11,18 @@ import networkx as nx
 def atualiza_encomendas(encomenda,meio_de_transporte,grafo,meteorologia,altura_do_dia):
 
     caminho_antigo=encomenda.caminho
-    indice_elemento = caminho_antigo.index(encomenda.ultimo_local_passou)
-    caminho_antigo = caminho_antigo[indice_elemento:]
-    path1,_ = ap.dijkstra(grafo,encomenda.ultimo_local_passou,encomenda.destino)
-    path2,_=ap.dijkstra(grafo,encomenda.destino,encomenda.ultimo_local_passou)
-    path=trajeto_completo_estafeta(path1,path2)
+    primeira_ocorrencia = caminho_antigo.index(encomenda.ultimo_local_passou)
+    if(encomenda.destino!="Armazem"):
+        caminho_antigo = caminho_antigo[:primeira_ocorrencia]
+        path1,_ = ap.dijkstra(grafo,encomenda.ultimo_local_passou,encomenda.destino)
+        path2,_=ap.dijkstra(grafo,encomenda.destino,encomenda.ultimo_local_passou)
+        path=caminho_antigo+path1
+        path=trajeto_completo_estafeta(path,path2)
+    else:
+        segunda_ocorrencia = caminho_antigo.index(encomenda.ultimo_local_passou, primeira_ocorrencia + 1)
+        caminho_antigo = caminho_antigo[:segunda_ocorrencia + 1]
+        path1,_=ap.dijkstra(grafo,encomenda.ultimo_local_passou,"Armazem")
+        path=caminho_antigo+path1
 
     if meio_de_transporte==1:
         tempo, vel_medias=altera_velocidade(meteorologia,altura_do_dia,path, 10-(0.6*encomenda.peso), grafo)
@@ -108,11 +115,11 @@ def calculos(dist,meteorologia,altura_do_dia,tempo_pedido, peso, path,health_pla
             else:
                 print("Nao é possivel entregar a encomenda no tempo pretendido")
 
-def avanca_tempo_virtual(health_planet, grafo, encerrar_thread,lock):
+def avanca_tempo_virtual(health_planet, grafo, encerrar_thread,lock,grafo_cortadas):
     while not encerrar_thread.is_set():
         time.sleep(1) 
         with lock:
-            health_planet.atualiza_estado(grafo) 
+            health_planet.atualiza_estado(grafo,grafo_cortadas) 
 
     
 def main():
@@ -124,7 +131,7 @@ def main():
     lock = threading.Lock()
 
     encerrar_thread = threading.Event()  # Criando um evento para encerrar a thread
-    thread = threading.Thread(target=avanca_tempo_virtual, args=(health_planet, grafo, encerrar_thread,lock))
+    thread = threading.Thread(target=avanca_tempo_virtual, args=(health_planet, grafo, encerrar_thread,lock,grafo_cortadas))
     thread.start()
 
     meteorologia=1

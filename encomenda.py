@@ -26,16 +26,21 @@ class Encomenda:
     def get_caminho(self):
         return self.caminho
 
-    def get_posicao(self,grafo):
+    def get_posicao(self,grafo,grafo_cortadas):
         tempo_acumulado=0
         posicao=0
         ultimo_lugar=None
         
         while(tempo_acumulado<=(self.tempo_previsto-self.tempo_transporte) and posicao + 1 < len(self.caminho)):
-            distancia=grafo[self.caminho[posicao]][self.caminho[posicao+1]]['weight']
+            try:
+                distancia=grafo[self.caminho[posicao]][self.caminho[posicao+1]]['weight']
+            except:
+                distancia=grafo_cortadas[self.caminho[posicao]][self.caminho[posicao+1]]['weight']
+                
             tempo_aresta=(distancia/self.velocidades_medias[posicao])*60
             tempo_acumulado+=tempo_aresta
             posicao+=1
+        
         ultimo_lugar = self.caminho[posicao-1] if posicao > 0 else "Armazem"
 
         return ultimo_lugar

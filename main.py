@@ -8,12 +8,13 @@ import povoar as p
 import threading
 import time
 import networkx as nx
-def atualiza_encomendas(encomenda,meio_de_transporte,grafo,meteorologia,altura_do_dia,posicao_atual,terra):
+def atualiza_encomendas(encomenda,meio_de_transporte,grafo,meteorologia,altura_do_dia):
+
     caminho_antigo=encomenda.caminho
-    indice_elemento = caminho_antigo.index(posicao_atual)
+    indice_elemento = caminho_antigo.index(encomenda.ultimo_local_passou)
     caminho_antigo = caminho_antigo[indice_elemento:]
-    path1,_ = ap.dijkstra(grafo,posicao_atual,terra)
-    path2,_=ap.dijkstra(grafo,terra,posicao_atual)
+    path1,_ = ap.dijkstra(grafo,encomenda.ultimo_local_passou,encomenda.destino)
+    path2,_=ap.dijkstra(grafo,encomenda.destino,encomenda.ultimo_local_passou)
     path=trajeto_completo_estafeta(path1,path2)
 
     if meio_de_transporte==1:
@@ -141,8 +142,9 @@ def main():
             print("6-Alterar altura do dia")
             print("7-Visualizar encomendas")
             print("8-Visualizar fila de encomendas estafeta")
-            print("9-Estrada Cortada")
-            print("10-Realizar encomenda")
+            print("9-Cortar estrada")
+            print("10-Repor estrada")
+            print("11-Realizar encomenda")
         
 
         #try:
@@ -223,7 +225,7 @@ def main():
                         print("Não foi possível apresentar o solicitado")
 
                 elif(i==9):
-                    #try:
+                    try:
                         cg.str_arestas_grafo(grafo)
                         id = int(input("Introduza a estrada que vai ser cortada:"))
                         cg.mover_aresta_entre_grafos(id,grafo,grafo_cortadas)
@@ -231,43 +233,93 @@ def main():
                         
                         #O que temos de atualizar no estafeta
                         for estafeta in health_planet.dict_estafetas.values():
+                            #..........................Atualizar encomenda atual.........................................
                             if(estafeta.encomenda_atual!=None):
-                                tempo,vel_medias,path=atualiza_encomendas(estafeta.encomenda_atual,estafeta.meio_de_transporte,grafo,meteorologia,altura_do_dia,estafeta.encomenda_atual.ultimo_local_passou,estafeta.encomenda_atual.destino)
+                                tempo,vel_medias,path=atualiza_encomendas(estafeta.encomenda_atual,estafeta.meio_de_transporte,grafo,meteorologia,altura_do_dia)
 
                                 estafeta.encomenda_atual.velocidades_medias=vel_medias
                                 estafeta.encomenda_atual.tempo_transporte=tempo
                                 estafeta.encomenda_atual.caminho=path
 
+                                #............................Atualizar encomendas em fila.................................
+                                if(not estafeta.fila_encomendas.empty):
+                                    tamanho_da_fila = estafeta.fila_encomendas.qsize()
+
+                                    for i in range(tamanho_da_fila):
+                                        elemento = estafeta.fila_encomendas.get()
+                                        tempo,vel_medias,path=atualiza_encomendas(elemento,estafeta.meio_de_transporte,grafo,meteorologia,altura_do_dia)
+
+                                        elemento.velocidades_medias=vel_medias
+                                        elemento.tempo_transporte=tempo
+                                        elemento.caminho=path
+                                        
+                                        estafeta.fila_encomendas.put()
+
                         #Para voltar a correr a thread
                         encerrar_thread.clear()
-                    #except:
-                        #print("Introduziu um valor invalido")
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+                    except:
+                        print("Introduziu um valor invalido")
                 elif(i==10):
+                    try:
+                        cg.str_arestas_grafo(grafo_cortadas)
+                        id = int(input("Introduza a estrada que vai ser reposta:"))
+                        cg.mover_aresta_entre_grafos(id,grafo_cortadas,grafo)
+                        encerrar_thread.set()
+                        
+                        #O que temos de atualizar no estafeta
+                        for estafeta in health_planet.dict_estafetas.values():
+                            #..........................Atualizar encomenda atual.........................................
+                            if(estafeta.encomenda_atual!=None):
+                                tempo,vel_medias,path=atualiza_encomendas(estafeta.encomenda_atual,estafeta.meio_de_transporte,grafo,meteorologia,altura_do_dia)
+
+                                estafeta.encomenda_atual.velocidades_medias=vel_medias
+                                estafeta.encomenda_atual.tempo_transporte=tempo
+                                estafeta.encomenda_atual.caminho=path
+
+                                #............................Atualizar encomendas em fila.................................
+                                if(not estafeta.fila_encomendas.empty):
+                                    tamanho_da_fila = estafeta.fila_encomendas.qsize()
+
+                                    for i in range(tamanho_da_fila):
+                                        elemento = estafeta.fila_encomendas.get()
+                                        tempo,vel_medias,path=atualiza_encomendas(elemento,estafeta.meio_de_transporte,grafo,meteorologia,altura_do_dia)
+
+                                        elemento.velocidades_medias=vel_medias
+                                        elemento.tempo_transporte=tempo
+                                        elemento.caminho=path
+                                        
+                                        estafeta.fila_encomendas.put()
+
+                        #Para voltar a correr a thread
+                        encerrar_thread.clear()
+                    except:
+                        print("Introduziu um valor invalido")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                elif(i==11):
                     print("\n------ALGORITMO-----")
                     print("1-Dijkstra")
                     print("2-Interativo")

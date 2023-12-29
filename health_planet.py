@@ -80,13 +80,13 @@ class Health_Planet:
             with self.lock_estafetas:
                 self.dict_estafetas[id_estafeta].atualiza_estafeta_inicio(encomenda)
 
-    def atualiza_estado(self,grafo):
+    def atualiza_estado(self,grafo,grafo_cortadas):
         self.tempo_virtual+=1
         with self.lock_estafetas:
             for estafeta in self.dict_estafetas.values():
                 encomenda = estafeta.get_encomenda_atual()
                 if encomenda is not None:
-                    ultimo_lugar = encomenda.get_posicao(grafo)
+                    ultimo_lugar = encomenda.get_posicao(grafo,grafo_cortadas)
                     estafeta.atualiza_estafeta_meio(ultimo_lugar)
                 else:
                     estafeta.comecar_nova_encomenda()

@@ -28,6 +28,9 @@ class Encomenda:
         with self.lock_encomenda:
             return f"ID: {self.id}, Peso: {self.peso}, Volume: {self.volume}, Tempo máximo: {self.tempo}, Id do Estafeta: {self.id_estafeta},\nEncomenda Entregue: {self.chegou_ao_destino}, Último Local: {self.ultimo_local_passou}, Caminho: {self.caminho},\n Tempo de Transporte Previsto: {self.tempo_previsto}, Tempo total decorrido: {self.tempo_que_percorreu}, Tempo que ainda falta percorrer: {self.tempo_transporte}, Preco: {self.preco}\n"
 
+    def get_caminho(self):
+        with self.lock_encomenda:
+            return self.caminho
 
     def get_tempo_transporte(self):
         with self.lock_encomenda:
@@ -41,17 +44,22 @@ class Encomenda:
         with self.lock_encomenda:
             self.tempo_que_percorreu += 1
 
-    def get_posicao(self,grafo):
+    def get_posicao(self,grafo,grafo_cortadas):
         tempo_acumulado=0
         posicao=0
         ultimo_lugar=None
         
         with self.lock_encomenda:
             while(tempo_acumulado<=(self.tempo_previsto-self.tempo_transporte) and posicao + 1 < len(self.caminho)):
-                distancia=grafo[self.caminho[posicao]][self.caminho[posicao+1]]['weight']
+                try:
+                    distancia=grafo[self.caminho[posicao]][self.caminho[posicao+1]]['weight']
+                except:
+                    distancia=grafo_cortadas[self.caminho[posicao]][self.caminho[posicao+1]]['weight']
+                    
                 tempo_aresta=(distancia/self.velocidades_medias[posicao])*60
                 tempo_acumulado+=tempo_aresta
                 posicao+=1
+            
             ultimo_lugar = self.caminho[posicao-1] if posicao > 0 else "Armazem"
 
         return ultimo_lugar

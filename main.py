@@ -7,6 +7,50 @@ import povoar as p
 import threading
 import time
 import networkx as nx
+def atualiza_encomendas(encomenda,meio_de_transporte,grafo,meteorologia,altura_do_dia):
+
+    caminho_antigo=encomenda.caminho
+    ocorrencia = caminho_antigo.index(encomenda.ultimo_local_passou)
+    if(encomenda.destino!="Armazem"):
+        caminho_antigo = caminho_antigo[:ocorrencia]
+        path1,_ = ap.dijkstra(grafo,encomenda.ultimo_local_passou,encomenda.destino)
+        path2,_=ap.dijkstra(grafo,encomenda.destino,"Armazem")
+        path=caminho_antigo+path1
+        path=trajeto_completo_estafeta(path,path2)
+        trajeto_novo=trajeto_completo_estafeta(path1,path2)
+    else:
+        ocorrencia = caminho_antigo.index(encomenda.ultimo_local_passou, ocorrencia + 1)
+        caminho_antigo = caminho_antigo[:ocorrencia + 1]
+        path1,_=ap.dijkstra(grafo,encomenda.ultimo_local_passou,"Armazem")
+        path=caminho_antigo+path1
+        trajeto_novo=path1
+
+    if meio_de_transporte==1:
+        tempo, vel_medias_novas=altera_velocidade(meteorologia,altura_do_dia,trajeto_novo, 10-(0.6*encomenda.peso), grafo)
+        if ocorrencia-1<0:
+            ocorrencia=0
+        else:
+            ocorrencia-=1
+        vel_medias=encomenda.velocidades_medias[:ocorrencia-1]+vel_medias_novas
+    elif meio_de_transporte==2:
+        tempo, vel_medias_novas=altera_velocidade(meteorologia,altura_do_dia,trajeto_novo, 35-(0.5*encomenda.peso), grafo)
+        if ocorrencia-1<0:
+            ocorrencia=0
+        else:
+            ocorrencia-=1
+        vel_medias=encomenda.velocidades_medias[:ocorrencia-1]+vel_medias_novas
+    else:
+        tempo, vel_medias_novas=altera_velocidade(meteorologia,altura_do_dia,trajeto_novo, 50-(0.1*encomenda.peso), grafo)
+        if ocorrencia-1<0:
+            ocorrencia=0
+        else:
+            ocorrencia-=1
+        vel_medias=encomenda.velocidades_medias[:ocorrencia]+vel_medias_novas
+    return tempo*2, vel_medias, path
+
+def trajeto_completo_estafeta(lista1,lista2):
+    lista_concatenada = lista1 + lista2[1:]
+    return lista_concatenada
 
 def altera_velocidade(meteorologia,altura_do_dia,path, vel, grafo):
     tempo = 0
@@ -44,7 +88,7 @@ def altera_velocidade(meteorologia,altura_do_dia,path, vel, grafo):
         vel_medias.append(vel_aresta)
         posicao += 1
         
-    return tempo/2, vel_medias + vel_medias[::-1]
+    return tempo/2, vel_medias
 
 def verifica_disponibilidade (transporte, tempo_transporte, velocidades_medias, tempo_pretendido,health_planet,caminho,queremosEletrico,id_encomenda,distancia):
     tempo_disponivel_eletrico, estafeta_disponivel_eletrico, tempo_disponivel_sem_ser_eletrico, estafeta_disponivel_eletrico_sem_ser_eletrico = health_planet.disponibilidade(transporte)
@@ -87,10 +131,10 @@ def calculos(dist,meteorologia,altura_do_dia,tempo_pedido, peso, path,health_pla
             else:
                 print("Nao é possivel entregar a encomenda no tempo pretendido")
 
-def avanca_tempo_virtual(health_planet, grafo, encerrar_thread):
+def avanca_tempo_virtual(health_planet, grafo, encerrar_thread, grafo_cortadas):
     while not encerrar_thread.is_set():
         time.sleep(1)
-        health_planet.atualiza_estado(grafo) 
+        health_planet.atualiza_estado(grafo, grafo_cortadas) 
 
     
 def main():
@@ -100,7 +144,7 @@ def main():
     grafo_cortadas = nx.Graph()
 
     encerrar_thread = threading.Event()  # Criando um evento para encerrar a thread
-    thread = threading.Thread(target=avanca_tempo_virtual, args=(health_planet, grafo, encerrar_thread))
+    thread = threading.Thread(target=avanca_tempo_virtual, args=(health_planet, grafo, encerrar_thread, grafo_cortadas))
     thread.start()
 
     meteorologia=1
@@ -118,8 +162,9 @@ def main():
             print("6-Alterar altura do dia")
             print("7-Visualizar encomendas")
             print("8-Visualizar fila de encomendas estafeta")
-            print("9-Estrada Cortada")
-            print("10-Realizar encomenda")
+            print("9-Cortar estrada")
+            print("10-Repor estrada")
+            print("11-Realizar encomenda")
         
 
         #try:
@@ -198,34 +243,101 @@ def main():
                         print("Não foi possível apresentar o solicitado")
 
                 elif(i==9):
-                    cg.str_arestas_grafo(grafo)
-                    id = int(input("Introduza a estrada que vai ser cortada:"))
-                    cg.mover_aresta_entre_grafos(id,grafo,grafo_cortadas)
+                    #try:
+                        cg.str_arestas_grafo(grafo)
+                        id = int(input("Introduza a estrada que vai ser cortada:"))
+                        cg.mover_aresta_entre_grafos(id,grafo,grafo_cortadas)
+                        encerrar_thread.set()
+                        
+                        #O que temos de atualizar no estafeta
+                        for estafeta in health_planet.dict_estafetas.values():
+                            #..........................Atualizar encomenda atual.........................................
+                            if(estafeta.encomenda_atual!=None):
+                                tempo,vel_medias,path=atualiza_encomendas(estafeta.encomenda_atual,estafeta.meio_de_transporte,grafo,meteorologia,altura_do_dia)
 
+                                estafeta.encomenda_atual.velocidades_medias=vel_medias
+                                estafeta.encomenda_atual.tempo_transporte=tempo
+                                estafeta.encomenda_atual.caminho=path
 
+                                #............................Atualizar encomendas em fila.................................
+                                if(not estafeta.fila_encomendas.empty):
+                                    tamanho_da_fila = estafeta.fila_encomendas.qsize()
 
+                                    for i in range(tamanho_da_fila):
+                                        elemento = estafeta.fila_encomendas.get()
+                                        tempo,vel_medias,path=atualiza_encomendas(elemento,estafeta.meio_de_transporte,grafo,meteorologia,altura_do_dia)
 
+                                        elemento.velocidades_medias=vel_medias
+                                        elemento.tempo_transporte=tempo
+                                        elemento.caminho=path
+                                        
+                                        estafeta.fila_encomendas.put()
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+                        #Para voltar a correr a thread
+                        encerrar_thread.clear()
+                    #except:
+                        #print("Introduziu um valor invalido")
                 elif(i==10):
+                    #try:
+                        cg.str_arestas_grafo(grafo_cortadas)
+                        id = int(input("Introduza a estrada que vai ser reposta:"))
+                        cg.mover_aresta_entre_grafos(id,grafo_cortadas,grafo)
+                        encerrar_thread.set()
+                        
+                        #O que temos de atualizar no estafeta
+                        for estafeta in health_planet.dict_estafetas.values():
+                            #..........................Atualizar encomenda atual.........................................
+                            if(estafeta.encomenda_atual!=None):
+                                tempo,vel_medias,path=atualiza_encomendas(estafeta.encomenda_atual,estafeta.meio_de_transporte,grafo,meteorologia,altura_do_dia)
+
+                                estafeta.encomenda_atual.velocidades_medias=vel_medias
+                                estafeta.encomenda_atual.tempo_transporte=tempo
+                                estafeta.encomenda_atual.caminho=path
+
+                                #............................Atualizar encomendas em fila.................................
+                                if(not estafeta.fila_encomendas.empty):
+                                    tamanho_da_fila = estafeta.fila_encomendas.qsize()
+
+                                    for i in range(tamanho_da_fila):
+                                        elemento = estafeta.fila_encomendas.get()
+                                        tempo,vel_medias,path=atualiza_encomendas(elemento,estafeta.meio_de_transporte,grafo,meteorologia,altura_do_dia)
+
+                                        elemento.velocidades_medias=vel_medias
+                                        elemento.tempo_transporte=tempo
+                                        elemento.caminho=path
+                                        
+                                        estafeta.fila_encomendas.put()
+
+                        #Para voltar a correr a thread
+                        encerrar_thread.clear()
+                    #except:
+                        #print("Introduziu um valor invalido")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                elif(i==11):
                     print("\n------ALGORITMO-----")
                     print("1-Dijkstra")
                     print("2-Interativo")
@@ -249,50 +361,64 @@ def main():
                         #.....................Varios algoritmos.................
                         if (opcao==1):
                             try:
-                                path,dist = ap.dijkstra(grafo,"Armazem",terra)
+                                path1,dist = ap.dijkstra(grafo,"Armazem",terra)
+                                path2,_=ap.dijkstra(grafo,terra,"Armazem")
+                                path=trajeto_completo_estafeta(path1,path2)
                                 calculos (dist,meteorologia,altura_do_dia, tempo, peso, path,health_planet,grafo,encomenda.id)
                             except:
                                 print("O destino selecionado não existe")
 
                         elif (opcao==2):
                             try:
-                                path,dist = ap.iterative_deepening_dfs(grafo,"Armazem",terra)
+                                path1,dist = ap.dijkstra(grafo,"Armazem",terra)
+                                path2,_=ap.dijkstra(grafo,terra,"Armazem")
+                                path=trajeto_completo_estafeta(path1,path2)
                                 calculos(dist,meteorologia,altura_do_dia,tempo,peso,path,health_planet,grafo,encomenda.id)
                             except:
                                 print("O destino selecionado não existe")
 
                         elif (opcao==3):
                             try:
-                                path, dist = ap.procura_em_profundidade(grafo, "Armazem", terra)
+                                path1,dist = ap.dijkstra(grafo,"Armazem",terra)
+                                path2,_=ap.dijkstra(grafo,terra,"Armazem")
+                                path=trajeto_completo_estafeta(path1,path2)
                                 calculos (dist,meteorologia,altura_do_dia, tempo, peso, path,health_planet,grafo,encomenda.id)
                             except:
                                 print("O destino selecionado não existe")
 
                         elif (opcao==4):
                             try:
-                                path, dist = ap.bidirectional_search(grafo, "Armazem", terra)
-                                calculos(dist,meteorologia,altura_do_dia, tempo, peso, path,health_planet,grafo,encomenda.id)
+                                path1,dist = ap.dijkstra(grafo,"Armazem",terra)
+                                path2,_=ap.dijkstra(grafo,terra,"Armazem")
+                                path=trajeto_completo_estafeta(path1,path2)
+                                calculos (dist,meteorologia,altura_do_dia, tempo, peso, path,health_planet,grafo,encomenda.id)
                             except :
                                 print("O destino selecionado não existe")
 
                         elif (opcao==5):
                             try:
-                                path, dist = ap.bfs(grafo, "Armazem", terra)
-                                calculos(dist,meteorologia,altura_do_dia, tempo, peso, path,health_planet,grafo,encomenda.id)
+                                path1,dist = ap.dijkstra(grafo,"Armazem",terra)
+                                path2,_=ap.dijkstra(grafo,terra,"Armazem")
+                                path=trajeto_completo_estafeta(path1,path2)
+                                calculos (dist,meteorologia,altura_do_dia, tempo, peso, path,health_planet,grafo,encomenda.id)
                             except :
                                 print("O destino selecionado não existe")
 
                         elif (opcao==6):
                             try:
-                                path, dist = ap.greedy_shortest_path(grafo, "Armazem", terra)
-                                calculos(dist,meteorologia,altura_do_dia, tempo, peso, path,health_planet,grafo,encomenda.id)
+                                path1,dist = ap.dijkstra(grafo,"Armazem",terra)
+                                path2,_=ap.dijkstra(grafo,terra,"Armazem")
+                                path=trajeto_completo_estafeta(path1,path2)
+                                calculos (dist,meteorologia,altura_do_dia, tempo, peso, path,health_planet,grafo,encomenda.id)
                             except :
                                 print("O destino selecionado não existe")
 
                         elif (opcao==7):
                             #try:
-                                path, dist = ap.algoritmoAEstrela(grafo, "Armazem", terra)
-                                calculos(dist,meteorologia,altura_do_dia, tempo, peso, path,health_planet,grafo,encomenda.id)
+                                path1,dist = ap.dijkstra(grafo,"Armazem",terra)
+                                path2,_=ap.dijkstra(grafo,terra,"Armazem")
+                                path=trajeto_completo_estafeta(path1,path2)
+                                calculos (dist,meteorologia,altura_do_dia, tempo, peso, path,health_planet,grafo,encomenda.id)
                             #except :
                             #    print("O destino selecionado não existe")
 

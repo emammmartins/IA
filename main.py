@@ -27,27 +27,17 @@ def atualiza_encomendas(encomenda,meio_de_transporte,grafo,meteorologia,altura_d
         trajeto_novo=path1
 
     if meio_de_transporte==1:
-        tempo, vel_medias_novas=altera_velocidade(meteorologia,altura_do_dia,trajeto_novo, 10-(0.6*encomenda.peso), grafo)
-        if ocorrencia-1<0:
-            ocorrencia=0
-        else:
-            ocorrencia-=1
-        vel_medias=encomenda.velocidades_medias[:ocorrencia-1]+vel_medias_novas
+        tempo_transporte,_=altera_velocidade(meteorologia,altura_do_dia,trajeto_novo, 10-(0.6*encomenda.peso), grafo)
+
+        tempo_total_viagem, vel_medias_novas=altera_velocidade(meteorologia,altura_do_dia,path, 10-(0.6*encomenda.peso), grafo)
     elif meio_de_transporte==2:
-        tempo, vel_medias_novas=altera_velocidade(meteorologia,altura_do_dia,trajeto_novo, 35-(0.5*encomenda.peso), grafo)
-        if ocorrencia-1<0:
-            ocorrencia=0
-        else:
-            ocorrencia-=1
-        vel_medias=encomenda.velocidades_medias[:ocorrencia-1]+vel_medias_novas
+        tempo_transporte,_ =altera_velocidade(meteorologia,altura_do_dia,trajeto_novo, 35-(0.5*encomenda.peso), grafo)
+        tempo_total_viagem, vel_medias_novas=altera_velocidade(meteorologia,altura_do_dia,path, 35-(0.5*encomenda.peso), grafo)
     else:
-        tempo, vel_medias_novas=altera_velocidade(meteorologia,altura_do_dia,trajeto_novo, 50-(0.1*encomenda.peso), grafo)
-        if ocorrencia-1<0:
-            ocorrencia=0
-        else:
-            ocorrencia-=1
-        vel_medias=encomenda.velocidades_medias[:ocorrencia]+vel_medias_novas
-    return tempo*2, vel_medias, path
+        tempo_transporte,_ =altera_velocidade(meteorologia,altura_do_dia,trajeto_novo, 50-(0.1*encomenda.peso), grafo)
+        tempo_total_viagem, vel_medias_novas=altera_velocidade(meteorologia,altura_do_dia,path, 50-(0.1*encomenda.peso), grafo)
+
+    return tempo_transporte,tempo_total_viagem, vel_medias_novas, path
 
 def trajeto_completo_estafeta(lista1,lista2):
     lista_concatenada = lista1 + lista2[1:]
@@ -299,10 +289,11 @@ def main():
                     for estafeta in health_planet.dict_estafetas.values():
                         #..........................Atualizar encomenda atual.........................................
                         if(estafeta.encomenda_atual!=None):
-                            tempo,vel_medias,path=atualiza_encomendas(estafeta.encomenda_atual,estafeta.meio_de_transporte,grafo,meteorologia,altura_do_dia)
+                            tempo_transporte,tempo_total_viagem,vel_medias,path=atualiza_encomendas(estafeta.encomenda_atual,estafeta.meio_de_transporte,grafo,meteorologia,altura_do_dia)
 
                             estafeta.encomenda_atual.velocidades_medias=vel_medias
-                            estafeta.encomenda_atual.tempo_transporte=tempo
+                            estafeta.encomenda_atual.tempo_transporte=tempo_transporte*2
+                            estafeta.encomenda_atual.tempo_total_viagem=tempo_total_viagem*2
                             estafeta.encomenda_atual.caminho=path
 
                             #............................Atualizar encomendas em fila.................................
@@ -311,10 +302,11 @@ def main():
 
                                 for i in range(tamanho_da_fila):
                                     elemento = estafeta.fila_encomendas.get()
-                                    tempo,vel_medias,path=atualiza_encomendas(elemento,estafeta.meio_de_transporte,grafo,meteorologia,altura_do_dia)
+                                    tempo_transporte,tempo_total_viagem,vel_medias,path=atualiza_encomendas(elemento,estafeta.meio_de_transporte,grafo,meteorologia,altura_do_dia)
 
                                     elemento.velocidades_medias=vel_medias
-                                    elemento.tempo_transporte=tempo
+                                    elemento.tempo_transporte=tempo_transporte*2
+                                    elemento.tempo_total_viagem=tempo_total_viagem*2
                                     elemento.caminho=path
                                     
                                     estafeta.fila_encomendas.put()

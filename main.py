@@ -232,22 +232,29 @@ def main():
                         print("2-Repor estrada")
                         print("3-Alterar altura do dia")
                         print("4-Alterar meteorologia")
+                        print("5-Alterar transito de uma estrada")
                         opcao=int(input("Introduza a opcao que pretende realizar: "))
                         
                         if (opcao==1): 
-                            cg.str_arestas_grafo(grafo)
-                            try:
-                                id = int(input("Introduza a estrada que vai ser cortada:"))
-                                cg.mover_aresta_entre_grafos(id,grafo,grafo_cortadas)
-                            except:
-                                print("Introduza um valor valido")
+                            if(len(grafo.edges()) == 0):
+                                print("Nao existem estradas que nao estejam cortadas")
+                            else:
+                                cg.str_arestas_grafo(grafo)
+                                try:
+                                    id = int(input("Introduza a estrada que vai ser cortada:"))
+                                    cg.mover_aresta_entre_grafos(id,grafo,grafo_cortadas)
+                                except:
+                                    print("Introduza um valor valido")
                         elif(opcao==2):
-                            cg.str_arestas_grafo(grafo_cortadas)
-                            try:
-                                id = int(input("Introduza a estrada que vai ser reposta:"))
-                                cg.mover_aresta_entre_grafos(id,grafo_cortadas,grafo)
-                            except:
-                                print("Introduza um valor valido")
+                            if(len(grafo_cortadas.edges()) == 0):
+                                print("Nao existem estradas cortadas")
+                            else:
+                                cg.str_arestas_grafo(grafo_cortadas)
+                                try:
+                                    id = int(input("Introduza a estrada que vai ser reposta:"))
+                                    cg.mover_aresta_entre_grafos(id,grafo_cortadas,grafo)
+                                except:
+                                    print("Introduza um valor valido")
                         elif(opcao==3):
                             try:
                                 altura_dia = int(input("Altura do dia: (1-Dia, 2-Noite): "))
@@ -266,8 +273,28 @@ def main():
                                     print("Valor nao é válido")
                             except:
                                 print("Introduza um valor inteiro")
+                        elif(opcao==5):
+                            if(len(grafo.edges()) == 0):
+                                print("O grafo atual nao tem estradas")
+                            else:
+                                cg.str_arestas_grafo(grafo)
+                                try:
+                                    id = int(input("Introduza a estrada que vai ser cortada:"))
 
-                    
+                                    transito=float(input("Introduza o valor do transsito (entre 0 e 1):"))
+                                    if (transito>=0 and transito<=1):
+                                        edges = list(grafo.edges(data=True))
+                                        aresta_selecionada = edges[id-1]  
+                                        origem = aresta_selecionada[0]
+                                        destino = aresta_selecionada[1]
+                                        print(grafo[origem][destino]['transito'])
+                                        grafo[origem][destino]['transito']=transito
+                                        print(grafo[origem][destino]['transito'])
+                                    else:
+                                        print("O transito tem de ser um valor entre 0 e 1")
+                                except:
+                                    print("Introduza um valor valido")
+                            
                     #O que temos de atualizar no estafeta
                     for estafeta in health_planet.dict_estafetas.values():
                         #..........................Atualizar encomenda atual.........................................

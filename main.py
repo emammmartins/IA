@@ -15,7 +15,7 @@ def atualiza_encomendas(encomenda,meio_de_transporte,grafo,meteorologia,altura_d
     if(encomenda.destino!="Armazem"):
         caminho_antigo = caminho_antigo[:primeira_ocorrencia]
         path1,_ = ap.dijkstra(grafo,encomenda.ultimo_local_passou,encomenda.destino)
-        path2,_=ap.dijkstra(grafo,encomenda.destino,encomenda.ultimo_local_passou)
+        path2,_=ap.dijkstra(grafo,encomenda.destino,"Armazem")
         path=caminho_antigo+path1
         path=trajeto_completo_estafeta(path,path2)
     else:

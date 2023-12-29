@@ -7,11 +7,16 @@ Trânsito
 
 ............................................................................
 
-Locks
 Estatísticas (inventar algumas queries)
     Classificação média
 Atraso tempo que percorreu fica desde que a encomenda é efetuada
 Impedir que cortem estradas sem que haja maneira de ir para ou sair de um sitio
+
+Funcionalidade de parar o tempo e de o retomar
+    Se não der: Funcionalidade de atrasar todos os estafetas
+
+Função get_posicao da encomenda, condição do while tinha self.tempo_previsto que passou a self.tempo_total_viagem
+    este valor também tem de ser atualizado ao escolher um novo caminho senão o ciclo pode não funcionar direito (fodeu)
 
 ............................................................................
 

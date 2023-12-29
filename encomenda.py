@@ -15,9 +15,10 @@ class Encomenda:
 
         #Entrega da encomenda
         self.id_estafeta = None
-        self.tempo_previsto=0 #Tempo calculado para a viagem
+        self.tempo_previsto=0 #Tempo que se calculou para a entrega da encomenda
+        self.tempo_que_percorreu=0 #Tempo que passou desde que se pediu a encomenda
+        self.tempo_total_viagem=0
         self.tempo_transporte=0 #Tempo de viagem que ainda falta fazer
-        self.tempo_que_percorreu=0 #tempo que passou desde o inicio da viagem
         self.caminho=[]
         self.ultimo_local_passou="Armazem"
         self.velocidades_medias=[]
@@ -26,7 +27,7 @@ class Encomenda:
         
     def __str__(self):
         with self.lock_encomenda:
-            return f"ID: {self.id}, Peso: {self.peso}, Volume: {self.volume}, Tempo máximo: {self.tempo}, Id do Estafeta: {self.id_estafeta},\nEncomenda Entregue: {self.chegou_ao_destino}, Último Local: {self.ultimo_local_passou}, Caminho: {self.caminho},\n Tempo de Transporte Previsto: {self.tempo_previsto}, Tempo total decorrido: {self.tempo_que_percorreu}, Tempo que ainda falta percorrer: {self.tempo_transporte}, Preco: {self.preco}\n"
+            return f"ID: {self.id}, Peso: {self.peso}, Volume: {self.volume}, Tempo máximo: {self.tempo}, Preco: {self.preco}, Id do Estafeta: {self.id_estafeta},\nEncomenda Entregue: {self.chegou_ao_destino}, Último Local: {self.ultimo_local_passou}, Caminho: {self.caminho},\nTempo para entrega previsto: {self.tempo_previsto}, Tempo total decorrido: {self.tempo_que_percorreu}, Tempo previsto de entrega dessa encomenda: {self.tempo_total_viagem}, Tempo que ainda falta percorrer: {self.tempo_transporte}\n"
 
     def get_caminho(self):
         with self.lock_encomenda:
@@ -36,9 +37,13 @@ class Encomenda:
         with self.lock_encomenda:
             return self.tempo_transporte
         
-    def get_tempo_previsto(self):
+    def get_tempo_total_viagem(self):
         with self.lock_encomenda:
-            return self.tempo_previsto
+            return self.tempo_total_viagem
+        
+    def get_chegou_ao_destino(self):
+        with self.lock_encomenda:
+            return self.chegou_ao_destino
     
     def aumenta_tempo_que_percorreu(self):
         with self.lock_encomenda:
@@ -50,7 +55,7 @@ class Encomenda:
         ultimo_lugar=None
         
         with self.lock_encomenda:
-            while(tempo_acumulado<=(self.tempo_previsto-self.tempo_transporte) and posicao + 1 < len(self.caminho)):
+            while(tempo_acumulado<=(self.tempo_total_viagem-self.tempo_transporte) and posicao + 1 < len(self.caminho)):
                 try:
                     distancia=grafo[self.caminho[posicao]][self.caminho[posicao+1]]['weight']
                 except:
@@ -108,12 +113,13 @@ class Encomenda:
             preco=0
         return preco
 
-    def atualiza_encomenda_inicio(self,tempo,velocidades_medias,caminho,id_estafeta,veiculo,eletrico,distancia):
+    def atualiza_encomenda_inicio(self,tempo,tempo_necessario,velocidades_medias,caminho,id_estafeta,veiculo,eletrico,distancia):
         with self.lock_encomenda:
             self.id_estafeta = id_estafeta
             self.ultimo_local_passou="Armazem"
-            self.tempo_transporte=tempo
-            self.tempo_previsto=tempo
+            self.tempo_transporte=tempo*2 #ida e volta
+            self.tempo_total_viagem=tempo*2 #ida e volta
+            self.tempo_previsto=tempo_necessario
             self.tempo_que_percorreu=0
             self.caminho=caminho
             self.velocidades_medias=velocidades_medias
@@ -124,13 +130,12 @@ class Encomenda:
     def atualiza_encomenda_meio(self,posicao):
         with self.lock_encomenda:
             if self.tempo_transporte!=0:
-                self.tempo_que_percorreu+=1
                 self.tempo_transporte-=1
                 self.ultimo_local_passou=posicao
                 if self.chegou_ao_destino == False and posicao==self.destino:
                     self.destino = "Armazem"
                     self.chegou_ao_destino = True
-                    if (atraso:= self.tempo_que_percorreu-(self.tempo_previsto/2)) > 0:
+                    if (atraso:= self.tempo_que_percorreu-self.tempo_previsto) > 0:
                         return atraso
                     else:
                         return 0

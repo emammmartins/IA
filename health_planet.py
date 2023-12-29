@@ -72,11 +72,11 @@ class Health_Planet:
 
         return tempo_minimo_eletrico, id_condutor_min_tempo_eletrico, tempo_minimo_sem_ser_eletrico, id_condutor_min_tempo_sem_ser_eletrico
     
-    def atualiza_inicial(self,id_estafeta,tempo,velocidades_medias,caminho,id_encomenda,veiculo,eletrico,distancia):
+    def atualiza_inicial(self,id_estafeta,tempo,tempo_necessario,velocidades_medias,caminho,id_encomenda,veiculo,eletrico,distancia):
         with self.lock_encomendas:
             encomenda = self.dict_encomendas.get(id_encomenda)
         if encomenda is not None:
-            encomenda.atualiza_encomenda_inicio(tempo,velocidades_medias,caminho,id_estafeta,veiculo,eletrico,distancia)
+            encomenda.atualiza_encomenda_inicio(tempo,tempo_necessario,velocidades_medias,caminho,id_estafeta,veiculo,eletrico,distancia)
             with self.lock_estafetas:
                 self.dict_estafetas[id_estafeta].atualiza_estafeta_inicio(encomenda)
 
@@ -90,5 +90,9 @@ class Health_Planet:
                     estafeta.atualiza_estafeta_meio(ultimo_lugar)
                 else:
                     estafeta.comecar_nova_encomenda()
+        with self.lock_encomendas:
+            for encomenda in self.dict_encomendas.values():
+                if encomenda.get_chegou_ao_destino() == False:
+                    encomenda.aumenta_tempo_que_percorreu()
                 
 

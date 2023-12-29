@@ -55,7 +55,7 @@ class Estafeta:
                 tempo_acumulado += 2 #Margem entrega atual
             copia_fila = list(self.fila_encomendas.queue)
         for encomenda in copia_fila:
-            tempo_acumulado += encomenda.get_tempo_previsto()
+            tempo_acumulado += encomenda.get_tempo_total_viagem()
             tempo_acumulado += 2 #Margem por entrega
         return tempo_acumulado
     
@@ -92,7 +92,6 @@ class Estafeta:
         with self.lock_estafeta:
             if self.pausa>0:
                 self.pausa-=1
-                self.encomenda_atual.aumenta_tempo_que_percorreu()
             else:
                 if (atraso:=self.encomenda_atual.atualiza_encomenda_meio(posicao))>=0:
                     #print (f'atraso {atraso}')

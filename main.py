@@ -7,6 +7,7 @@ import povoar as p
 import threading
 import time
 import networkx as nx
+
 def atualiza_encomendas(encomenda,meio_de_transporte,grafo,meteorologia,altura_do_dia):
 
     caminho_antigo=encomenda.caminho
@@ -99,18 +100,18 @@ def verifica_disponibilidade (transporte, tempo_transporte, velocidades_medias, 
 
     if(queremosEletrico==True):
         if (tempo_pretendido >= tempo_necessario_eletrico):
-            health_planet.atualiza_inicial(estafeta_disponivel_eletrico,2*tempo_transporte,velocidades_medias,caminho,id_encomenda,transporte,True,distancia) 
+            health_planet.atualiza_inicial(estafeta_disponivel_eletrico,tempo_transporte,tempo_necessario_eletrico,velocidades_medias,caminho,id_encomenda,transporte,True,distancia) 
             return tempo_necessario_eletrico
         elif(tempo_pretendido >= tempo_necessario_sem_ser_eletrico):
-            health_planet.atualiza_inicial(estafeta_disponivel_eletrico_sem_ser_eletrico,2*tempo_transporte,velocidades_medias,caminho,id_encomenda,transporte,False,distancia) 
+            health_planet.atualiza_inicial(estafeta_disponivel_eletrico_sem_ser_eletrico,tempo_transporte,tempo_necessario_sem_ser_eletrico,velocidades_medias,caminho,id_encomenda,transporte,False,distancia) 
             return tempo_necessario_sem_ser_eletrico
         return -1
     else:
         if(tempo_pretendido >= tempo_necessario_sem_ser_eletrico):
-            health_planet.atualiza_inicial(estafeta_disponivel_eletrico_sem_ser_eletrico,2*tempo_transporte,velocidades_medias,caminho,id_encomenda,transporte,False,distancia) 
+            health_planet.atualiza_inicial(estafeta_disponivel_eletrico_sem_ser_eletrico,tempo_transporte,tempo_necessario_sem_ser_eletrico,velocidades_medias,caminho,id_encomenda,transporte,False,distancia) 
             return tempo_necessario_sem_ser_eletrico
         elif(tempo_pretendido >= tempo_necessario_eletrico,distancia):
-            health_planet.atualiza_inicial(estafeta_disponivel_eletrico,2*tempo_transporte,velocidades_medias,caminho,id_encomenda,transporte,True) 
+            health_planet.atualiza_inicial(estafeta_disponivel_eletrico,tempo_transporte,tempo_necessario_eletrico,velocidades_medias,caminho,id_encomenda,transporte,True,distancia) 
             return tempo_necessario_eletrico
         return -1
 

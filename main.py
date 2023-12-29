@@ -1,4 +1,3 @@
-import threading
 import algoritmos_procura as ap
 import cria_grafos as cg
 import health_planet as hp
@@ -88,11 +87,10 @@ def calculos(dist,meteorologia,altura_do_dia,tempo_pedido, peso, path,health_pla
             else:
                 print("Nao é possivel entregar a encomenda no tempo pretendido")
 
-def avanca_tempo_virtual(health_planet, grafo, encerrar_thread,lock):
+def avanca_tempo_virtual(health_planet, grafo, encerrar_thread):
     while not encerrar_thread.is_set():
-        time.sleep(1) 
-        with lock:
-            health_planet.atualiza_estado(grafo) 
+        time.sleep(1)
+        health_planet.atualiza_estado(grafo) 
 
     
 def main():
@@ -101,10 +99,8 @@ def main():
     grafo = cg.cria_grafo()
     grafo_cortadas = nx.Graph()
 
-    lock = threading.Lock()
-
     encerrar_thread = threading.Event()  # Criando um evento para encerrar a thread
-    thread = threading.Thread(target=avanca_tempo_virtual, args=(health_planet, grafo, encerrar_thread,lock))
+    thread = threading.Thread(target=avanca_tempo_virtual, args=(health_planet, grafo, encerrar_thread))
     thread.start()
 
     meteorologia=1
@@ -148,8 +144,7 @@ def main():
                         print("Valor inválido")
                         
                 elif(i==2):
-                    with lock:
-                        health_planet.ver_estafetas()
+                    health_planet.ver_estafetas()
 
                 elif(i==3):
                     id=int(input("Introduza o id do estafeta: "))
@@ -190,8 +185,7 @@ def main():
                         print("Introduza um valor inteiro")
                 
                 elif(i==7):
-                    with lock:
-                        health_planet.ver_encomendas()
+                    health_planet.ver_encomendas()
 
                 elif(i==8):
                     try:

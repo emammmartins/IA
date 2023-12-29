@@ -18,4 +18,4 @@ Atualizar quando muda tempo
 Atualizar quando muda transito
 
 ...........................................................
-Nao posso por o percurso e deixar o que ja fez porque depois a ver a posicao atual n á a aresta
+No caso de cortar todas as estradas para 1 sitio, o que fazer?

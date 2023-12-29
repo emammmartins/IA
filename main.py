@@ -11,26 +11,43 @@ import networkx as nx
 def atualiza_encomendas(encomenda,meio_de_transporte,grafo,meteorologia,altura_do_dia):
 
     caminho_antigo=encomenda.caminho
-    primeira_ocorrencia = caminho_antigo.index(encomenda.ultimo_local_passou)
+    ocorrencia = caminho_antigo.index(encomenda.ultimo_local_passou)
     if(encomenda.destino!="Armazem"):
-        caminho_antigo = caminho_antigo[:primeira_ocorrencia]
+        caminho_antigo = caminho_antigo[:ocorrencia]
         path1,_ = ap.dijkstra(grafo,encomenda.ultimo_local_passou,encomenda.destino)
         path2,_=ap.dijkstra(grafo,encomenda.destino,"Armazem")
         path=caminho_antigo+path1
         path=trajeto_completo_estafeta(path,path2)
+        trajeto_novo=trajeto_completo_estafeta(path1,path2)
     else:
-        segunda_ocorrencia = caminho_antigo.index(encomenda.ultimo_local_passou, primeira_ocorrencia + 1)
-        caminho_antigo = caminho_antigo[:segunda_ocorrencia + 1]
+        ocorrencia = caminho_antigo.index(encomenda.ultimo_local_passou, ocorrencia + 1)
+        caminho_antigo = caminho_antigo[:ocorrencia + 1]
         path1,_=ap.dijkstra(grafo,encomenda.ultimo_local_passou,"Armazem")
         path=caminho_antigo+path1
+        trajeto_novo=path1
 
     if meio_de_transporte==1:
-        tempo, vel_medias=altera_velocidade(meteorologia,altura_do_dia,path, 10-(0.6*encomenda.peso), grafo)
+        tempo, vel_medias_novas=altera_velocidade(meteorologia,altura_do_dia,trajeto_novo, 10-(0.6*encomenda.peso), grafo)
+        if ocorrencia-1<0:
+            ocorrencia=0
+        else:
+            ocorrencia-=1
+        vel_medias=encomenda.velocidades_medias[:ocorrencia-1]+vel_medias_novas
     elif meio_de_transporte==2:
-        tempo, vel_medias=altera_velocidade(meteorologia,altura_do_dia,path, 35-(0.5*encomenda.peso), grafo)
+        tempo, vel_medias_novas=altera_velocidade(meteorologia,altura_do_dia,trajeto_novo, 35-(0.5*encomenda.peso), grafo)
+        if ocorrencia-1<0:
+            ocorrencia=0
+        else:
+            ocorrencia-=1
+        vel_medias=encomenda.velocidades_medias[:ocorrencia-1]+vel_medias_novas
     else:
-        tempo, vel_medias=altera_velocidade(meteorologia,altura_do_dia,path, 50-(0.1*encomenda.peso), grafo)
-    return tempo, vel_medias, path
+        tempo, vel_medias_novas=altera_velocidade(meteorologia,altura_do_dia,trajeto_novo, 50-(0.1*encomenda.peso), grafo)
+        if ocorrencia-1<0:
+            ocorrencia=0
+        else:
+            ocorrencia-=1
+        vel_medias=encomenda.velocidades_medias[:ocorrencia]+vel_medias_novas
+    return tempo*2, vel_medias, path
 
 def trajeto_completo_estafeta(lista1,lista2):
     lista_concatenada = lista1 + lista2[1:]
@@ -232,7 +249,7 @@ def main():
                         print("Não foi possível apresentar o solicitado")
 
                 elif(i==9):
-                    try:
+                    #try:
                         cg.str_arestas_grafo(grafo)
                         id = int(input("Introduza a estrada que vai ser cortada:"))
                         cg.mover_aresta_entre_grafos(id,grafo,grafo_cortadas)
@@ -264,10 +281,10 @@ def main():
 
                         #Para voltar a correr a thread
                         encerrar_thread.clear()
-                    except:
-                        print("Introduziu um valor invalido")
+                    #except:
+                        #print("Introduziu um valor invalido")
                 elif(i==10):
-                    try:
+                    #try:
                         cg.str_arestas_grafo(grafo_cortadas)
                         id = int(input("Introduza a estrada que vai ser reposta:"))
                         cg.mover_aresta_entre_grafos(id,grafo_cortadas,grafo)
@@ -299,8 +316,8 @@ def main():
 
                         #Para voltar a correr a thread
                         encerrar_thread.clear()
-                    except:
-                        print("Introduziu um valor invalido")
+                    #except:
+                        #print("Introduziu um valor invalido")
 
 
 

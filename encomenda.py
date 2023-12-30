@@ -17,7 +17,7 @@ class Encomenda:
         self.id_estafeta = None
         self.tempo_previsto=0 #Tempo que se calculou para a entrega da encomenda
         self.tempo_que_percorreu=0 #Tempo que passou desde que se pediu a encomenda
-        self.tempo_total_viagem=0
+        self.tempo_total_viagem=0 #Tempo de ida e volta
         self.tempo_transporte=0 #Tempo de viagem que ainda falta fazer
         self.caminho=[]
         self.ultimo_local_passou="Armazem"

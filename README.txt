@@ -1,18 +1,13 @@
-Estradas cortadas
-Autoestradas
-
-............................................................................
-
-Trânsito
-
-............................................................................
-
 Estatísticas (inventar algumas queries)
-    Classificação média
-Impedir que cortem estradas sem que haja maneira de ir para ou sair de um sitio
-Funcionalidade de parar o tempo e de o retomar
+    Classificação média 
+    Tempo médio por encomenda
+    Tempo médio de entrega por estafeta
+    distância média percorrida por encomenda
+    preço médio das encomendas
+    lista dos estafetas por classificação
+    lista de estafetas por número de encomendas efetuadas (sem atraso)
 
-Modularidade/locks nas cenas da ema
+Eliminar opção de remover estafetas???
 
 ............................................................................
 
@@ -20,7 +15,5 @@ Dividir relatório para irmos adiantando
 
 Cenas a melhorar (para escrever no relatório):
     threads a correr em paralelo para tornar mais rápido
-
-...........................................................
-No caso de cortar todas as estradas para 1 sitio, o que fazer?
+    mas iam aceder às mesmas informações e com locks seria praticamente sequencial
 

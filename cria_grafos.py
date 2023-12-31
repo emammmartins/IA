@@ -3,7 +3,7 @@ import networkx as nx
 def cria_grafo():
 
         # Criar um grafo valorado
-        G = nx.Graph()
+        G = nx.DiGraph()
 
         # Adicionar nós ao grafo
         G.add_node("Armazem", label="Armazem")
@@ -34,44 +34,43 @@ def cria_grafo():
 
 
 
-        # Adicionar arestas valoradas ao grafo
+        # Adicionar arestas ao grafo
         G.add_edge("Armazem", "Gualtar", weight=6, estrada="terra", transito=0.2)
-        G.add_edge("Gualtar", "SãoVitor", weight=4, estrada="alcatrao", transito=0.4)
+        G.add_edge("Gualtar", "SãoVitor", weight=4, estrada="alcatrão", transito=0.4)
         G.add_edge("Gualtar", "Tenões", weight=4, estrada="paralelo", transito=0)
-        G.add_edge("Gualtar", "Este", weight=4, estrada="alcatrao", transito=0)
+        G.add_edge("Gualtar", "Este", weight=4, estrada="alcatrão", transito=0)
         G.add_edge("Este", "Espinho", weight=5, estrada="paralelo", transito=0.7)
-        G.add_edge("Este", "Tenões", weight=2, estrada="alcatrao", transito=0)
-        G.add_edge("Espinho", "Nogueiró", weight=4, estrada="alcatrao", transito=0.25)
+        G.add_edge("Este", "Tenões", weight=2, estrada="alcatrão", transito=0)
+        G.add_edge("Espinho", "Nogueiró", weight=4, estrada="alcatrão", transito=0.25)
         G.add_edge("Tenões", "Nogueiró", weight=2, estrada="paralelo", transito=0)
-        G.add_edge("Nogueiró", "SãoVitor", weight=8, estrada="alcatrao", transito=0)
+        G.add_edge("Nogueiró", "SãoVitor", weight=8, estrada="alcatrão", transito=0)
         G.add_edge("Lamaçães", "Nogueiró", weight=2, estrada="paralelo", transito=0.9)
         G.add_edge("Lamaçães", "Fraião", weight=1, estrada="terra", transito=0)
-        G.add_edge("Tenões", "SãoVitor", weight=4, estrada="alcatrao", transito=0.2)
+        G.add_edge("Tenões", "SãoVitor", weight=4, estrada="alcatrão", transito=0.2)
         G.add_edge("SãoVitor", "Fraião", weight=6, estrada="paralelo", transito=0)
-        G.add_edge("SãoVitor", "Lamaçães", weight=4, estrada="alcatrao", transito=0.1)
-        G.add_edge("SãoVicente", "SãoVitor", weight=4, estrada="alcatrao", transito=0)
+        G.add_edge("SãoVitor", "Lamaçães", weight=4, estrada="alcatrão", transito=0.1)
+        G.add_edge("SãoVicente", "SãoVitor", weight=4, estrada="alcatrão", transito=0)
         G.add_edge("Fraião", "SãoLázaro", weight=4, estrada="terra", transito=0)
         G.add_edge("SãoJoãoDoSouto", "SãoVicente", weight=3, estrada="terra", transito=0.5)
-        G.add_edge("SãoJoãoDoSouto", "SãoLázaro", weight=4, estrada="paralelo", transito=0)
         G.add_edge("SãoLázaro", "Cividade", weight=2, estrada="paralelo", transito=0.6)
         G.add_edge("SãoJoãoDoSouto", "Cividade", weight=1, estrada="terra", transito=0)
 
         #Arestas invertidas
         G.add_edge("Gualtar", "Armazem", weight=6, estrada="terra", transito=0)
-        G.add_edge("SãoVitor", "Gualtar", weight=4, estrada="alcatrao", transito=0)
+        G.add_edge("SãoVitor", "Gualtar", weight=4, estrada="alcatrão", transito=0)
         G.add_edge("Tenões", "Gualtar", weight=4, estrada="paralelo", transito=0.5)
-        G.add_edge("Este", "Gualtar", weight=4, estrada="alcatrao", transito=0)
+        G.add_edge("Este", "Gualtar", weight=4, estrada="alcatrão", transito=0)
         G.add_edge("Espinho", "Este", weight=5, estrada="paralelo", transito=0.5)
-        G.add_edge("Tenões", "Este", weight=2, estrada="alcatrao", transito=0)
-        G.add_edge("Nogueiró", "Espinho", weight=4, estrada="alcatrao", transito=0.7)
+        G.add_edge("Tenões", "Este", weight=2, estrada="alcatrão", transito=0)
+        G.add_edge("Nogueiró", "Espinho", weight=4, estrada="alcatrão", transito=0.7)
         G.add_edge("Nogueiró", "Tenões", weight=2, estrada="paralelo", transito=0.3)
-        G.add_edge("SãoVitor", "Nogueiró", weight=8, estrada="alcatrao", transito=0.3)
+        G.add_edge("SãoVitor", "Nogueiró", weight=8, estrada="alcatrão", transito=0.3)
         G.add_edge("Nogueiró", "Lamaçães", weight=2, estrada="paralelo", transito=0.2)
         G.add_edge("Fraião", "Lamaçães", weight=1, estrada="terra", transito=0.1)
-        G.add_edge("SãoVitor", "Tenões", weight=4, estrada="alcatrao", transito=0)
+        G.add_edge("SãoVitor", "Tenões", weight=4, estrada="alcatrão", transito=0)
         G.add_edge("Fraião", "SãoVitor", weight=6, estrada="paralelo", transito=0.15)
-        G.add_edge("Lamaçães", "SãoVitor", weight=4, estrada="alcatrao", transito=0)
-        G.add_edge("SãoVitor", "SãoVicente", weight=4, estrada="alcatrao", transito=0)
+        G.add_edge("Lamaçães", "SãoVitor", weight=4, estrada="alcatrão", transito=0)
+        G.add_edge("SãoVitor", "SãoVicente", weight=4, estrada="alcatrão", transito=0)
         G.add_edge("SãoLázaro", "Fraião", weight=4, estrada="terra", transito=0)
         G.add_edge("SãoVicente", "SãoJoãoDoSouto", weight=3, estrada="terra", transito=0)
         G.add_edge("Cividade", "SãoLázaro", weight=3, estrada="paralelo", transito=0.2)
@@ -127,19 +126,33 @@ def str_arestas_grafo(grafo):
                 origin = edge[0]
                 destination = edge[1]
                 weight = edge[2]['weight']
-                print(f"{i}-Origem: {origin}, Destino: {destination}, Peso: {weight}")
+                estrada = edge[2]['estrada']
+                transito = edge[2]['transito']
+                print(f"{i}-Origem: {origin}, Destino: {destination}, Peso: {weight}, Tipo: {estrada}, Trânsito: {transito}")
                 i+=1
 
-def mover_aresta_entre_grafos(numero, grafo1, grafo2):
-    edges = list(grafo1.edges(data=True))
-    
-    aresta_selecionada = edges[numero-1]  
-    origem = aresta_selecionada[0]
-    destino = aresta_selecionada[1]
-    
-    # Adiciona a aresta ao grafo2
-    dados_aresta = aresta_selecionada[2] if len(aresta_selecionada) > 2 else {}
-    grafo2.add_edge(origem, destino, **dados_aresta)
-    
-    # Remove a aresta do grafo1
-    grafo1.remove_edge(origem, destino)
+def mover_aresta_entre_grafos(numero, grafo1, grafo2, corte):
+        edges = list(grafo1.edges(data=True))
+        
+        aresta_selecionada = edges[numero-1]  
+        origem = aresta_selecionada[0]
+        destino = aresta_selecionada[1]
+
+        if corte and len(list(grafo1.successors(origem))) == 1:
+                print(f"A estrada selecionada é a única forma de sair de {origem}, pelo que não pode ser cortada")
+
+        elif corte and len(list(grafo1.predecessors(destino))) == 1:
+                print(f"A estrada selecionada é a única forma de entrar em {destino}, pelo que não pode ser cortada")
+
+        else:
+                # Adiciona a aresta ao grafo2
+                dados_aresta = aresta_selecionada[2] if len(aresta_selecionada) > 2 else {}
+                grafo2.add_edge(origem, destino, **dados_aresta)
+
+                # Remove a aresta do grafo1
+                grafo1.remove_edge(origem, destino)
+
+                if corte:
+                        print (f"A estrada entre {origem} e {destino} foi cortada")
+                else:
+                        print (f"A estrada entre {origem} e {destino} foi reposta")

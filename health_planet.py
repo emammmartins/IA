@@ -18,6 +18,7 @@ class Health_Planet:
         with self.lock_estafetas:
             if estafeta_id in self.dict_estafetas.keys():
                 del self.dict_estafetas[estafeta_id]
+                print("Estafeta removido com sucesso")
             else:
                 print(f"Estafeta com ID {estafeta_id} não encontrado.")
 

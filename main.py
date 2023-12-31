@@ -7,6 +7,7 @@ import povoar as p
 import threading
 import time
 import networkx as nx
+import matplotlib.pyplot as mpl
 
 def atualiza_encomendas(encomenda,meio_de_transporte,grafo,meteorologia,altura_do_dia):
 
@@ -120,7 +121,8 @@ def calculos(dist,meteorologia,altura_do_dia,tempo_pedido, peso, path,health_pla
             if (tempo<tempo_pedido and (tempo_necessario := verifica_disponibilidade (3, tempo, velocidades_medias, tempo_pedido,health_planet,path,True,id_encomenda,dist))!= -1):
                 print(f"Demora {tempo} minutos a realizar a sua entrega de carro pelo seguinte percurso: {path}, mas só é possível entregar daqui a {tempo_necessario} minutos")
             else:
-                print("Nao é possivel entregar a encomenda no tempo pretendido")
+                print("Não é possível entregar a encomenda no tempo pretendido")
+                health_planet.remove_encomenda(id_encomenda)
 
 def avanca_tempo_virtual(health_planet, grafo, encerrar_thread, grafo_cortadas):
     while not encerrar_thread.is_set():
@@ -132,36 +134,40 @@ def main():
     health_planet = hp.Health_Planet()
     p.povoa_estafetas(health_planet)
     grafo = cg.cria_grafo()
-    grafo_cortadas = nx.Graph()
+    grafo_cortadas = nx.DiGraph()
 
-    encerrar_thread = threading.Event()  # Criando um evento para encerrar a thread
+    encerrar_thread = threading.Event()  # Cria um evento para encerrar a thread
     thread = threading.Thread(target=avanca_tempo_virtual, args=(health_planet, grafo, encerrar_thread, grafo_cortadas))
     thread.start()
+    #encerrar_thread.set() #Se quisermos começar com o tempo parado
 
     meteorologia=1
     altura_do_dia=1
 
     i=-2
     while(i!=0):
-            print("\n------MENU-----")
-            print("0-Sair")
-            print("1-Adicionar estafeta")
-            print("2-Visualizar estafetas")
-            print("3-Remover estafeta")
-            print("4-Atrasar estafeta")
-            print("5-Visualizar encomendas")
-            print("6-Visualizar fila de encomendas estafeta")
-            print("7-Fazer Alteracoes")
-            print("8-Realizar encomenda")
+        print("\n------MENU-----")
+        print("0-Sair")
+        print("1-Adicionar estafeta")
+        print("2-Visualizar estafetas")
+        print("3-Remover estafeta")
+        print("4-Atrasar estafeta")
+        print("5-Visualizar encomendas")
+        print("6-Visualizar fila de encomendas estafeta")
+        print("7-Avançar o tempo")
+        print("8-Parar o tempo")
+        print("9-Visualizar grafo")
+        print("10-Fazer Alterações")
+        print("11-Realizar encomenda")
         
 
-        #try:
+        try:
             i=int(input("Introduza uma das opções: "))
             if (i!=0):
                 if (i==1):
                     nome = input("Introduza o nome do estafeta: ")
-                    meio_de_transporte = int(input("Indique o número do tipo de veículo \n1-Bicicleta\n2-Moto\n3-Carro:\n"))
-                    eletrico = int(input("O veiculo é eletrico (1-Sim, 2-Nao)"))
+                    meio_de_transporte = int(input("Indique o número do tipo de veículo \n1-Bicicleta\n2-Moto\n3-Carro:"))
+                    eletrico = int(input("O veículo é elétrico (1-Sim, 2-Não):"))
                     if (meio_de_transporte>0 and meio_de_transporte<4):
                         if(eletrico==1 or eletrico==2):
                             if eletrico==1:
@@ -183,7 +189,6 @@ def main():
                     id=int(input("Introduza o id do estafeta: "))
                     try:
                         health_planet.remove_estafeta(id)
-                        print("Estafeta removido com sucesso")
                     except:
                         print("Não foi possível remover o estafeta")
 
@@ -195,6 +200,7 @@ def main():
                         else:
                             atraso = int(input("Indique o tempo de atraso do estafeta: "))
                             health_planet.dict_estafetas.get(id).aumenta_pausa(atraso)
+                            print(f"O estafeta {id} está {atraso} minutos atrasado")
                     except:
                         print("Não foi possível registar o atraso do estafeta")
   
@@ -211,79 +217,129 @@ def main():
                     except:
                         print("Não foi possível apresentar o solicitado")
 
-                elif(i==7):#Alterar parametro
-                    encerrar_thread.set()
+
+                elif(i==7):
+                    try:
+                        if encerrar_thread.is_set():
+                            encerrar_thread.clear()
+                            print("O tempo está a avançar")
+                        else:
+                            print("O tempo já estava a avançar")
+                    except:
+                        print("Não foi possível avancar o tempo")
+
+
+                elif(i==8):
+                    try:
+                        if not encerrar_thread.is_set():
+                            encerrar_thread.set()
+                            print("O tempo encontra-se parado")
+                        else:
+                            print("O tempo já estava parado")
+                    except:
+                        print("Não foi possível avancar o tempo")
+
+                elif(i==9):
+                    try:
+                        print("Feche a representação do grafo para continuar")
+                        nx.draw(grafo, with_labels=True, font_weight='bold')
+                        mpl.show()
+                    except:
+                        print("Não foi possível apresentar o grafo")
+
+
+
+
+
+
+
+
+                elif(i==10):#Alterar parametro
+                    if not encerrar_thread.is_set():
+                        encerrar_thread.set()
 
                     opcao=-1
                     while(opcao!=0):
                         print("\n------ALTERAR-----")
-                        print("0-Terminal alteracoes")
+                        print("0-Terminar alterações")
                         print("1-Cortar estrada")
                         print("2-Repor estrada")
                         print("3-Alterar altura do dia")
                         print("4-Alterar meteorologia")
-                        print("5-Alterar transito de uma estrada")
-                        opcao=int(input("Introduza a opcao que pretende realizar: "))
+                        print("5-Alterar trânsito de uma estrada")
+                        opcao=int(input("Introduza a opção que pretende realizar: "))
                         
                         if (opcao==1): 
                             if(len(grafo.edges()) == 0):
-                                print("Nao existem estradas que nao estejam cortadas")
+                                print("Não existem estradas que não estejam cortadas")
                             else:
                                 cg.str_arestas_grafo(grafo)
                                 try:
                                     id = int(input("Introduza a estrada que vai ser cortada:"))
-                                    cg.mover_aresta_entre_grafos(id,grafo,grafo_cortadas)
+                                    if id>0 and id<=grafo.number_of_edges():
+                                        print(id)
+                                        cg.mover_aresta_entre_grafos(id,grafo,grafo_cortadas,True)
+                                    else:
+                                        print ("Introduza um valor válido")
                                 except:
-                                    print("Introduza um valor valido")
+                                    print("Introduza um valor válido")
                         elif(opcao==2):
                             if(len(grafo_cortadas.edges()) == 0):
-                                print("Nao existem estradas cortadas")
+                                print("Não existem estradas cortadas")
                             else:
                                 cg.str_arestas_grafo(grafo_cortadas)
                                 try:
                                     id = int(input("Introduza a estrada que vai ser reposta:"))
-                                    cg.mover_aresta_entre_grafos(id,grafo_cortadas,grafo)
+                                    if id>0 and id<=grafo_cortadas.number_of_edges():
+                                        cg.mover_aresta_entre_grafos(id,grafo_cortadas,grafo,False)
+                                    else:
+                                        print ("Introduza um valor válido")
                                 except:
-                                    print("Introduza um valor valido")
+                                    print("Introduza um valor válido")
                         elif(opcao==3):
                             try:
                                 altura_dia = int(input("Altura do dia: (1-Dia, 2-Noite): "))
                                 if (altura_dia==1 or altura_dia==2):
                                     altura_do_dia=altura_dia
+                                    print("A altura do dia foi alterada com sucesso")
                                 else:
-                                    print("Valor invalido")
+                                    print("Valor inválido")
                             except:
                                 print("Introduza um valor inteiro")
                         elif(opcao==4):
                             try:
-                                met = int(input("Condicoes meteorológicas (1-sol, 2-vento, 3-chuva, 4-nevoeiro, 5-tempestade): "))
+                                met = int(input("Condições meteorológicas (1-sol, 2-vento, 3-chuva, 4-nevoeiro, 5-tempestade): "))
                                 if(met>0 and met<6):
                                     meteorologia=met
+                                    print("A meteorologia foi alterada com sucesso")
                                 else:
-                                    print("Valor nao é válido")
+                                    print("Valor não é válido")
                             except:
                                 print("Introduza um valor inteiro")
                         elif(opcao==5):
                             if(len(grafo.edges()) == 0):
-                                print("O grafo atual nao tem estradas")
+                                print("O grafo atual não tem estradas")
                             else:
                                 cg.str_arestas_grafo(grafo)
                                 try:
-                                    id = int(input("Introduza a estrada que vai ser cortada:"))
-
-                                    transito=float(input("Introduza o valor do transsito (entre 0 e 1):"))
-                                    if (transito>=0 and transito<=1):
-                                        edges = list(grafo.edges(data=True))
-                                        aresta_selecionada = edges[id-1]  
-                                        origem = aresta_selecionada[0]
-                                        destino = aresta_selecionada[1]
-                                        print(grafo[origem][destino]['transito'])
-                                        grafo[origem][destino]['transito']=transito
-                                        print(grafo[origem][destino]['transito'])
+                                    id = int(input("Introduza a estrada em que pretende alterar o trânsito:"))
+                                    if id>0 and id<=grafo.number_of_edges():
+                                        transito=float(input("Introduza o valor do trânsito (entre 0 e 0.9):"))
+                                        if (transito>=0 and transito<=0.9):
+                                            edges = list(grafo.edges(data=True))
+                                            aresta_selecionada = edges[id-1]  
+                                            origem = aresta_selecionada[0]
+                                            destino = aresta_selecionada[1]
+                                            #print(grafo[origem][destino]['transito'])
+                                            grafo[origem][destino]['transito']=transito
+                                            #print(grafo[origem][destino]['transito'])
+                                            print(f"O trânsito de {origem} para {destino} foi alterado para {transito}")
+                                        else:
+                                            print("O trânsito tem de ser um valor entre 0 e 0.9")
                                     else:
-                                        print("O transito tem de ser um valor entre 0 e 1")
+                                        print ("Introduza um valor válido")
                                 except:
-                                    print("Introduza um valor valido")
+                                    print("Introduza um valor válido")
                             
                     #O que temos de atualizar no estafeta
                     for estafeta in health_planet.dict_estafetas.values():
@@ -326,15 +382,7 @@ def main():
 
 
 
-
-
-
-
-
-
-
-
-                elif(i==8):
+                elif(i==11):
                     print("\n------ALGORITMO-----")
                     print("1-Dijkstra")
                     print("2-Interativo")
@@ -344,97 +392,97 @@ def main():
                     print("6-Procura Gulosa")
                     print("7-Procura A*")
 
-                    #try:
-                    opcao=int(input("Introduza uma das opcoes:"))
-                    volume=int(input("\nIntroduza o volume da encomenda:"))
-                    peso=float(input("\nIntroduza o peso da encomenda em Kg:"))
-                    tempo=int(input("\nQual o tempo máximo em minutos:"))
-                    terra=input("\nPara onde deseja encomendar:")
+                    try:
+                        opcao=int(input("Introduza uma das opções:"))
+                        volume=int(input("\nIntroduza o volume da encomenda:"))
+                        peso=float(input("\nIntroduza o peso da encomenda em Kg:"))
+                        tempo=int(input("\nQual o tempo máximo em minutos:"))
+                        terra=input("\nPara onde deseja encomendar:")
 
-                        #try:
-                    encomenda=en.Encomenda(peso,volume, tempo)
-                    health_planet.add_encomenda(encomenda.id,encomenda)
-                    if (peso>0 and peso<=100):
-                        #.....................Varios algoritmos.................
-                        if (opcao==1):
-                            try:
-                                path1,dist = ap.dijkstra(grafo,"Armazem",terra)
-                                path2,_=ap.dijkstra(grafo,terra,"Armazem")
-                                path=trajeto_completo_estafeta(path1,path2)
-                                calculos (dist,meteorologia,altura_do_dia, tempo, peso, path,health_planet,grafo,encomenda.id)
-                            except:
-                                print("O destino selecionado não existe")
+                        try:
+                            encomenda=en.Encomenda(peso,volume, tempo)
+                            health_planet.add_encomenda(encomenda.id,encomenda)
+                            if (peso>0 and peso<=100):
+                                #.....................Varios algoritmos.................
+                                if (opcao==1):
+                                    try:
+                                        path1,dist = ap.dijkstra(grafo,"Armazem",terra)
+                                        path2,_=ap.dijkstra(grafo,terra,"Armazem")
+                                        path=trajeto_completo_estafeta(path1,path2)
+                                        calculos (dist,meteorologia,altura_do_dia, tempo, peso, path,health_planet,grafo,encomenda.id)
+                                    except:
+                                        print("O destino selecionado não existe")
 
-                        elif (opcao==2):
-                            try:
-                                path1,dist = ap.dijkstra(grafo,"Armazem",terra)
-                                path2,_=ap.dijkstra(grafo,terra,"Armazem")
-                                path=trajeto_completo_estafeta(path1,path2)
-                                calculos(dist,meteorologia,altura_do_dia,tempo,peso,path,health_planet,grafo,encomenda.id)
-                            except:
-                                print("O destino selecionado não existe")
+                                elif (opcao==2):
+                                    try:
+                                        path1,dist = ap.dijkstra(grafo,"Armazem",terra)
+                                        path2,_=ap.dijkstra(grafo,terra,"Armazem")
+                                        path=trajeto_completo_estafeta(path1,path2)
+                                        calculos(dist,meteorologia,altura_do_dia,tempo,peso,path,health_planet,grafo,encomenda.id)
+                                    except:
+                                        print("O destino selecionado não existe")
 
-                        elif (opcao==3):
-                            try:
-                                path1,dist = ap.dijkstra(grafo,"Armazem",terra)
-                                path2,_=ap.dijkstra(grafo,terra,"Armazem")
-                                path=trajeto_completo_estafeta(path1,path2)
-                                calculos (dist,meteorologia,altura_do_dia, tempo, peso, path,health_planet,grafo,encomenda.id)
-                            except:
-                                print("O destino selecionado não existe")
+                                elif (opcao==3):
+                                    try:
+                                        path1,dist = ap.dijkstra(grafo,"Armazem",terra)
+                                        path2,_=ap.dijkstra(grafo,terra,"Armazem")
+                                        path=trajeto_completo_estafeta(path1,path2)
+                                        calculos (dist,meteorologia,altura_do_dia, tempo, peso, path,health_planet,grafo,encomenda.id)
+                                    except:
+                                        print("O destino selecionado não existe")
 
-                        elif (opcao==4):
-                            try:
-                                path1,dist = ap.dijkstra(grafo,"Armazem",terra)
-                                path2,_=ap.dijkstra(grafo,terra,"Armazem")
-                                path=trajeto_completo_estafeta(path1,path2)
-                                calculos (dist,meteorologia,altura_do_dia, tempo, peso, path,health_planet,grafo,encomenda.id)
-                            except :
-                                print("O destino selecionado não existe")
+                                elif (opcao==4):
+                                    try:
+                                        path1,dist = ap.dijkstra(grafo,"Armazem",terra)
+                                        path2,_=ap.dijkstra(grafo,terra,"Armazem")
+                                        path=trajeto_completo_estafeta(path1,path2)
+                                        calculos (dist,meteorologia,altura_do_dia, tempo, peso, path,health_planet,grafo,encomenda.id)
+                                    except :
+                                        print("O destino selecionado não existe")
 
-                        elif (opcao==5):
-                            try:
-                                path1,dist = ap.dijkstra(grafo,"Armazem",terra)
-                                path2,_=ap.dijkstra(grafo,terra,"Armazem")
-                                path=trajeto_completo_estafeta(path1,path2)
-                                calculos (dist,meteorologia,altura_do_dia, tempo, peso, path,health_planet,grafo,encomenda.id)
-                            except :
-                                print("O destino selecionado não existe")
+                                elif (opcao==5):
+                                    try:
+                                        path1,dist = ap.dijkstra(grafo,"Armazem",terra)
+                                        path2,_=ap.dijkstra(grafo,terra,"Armazem")
+                                        path=trajeto_completo_estafeta(path1,path2)
+                                        calculos (dist,meteorologia,altura_do_dia, tempo, peso, path,health_planet,grafo,encomenda.id)
+                                    except :
+                                        print("O destino selecionado não existe")
 
-                        elif (opcao==6):
-                            try:
-                                path1,dist = ap.dijkstra(grafo,"Armazem",terra)
-                                path2,_=ap.dijkstra(grafo,terra,"Armazem")
-                                path=trajeto_completo_estafeta(path1,path2)
-                                calculos (dist,meteorologia,altura_do_dia, tempo, peso, path,health_planet,grafo,encomenda.id)
-                            except :
-                                print("O destino selecionado não existe")
+                                elif (opcao==6):
+                                    try:
+                                        path1,dist = ap.dijkstra(grafo,"Armazem",terra)
+                                        path2,_=ap.dijkstra(grafo,terra,"Armazem")
+                                        path=trajeto_completo_estafeta(path1,path2)
+                                        calculos (dist,meteorologia,altura_do_dia, tempo, peso, path,health_planet,grafo,encomenda.id)
+                                    except :
+                                        print("O destino selecionado não existe")
 
-                        elif (opcao==7):
-                            #try:
-                                path1,dist = ap.dijkstra(grafo,"Armazem",terra)
-                                path2,_=ap.dijkstra(grafo,terra,"Armazem")
-                                path=trajeto_completo_estafeta(path1,path2)
-                                calculos (dist,meteorologia,altura_do_dia, tempo, peso, path,health_planet,grafo,encomenda.id)
-                            #except :
-                            #    print("O destino selecionado não existe")
+                                elif (opcao==7):
+                                    try:
+                                        path1,dist = ap.dijkstra(grafo,"Armazem",terra)
+                                        path2,_=ap.dijkstra(grafo,terra,"Armazem")
+                                        path=trajeto_completo_estafeta(path1,path2)
+                                        calculos (dist,meteorologia,altura_do_dia, tempo, peso, path,health_planet,grafo,encomenda.id)
+                                    except :
+                                        print("O destino selecionado não existe")
 
-                        else:
-                            print("O algoritmo escolhido não é válido")
-                        #........................................................                                
-                    else:
-                            print("Peso impossivel")
-                        #except :
-                        #        print("Não foi possível registar a encomenda")
-                    #except :
-                    #    print("Os valores introduzidos sao inválidos")
+                                else:
+                                    print("O algoritmo escolhido não é válido")
+                                #........................................................                                
+                            else:
+                                    print("Peso impossível")
+                        except :
+                                print("Não foi possível registar a encomenda")
+                    except :
+                        print("Os valores introduzidos são inválidos")
                 else:
                     print ("Introduza um valor válido")
             else:
                     encerrar_thread.set()
-        #except ValueError:
-        #    print("Introduza um valor válido")
-        #    i=-2
+        except ValueError:
+            print("Introduza um valor válido")
+            i=-2
 
 if __name__ == "__main__":
     main()

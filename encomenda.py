@@ -27,7 +27,7 @@ class Encomenda:
         
     def __str__(self):
         with self.lock_encomenda:
-            return f"ID: {self.id}, Peso: {self.peso}, Volume: {self.volume}, Tempo máximo: {self.tempo}, Preco: {self.preco}, Id do Estafeta: {self.id_estafeta},\nEncomenda Entregue: {self.chegou_ao_destino}, Último Local: {self.ultimo_local_passou}, Caminho: {self.caminho},\nTempo para entrega previsto: {self.tempo_previsto}, Tempo total decorrido: {self.tempo_que_percorreu}, Tempo previsto de entrega dessa encomenda: {self.tempo_total_viagem}, Tempo que ainda falta percorrer: {self.tempo_transporte}\n"
+            return f"ID: {self.id}, Peso: {self.peso}, Volume: {self.volume}, Tempo máximo: {self.tempo}, Preço: {self.preco}, Id do Estafeta: {self.id_estafeta},\nEncomenda Entregue: {self.chegou_ao_destino}, Último Local: {self.ultimo_local_passou}, Caminho: {self.caminho},\nTempo para entrega previsto: {self.tempo_previsto}, Tempo total decorrido: {self.tempo_que_percorreu}, Tempo previsto da viagem: {self.tempo_total_viagem}, Tempo que ainda falta percorrer da viagem: {self.tempo_transporte}\n"
 
     def get_caminho(self):
         with self.lock_encomenda:

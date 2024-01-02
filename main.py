@@ -263,20 +263,16 @@ def main():
                     except:
                         print("Não foi possível apresentar o grafo")
                 elif(i==10):  
-                    print("Feche a representação do grafo para continuar")
-                    id_estafeta = int(input("Introduza o valor do estafeta que quer observar: "))
+                    try:
+                        print("Feche a representação do grafo para continuar")
+                        id_estafeta = int(input("Introduza o valor do estafeta que quer observar: "))
 
-                    pos = nx.spring_layout(grafo)
-                    fig, ax = mpl.subplots()
-                    ani = FuncAnimation(fig, lambda frame: update(id_estafeta, health_planet, grafo,ax,pos), frames=10, interval=1000)
-                    mpl.show()
-
-
-
-
-
-
-
+                        pos = nx.spring_layout(grafo)
+                        fig, ax = mpl.subplots()
+                        ani = FuncAnimation(fig, lambda frame: update(id_estafeta, health_planet, grafo,ax,pos), frames=10, interval=1000)
+                        mpl.show()
+                    except:
+                        print("Nao foi possivel realizar a operacao")
 
                 elif(i==11):#Alterar parametro
                     if not encerrar_thread.is_set():

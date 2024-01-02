@@ -174,8 +174,9 @@ def main():
         print("9-Visualizar grafo")
         print("10-Ver posicao de estafeta no grafo")
         print("11-Fazer Alterações")
-        print("12-Realizar encomenda")
-        print("13-Visualizar estatísticas")
+        print("12-Comparar algoritmos")
+        print("13-Realizar encomenda")
+        print("14-Visualizar estatísticas")
         
 
         try:
@@ -399,8 +400,59 @@ def main():
                     except:
                         print("Erro ao realizar as alterações")
 
-
                 elif(i==12):
+                    try:
+                        origem=input("\nOrigem: ")
+                        destino=input("\nDestino: ")
+
+                        print("1-Dijkstra")
+                        trajeto_final,_,trajeto_completo= ap.dijkstra(grafo,origem,destino)
+                        print("Trajeto completo: "+trajeto_completo)
+                        print("Trajeto final: "+trajeto_final)
+                        print("\n")
+
+                        print("2-Interativo")
+                        trajeto_final,_,trajeto_completo= ap.iterative_deepening_dfs(grafo,origem,destino)
+                        print("Trajeto completo: "+trajeto_completo)
+                        print("Trajeto final: "+trajeto_final)
+                        print("\n")
+
+                        print("3-Procura em profundidade(DFS)")
+                        trajeto_final,_,trajeto_completo= ap.depth_limited_dfs(grafo,origem,destino)
+                        print("Trajeto completo: "+trajeto_completo)
+                        print("Trajeto final: "+trajeto_final)
+                        print("\n")
+
+                        print("4-Procura Bidirecional")
+                        trajeto_final,_,trajeto_completo= ap.bidirectional_search(grafo,origem,destino)
+                        print("Trajeto completo: "+trajeto_completo)
+                        print("Trajeto final: "+trajeto_final)
+                        print("\n")
+
+                        print("5-Procura em largura(BFS)")
+                        trajeto_final,_,trajeto_completo= ap.bfs(grafo,origem,destino)
+                        print("Trajeto completo: "+trajeto_completo)
+                        print("Trajeto final: "+trajeto_final)
+                        print("\n")
+
+                        print("6-Procura Gulosa")
+                        trajeto_final,_,trajeto_completo= ap.greedy_shortest_path(grafo,origem,destino)
+                        print("Trajeto completo: "+trajeto_completo)
+                        print("Trajeto final: "+trajeto_final)
+                        print("\n")
+
+                        print("7-Procura A*")
+                        trajeto_final,_,trajeto_completo= ap.algoritmoAEstrela(grafo,origem,destino)
+                        print("Trajeto completo: "+trajeto_completo)
+                        print("Trajeto final: "+trajeto_final)
+                        print("\n")
+
+                    except:
+                        print("Nao foi possivel realizar a operação")
+
+
+
+                elif(i==13):
                     print("\n------ALGORITMO-----")
                     print("1-Dijkstra")
                     print("2-Iterativo")
@@ -433,8 +485,8 @@ def main():
 
                                 elif (opcao==2):
                                     try:
-                                        path1,dist = ap.dijkstra(grafo,"Armazem",terra)
-                                        path2,_=ap.dijkstra(grafo,terra,"Armazem")
+                                        path1,dist = ap.iterative_deepening_dfs(grafo,"Armazem",terra)
+                                        path2,_=ap.iterative_deepening_dfs(grafo,terra,"Armazem")
                                         path=trajeto_completo_estafeta(path1,path2)
                                         calculos(dist,meteorologia,altura_do_dia,tempo,peso,path,health_planet,grafo,encomenda.id)
                                     except:
@@ -442,8 +494,8 @@ def main():
 
                                 elif (opcao==3):
                                     try:
-                                        path1,dist = ap.dijkstra(grafo,"Armazem",terra)
-                                        path2,_=ap.dijkstra(grafo,terra,"Armazem")
+                                        path1,dist = ap.depth_limited_dfs(grafo,"Armazem",terra)
+                                        path2,_=ap.depth_limited_dfs(grafo,terra,"Armazem")
                                         path=trajeto_completo_estafeta(path1,path2)
                                         calculos (dist,meteorologia,altura_do_dia, tempo, peso, path,health_planet,grafo,encomenda.id)
                                     except:
@@ -451,8 +503,8 @@ def main():
 
                                 elif (opcao==4):
                                     try:
-                                        path1,dist = ap.dijkstra(grafo,"Armazem",terra)
-                                        path2,_=ap.dijkstra(grafo,terra,"Armazem")
+                                        path1,dist = ap.bidirectional_search(grafo,"Armazem",terra)
+                                        path2,_=ap.bidirectional_search(grafo,terra,"Armazem")
                                         path=trajeto_completo_estafeta(path1,path2)
                                         calculos (dist,meteorologia,altura_do_dia, tempo, peso, path,health_planet,grafo,encomenda.id)
                                     except :
@@ -460,8 +512,8 @@ def main():
 
                                 elif (opcao==5):
                                     try:
-                                        path1,dist = ap.dijkstra(grafo,"Armazem",terra)
-                                        path2,_=ap.dijkstra(grafo,terra,"Armazem")
+                                        path1,dist = ap.bfs(grafo,"Armazem",terra)
+                                        path2,_=ap.bfs(grafo,terra,"Armazem")
                                         path=trajeto_completo_estafeta(path1,path2)
                                         calculos (dist,meteorologia,altura_do_dia, tempo, peso, path,health_planet,grafo,encomenda.id)
                                     except :
@@ -469,8 +521,8 @@ def main():
 
                                 elif (opcao==6):
                                     try:
-                                        path1,dist = ap.dijkstra(grafo,"Armazem",terra)
-                                        path2,_=ap.dijkstra(grafo,terra,"Armazem")
+                                        path1,dist = ap.greedy_shortest_path(grafo,"Armazem",terra)
+                                        path2,_=ap.greedy_shortest_path(grafo,terra,"Armazem")
                                         path=trajeto_completo_estafeta(path1,path2)
                                         calculos (dist,meteorologia,altura_do_dia, tempo, peso, path,health_planet,grafo,encomenda.id)
                                     except :
@@ -478,8 +530,8 @@ def main():
 
                                 elif (opcao==7):
                                     try:
-                                        path1,dist = ap.dijkstra(grafo,"Armazem",terra)
-                                        path2,_=ap.dijkstra(grafo,terra,"Armazem")
+                                        path1,dist = ap.algoritmoAEstrela(grafo,"Armazem",terra)
+                                        path2,_=ap.algoritmoAEstrela(grafo,terra,"Armazem")
                                         path=trajeto_completo_estafeta(path1,path2)
                                         calculos (dist,meteorologia,altura_do_dia, tempo, peso, path,health_planet,grafo,encomenda.id)
                                     except :
@@ -500,7 +552,7 @@ def main():
                         health_planet.remove_encomenda(encomenda.id)
                 
 
-                elif (i==13):
+                elif (i==14):
                     opcao=-1
                     while(opcao!=0):
                         try:

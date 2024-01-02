@@ -17,8 +17,11 @@ class Health_Planet:
     def remove_estafeta(self, estafeta_id):
         with self.lock_estafetas:
             if estafeta_id in self.dict_estafetas.keys():
-                del self.dict_estafetas[estafeta_id]
-                print("Estafeta removido com sucesso")
+                if self.dict_estafetas[estafeta_id].get_encomenda_atual() == None and self.dict_estafetas[estafeta_id].get_nr_encomendas_fila==0:
+                    del self.dict_estafetas[estafeta_id]
+                    print("Estafeta removido com sucesso")
+                else:
+                    print(f"Não é possível remover o estafeta com ID {estafeta_id} porque este tem encomendas pendentes")
             else:
                 print(f"Estafeta com ID {estafeta_id} não encontrado.")
 
@@ -95,5 +98,161 @@ class Health_Planet:
             for encomenda in self.dict_encomendas.values():
                 if encomenda.get_chegou_ao_destino() == False:
                     encomenda.aumenta_tempo_que_percorreu()
-                
 
+
+     
+                
+    #Estatísticas
+    #1
+    def classificacao_media(self):
+        with self.lock_estafetas:
+            classificacao = 0
+            estafetas = 0
+            for estafeta in self.dict_estafetas.values():
+                classificacao += estafeta.get_classificacao()
+                estafetas += 1
+        if estafetas > 0:
+            return classificacao/estafetas
+        else:
+            return -1
+    #2
+    def preco_medio(self):
+        with self.lock_encomendas:
+            preco = 0
+            encomendas = 0
+            for encomenda in self.dict_encomendas.values():
+                preco_encomenda = encomenda.get_preco()
+                if preco_encomenda > -1:
+                    preco += preco_encomenda
+                    encomendas += 1
+        if encomendas > 0:
+            return preco/encomendas
+        else:
+            return -1
+
+    #3    
+    def tempo_encomenda_medio(self):
+        with self.lock_encomendas:
+            tempo = 0
+            encomendas = 0
+            for encomenda in self.dict_encomendas.values():
+                if encomenda.get_chegou_ao_destino():
+                    tempo += encomenda.get_tempo_que_percorreu()
+                    encomendas += 1
+        if encomendas > 0:
+            return tempo/encomendas
+        else:
+            return -1
+
+    #4    
+    def tempo_atraso_medio(self):
+        with self.lock_encomendas:
+            atraso = 0
+            encomendas = 0
+            for encomenda in self.dict_encomendas.values():
+                if encomenda.get_chegou_ao_destino():
+                    atraso += encomenda.get_atraso()
+                    encomendas += 1
+        if encomendas > 0:
+            return atraso/encomendas
+        else:
+            return -1
+
+
+    #aux
+    def media(self,lista):
+        if len(lista)<1:
+            return None
+        return sum(lista)/len(lista)
+
+    #5
+    def tempo_encomenda_medio_por_estafeta(self):
+        tempo_por_estafeta = {}
+        with self.lock_encomendas:
+            for encomenda in self.dict_encomendas.values():
+                id_estafeta = encomenda.get_id_estafeta()
+                if id_estafeta != None and encomenda.get_chegou_ao_destino():
+                    if id_estafeta in tempo_por_estafeta:
+                        tempo_por_estafeta[id_estafeta].append(encomenda.get_tempo_que_percorreu())
+                    else:
+                        tempo_por_estafeta[id_estafeta] = [encomenda.get_tempo_que_percorreu()]
+
+        with self.lock_estafetas:
+            for id, estafeta in self.dict_estafetas.items():
+                if id in tempo_por_estafeta.keys():
+                    estafeta.imprime(1,self.media(tempo_por_estafeta[id]))
+                else:
+                    estafeta.imprime(1,None)
+
+    #6
+    def tempo_atraso_medio_por_estafeta(self):
+        tempo_por_estafeta = {}
+        with self.lock_encomendas:
+            for encomenda in self.dict_encomendas.values():
+                id_estafeta = encomenda.get_id_estafeta()
+                if id_estafeta != None and encomenda.get_chegou_ao_destino():
+                    if id_estafeta in tempo_por_estafeta:
+                        tempo_por_estafeta[id_estafeta].append(encomenda.get_atraso())
+                    else:
+                        tempo_por_estafeta[id_estafeta] = [encomenda.get_atraso()]
+        
+        with self.lock_estafetas:
+            for id, estafeta in self.dict_estafetas.items():
+                if id in tempo_por_estafeta.keys():
+                    estafeta.imprime(2,self.media(tempo_por_estafeta[id]))
+                else:
+                    estafeta.imprime(2,None)
+
+    #7
+    def ordena_estafetas_classificacao(self):
+        classificacao_estafetas = {}
+        with self.lock_estafetas:
+            for estafeta_id, estafeta in self.dict_estafetas.items():
+                classificacao = estafeta.get_classificacao()
+                classificacao_estafetas[estafeta_id] = classificacao
+
+        estafetas_ordenados = sorted(classificacao_estafetas.items(), key=lambda x: x[1], reverse=True) #.items() transforma o dicionário em lista de pares (key,value), x[1] vai buscar o segundo elemento
+        
+        for id, _ in estafetas_ordenados:
+            estafeta = self.dict_estafetas.get(id)
+            if estafeta is not None:
+                estafeta.imprime(3,_)
+
+    #8
+    def ordena_estafetas_nr_encomendas(self):
+        encomendas_por_estafeta = {}
+        with self.lock_encomendas:
+            for encomenda in self.dict_encomendas.values():
+                id_estafeta = encomenda.get_id_estafeta()
+                if id_estafeta != None and encomenda.get_chegou_ao_destino():
+                    if id_estafeta in encomendas_por_estafeta:
+                        encomendas_por_estafeta[id_estafeta] += 1
+                    else:
+                        encomendas_por_estafeta[id_estafeta] = 1
+
+        estafetas_ordenados = sorted(encomendas_por_estafeta.items(), key=lambda x: x[1], reverse=True) #.items() transforma o dicionário em lista de pares (key,value), x[1] vai buscar o segundo elemento
+        
+        for id, encomendas in estafetas_ordenados:
+            estafeta = self.dict_estafetas.get(id)
+            if estafeta is not None:
+                estafeta.imprime(4,encomendas)
+
+    #9
+    def ordena_estafetas_nr_encomendas_sem_atraso(self):
+        encomendas_por_estafeta = {}
+        with self.lock_encomendas:
+            for encomenda in self.dict_encomendas.values():
+                id_estafeta = encomenda.get_id_estafeta()
+                if id_estafeta != None and encomenda.get_chegou_ao_destino() and encomenda.get_atraso()<=0:
+                    if id_estafeta in encomendas_por_estafeta:
+                        encomendas_por_estafeta[id_estafeta] += 1
+                    else:
+                        encomendas_por_estafeta[id_estafeta] = 1
+
+        estafetas_ordenados = sorted(encomendas_por_estafeta.items(), key=lambda x: x[1], reverse=True) #.items() transforma o dicionário em lista de pares (key,value), x[1] vai buscar o segundo elemento
+        
+        for id, encomendas in estafetas_ordenados:
+            with self.lock_estafetas:    
+                estafeta = self.dict_estafetas.get(id)
+            if estafeta is not None:
+                estafeta.imprime(5,encomendas)

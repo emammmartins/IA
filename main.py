@@ -159,6 +159,7 @@ def main():
         print("9-Visualizar grafo")
         print("10-Fazer Alterações")
         print("11-Realizar encomenda")
+        print("12-Visualizar estatísticas")
         
 
         try:
@@ -269,7 +270,9 @@ def main():
                         print("5-Alterar trânsito de uma estrada")
                         opcao=int(input("Introduza a opção que pretende realizar: "))
                         
-                        if (opcao==1): 
+                        if (opcao==0):
+                            pass
+                        elif (opcao==1): 
                             if(len(grafo.edges()) == 0):
                                 print("Não existem estradas que não estejam cortadas")
                             else:
@@ -340,6 +343,8 @@ def main():
                                         print ("Introduza um valor válido")
                                 except:
                                     print("Introduza um valor válido")
+                        else:
+                            print("Introduza um valor válido")
                             
                     #O que temos de atualizar no estafeta
                     for estafeta in health_planet.dict_estafetas.values():
@@ -371,14 +376,6 @@ def main():
                     encerrar_thread.clear()
                 #except:
                     #print("Introduza um valor valido")
-
-
-
-
-
-
-
-
 
 
 
@@ -476,6 +473,79 @@ def main():
                                 print("Não foi possível registar a encomenda")
                     except :
                         print("Os valores introduzidos são inválidos")
+                
+
+                elif (i==12):
+                    opcao=-1
+                    while(opcao!=0):
+                            print("\n-----Estatísticas-----")
+                            print("0-Regressar ao menu principal")
+                            print("1-Classificação média dos estafetas")
+                            print("2-Preço médio das encomendas")
+                            print("3-Tempo médio de entrega das encomendas")
+                            print("4-Tempo médio de atraso das encomendas")
+                            print("5-Tempo médio de entrega por estafeta")
+                            print("6-Tempo médio de atraso por estafeta")
+                            print("7-Lista dos estafetas ordenados por classificação")
+                            print("8-Lista dos estafetas ordenados por número de encomendas efetuadas")
+                            print("9-Lista dos estafetas ordenados por número de encomendas efetuadas sem atrasos")
+                            opcao=int(input("Introduza a opção da estatística que pretende consultar: "))
+                        
+                        #try:
+                            if (opcao==0):
+                                pass
+
+                            elif (opcao==1):
+                                classificacao = health_planet.classificacao_media()
+                                if classificacao != -1:
+                                    print (f"A classificação média dos estafetas é de {classificacao}")
+                                else:
+                                    print("Não existem estafetas")
+
+                            elif (opcao==2):
+                                preco = health_planet.preco_medio()
+                                if preco != -1:
+                                    print (f"O preço médio das encomendas é de {preco} euros")
+                                else:
+                                    print("Não existem encomendas")
+
+                            elif (opcao==3):
+                                tempo_entrega = health_planet.tempo_encomenda_medio()
+                                if tempo_entrega != -1:
+                                    print (f"O tempo médio de entrega das encomendas é de {tempo_entrega} minutos")
+                                else:
+                                    print ("Não existem encomendas entregues")
+
+                            elif (opcao==4):
+                                tempo_atraso = health_planet.tempo_atraso_medio()
+                                if tempo_atraso != -1:
+                                    print (f"O tempo médio de entrega das encomendas é de {tempo_atraso} minutos")
+                                else:
+                                    print ("Não existem encomendas entregues")
+
+                            elif (opcao==5):
+                                health_planet.tempo_encomenda_medio_por_estafeta()
+
+                            elif (opcao==6):
+                                health_planet.tempo_atraso_medio_por_estafeta()
+
+                            elif (opcao==7):
+                                health_planet.ordena_estafetas_classificacao()
+
+                            elif (opcao==8):
+                                health_planet.ordena_estafetas_nr_encomendas()
+
+                            elif (opcao==9):
+                                health_planet.ordena_estafetas_nr_encomendas_sem_atraso()
+
+                            else:
+                                print("Introdiza um valor válido")
+                        
+                        #except:
+                        #    print ("Não foi possível apresentar a estatística pretendida")
+                
+                
+                
                 else:
                     print ("Introduza um valor válido")
             else:

@@ -33,11 +33,33 @@ class Estafeta:
 
         with self.lock_estafeta:
             return f"ID: {self.id}, Nome: {self.nome}, Meio de Transporte: {meio_transporte}, Elétrico: {self.eletrico}, Classificação: {self.calcula_classificacao()}\n Encomenda: {self.encomenda_atual}"
+        
+    def imprime(self, tipo, valor):
+        with self.lock_estafeta:
+            if tipo == 1:
+                print(f"ID: {self.id}, Nome: {self.nome}, Tempo médio de entrega: {valor}")
+            elif tipo == 2:
+                print(f"ID: {self.id}, Nome: {self.nome}, Tempo médio de atraso: {valor}")
+            elif tipo == 3:
+                print(f"ID: {self.id}, Nome: {self.nome}, Classificação: {self.calcula_classificacao()}")
+            elif tipo == 4:
+                print(f"ID: {self.id}, Nome: {self.nome}, Encomendas efetuadas: {valor}")
+            elif tipo == 5:
+                print(f"ID: {self.id}, Nome: {self.nome}, Encomendas efetuadas sem atrasos: {valor}")
     
     #Gets
     def get_encomenda_atual(self):
         with self.lock_estafeta:
             return self.encomenda_atual
+        
+    def get_nr_encomendas_fila(self):
+        with self.lock_estafeta:    
+            copia_fila = list(self.fila_encomendas.queue)
+            return len(copia_fila)
+        
+    def get_classificacao(self):
+        with self.lock_estafeta:
+            return self.calcula_classificacao()
 
     #Calculos
     def calcula_classificacao(self):

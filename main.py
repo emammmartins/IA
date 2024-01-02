@@ -403,7 +403,7 @@ def main():
                 elif(i==12):
                     print("\n------ALGORITMO-----")
                     print("1-Dijkstra")
-                    print("2-Interativo")
+                    print("2-Iterativo")
                     print("3-Procura em profundidade(DFS)")
                     print("4-Procura Bidirecional")
                     print("5-Procura em largura(BFS)")

@@ -52,8 +52,8 @@ def cria_grafo():
         G.add_edge("SãoVicente", "SãoVitor", weight=4, estrada="alcatrão", transito=0)
         G.add_edge("Fraião", "SãoLázaro", weight=4, estrada="terra", transito=0)
         G.add_edge("SãoJoãoDoSouto", "SãoVicente", weight=3, estrada="terra", transito=0.5)
-        G.add_edge("SãoLázaro", "Cividade", weight=2, estrada="paralelo", transito=0.6)
-        G.add_edge("SãoJoãoDoSouto", "Cividade", weight=1, estrada="terra", transito=0)
+        G.add_edge("SãoLázaro", "Cividade", weight=3, estrada="paralelo", transito=0.6)
+        G.add_edge("SãoJoãoDoSouto", "Cividade", weight=2, estrada="terra", transito=0)
 
         #Arestas invertidas
         G.add_edge("Gualtar", "Armazem", weight=6, estrada="terra", transito=0)

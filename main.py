@@ -79,7 +79,6 @@ def altera_velocidade(meteorologia,altura_do_dia,path, vel, grafo):
 
         if posicao < (len(path)-1)/2:
             tempo_ida += int(((distancia / vel_aresta) * 60) + 0.5)
-            print (path[posicao])
         tempo_total += int(((distancia / vel_aresta) * 60) + 0.5)
         vel_medias.append(vel_aresta)
         posicao += 1
@@ -110,20 +109,20 @@ def verifica_disponibilidade (transporte, tempo_ida,tempo_total, velocidades_med
             return tempo_necessario_eletrico
         return -1
 
-def calculos(dist,meteorologia,altura_do_dia,tempo_pedido, peso, path,health_planet,grafo,id_encomenda):
+def calculos(dist,meteorologia,altura_do_dia,tempo_pedido, peso, path,health_planet,grafo,id_encomenda,nodos_percorridos):
 
     tempo_ida,tempo_total, velocidades_medias = altera_velocidade(meteorologia,altura_do_dia,path,10-(0.6*peso), grafo)
     if (peso<=5 and tempo_ida<tempo_pedido and (tempo_necessario := verifica_disponibilidade (1, tempo_ida,tempo_total, velocidades_medias, tempo_pedido,health_planet,path,False,id_encomenda,dist))!= -1):
-        print(f"Demora {tempo_ida} minutos a realizar a sua entrega de bicicleta pelo seguinte percurso: {path}, mas só é possível entregar daqui a {tempo_necessario} minutos")
+        print(f"Demora {tempo_ida} minutos a realizar a sua entrega de bicicleta pelo seguinte percurso de ida e volta: {path}, mas só é possível entregar daqui a {tempo_necessario} minutos\nPara obter este caminho, o algoritmo percorreu as seguintes freguesias {nodos_percorridos}")
 
     else:
         tempo_ida,tempo_total, velocidades_medias = altera_velocidade(meteorologia,altura_do_dia,path,35-(0.5*peso), grafo)
         if(peso<=20 and tempo_ida<tempo_pedido  and (tempo_necessario := verifica_disponibilidade (2, tempo_ida,tempo_total, velocidades_medias, tempo_pedido,health_planet,path,True,id_encomenda,dist))!= -1):
-            print(f"Demora {tempo_ida} minutos a realizar a sua entrega de moto pelo seguinte percurso: {path}, mas só é possível entregar daqui a {tempo_necessario} minutos")
+            print(f"Demora {tempo_ida} minutos a realizar a sua entrega de moto pelo seguinte percurso de ida e volta: {path}, mas só é possível entregar daqui a {tempo_necessario} minutos\nPara obter este caminho, o algoritmo percorreu as seguintes freguesias {nodos_percorridos}")
         else:
             tempo_ida,tempo_total, velocidades_medias = altera_velocidade(meteorologia,altura_do_dia,path,50-(0.1*peso), grafo)
             if (tempo_ida<tempo_pedido and (tempo_necessario := verifica_disponibilidade (3, tempo_ida,tempo_total, velocidades_medias, tempo_pedido,health_planet,path,True,id_encomenda,dist))!= -1):
-                print(f"Demora {tempo_ida} minutos a realizar a sua entrega de carro pelo seguinte percurso: {path}, mas só é possível entregar daqui a {tempo_necessario} minutos")
+                print(f"Demora {tempo_ida} minutos a realizar a sua entrega de carro pelo seguinte percurso de ida e volta: {path}, mas só é possível entregar daqui a {tempo_necessario} minutos\nPara obter este caminho, o algoritmo percorreu as seguintes freguesias {nodos_percorridos}")
             else:
                 print("Não é possível entregar a encomenda no tempo pretendido")
                 health_planet.remove_encomenda(id_encomenda)
@@ -161,25 +160,25 @@ def main():
 
     i=-2
     while(i!=0):
-        print("\n------MENU-----")
-        print("0-Sair")
-        print("1-Adicionar estafeta")
-        print("2-Visualizar estafetas")
-        print("3-Remover estafeta")
-        print("4-Atrasar estafeta")
-        print("5-Visualizar encomendas")
-        print("6-Visualizar fila de encomendas estafeta")
-        print("7-Avançar o tempo")
-        print("8-Parar o tempo")
-        print("9-Visualizar grafo")
-        print("10-Ver posicao de estafeta no grafo")
-        print("11-Fazer Alterações")
-        print("12-Comparar algoritmos")
-        print("13-Realizar encomenda")
-        print("14-Visualizar estatísticas")
+            print("\n------MENU-----")
+            print("0-Sair")
+            print("1-Adicionar estafeta")
+            print("2-Visualizar estafetas")
+            print("3-Remover estafeta")
+            print("4-Atrasar estafeta")
+            print("5-Visualizar encomendas")
+            print("6-Visualizar fila de encomendas estafeta")
+            print("7-Avançar o tempo")
+            print("8-Parar o tempo")
+            print("9-Visualizar grafo")
+            print("10-Ver posicao de estafeta no grafo")
+            print("11-Fazer Alterações")
+            print("12-Comparar algoritmos")
+            print("13-Realizar encomenda")
+            print("14-Visualizar estatísticas")
         
 
-        try:
+        #try:
             i=int(input("Introduza uma das opções: "))
             if (i!=0):
                 if (i==1):
@@ -303,7 +302,7 @@ def main():
                                         try:
                                             id = int(input("Introduza a estrada que vai ser cortada:"))
                                             if id>0 and id<=grafo.number_of_edges():
-                                                print(id)
+                                                #print(id)
                                                 cg.mover_aresta_entre_grafos(id,grafo,grafo_cortadas,True)
                                             else:
                                                 print ("Introduza um valor válido")
@@ -401,139 +400,146 @@ def main():
                         print("Erro ao realizar as alterações")
 
                 elif(i==12):
-                    try:
+                    #try:
                         origem=input("\nOrigem: ")
                         destino=input("\nDestino: ")
 
                         print("1-Dijkstra")
-                        trajeto_final,_,trajeto_completo= ap.dijkstra(grafo,origem,destino)
-                        print("Trajeto completo: "+trajeto_completo)
-                        print("Trajeto final: "+trajeto_final)
+                        trajeto_final,custo,trajeto_completo= ap.dijkstra(grafo,origem,destino)
+                        print(f"Trajeto completo: {trajeto_completo}")
+                        print(f"Trajeto final: {trajeto_final}")
+                        print(f"Custo: {custo}")
                         print("\n")
 
-                        print("2-Interativo")
-                        trajeto_final,_,trajeto_completo= ap.iterative_deepening_dfs(grafo,origem,destino)
-                        print("Trajeto completo: "+trajeto_completo)
-                        print("Trajeto final: "+trajeto_final)
+                        print("2-Iterativo")
+                        trajeto_final,custo,trajeto_completo= ap.iterative_deepening_dfs(grafo,origem,destino)
+                        print(f"Trajeto completo: {trajeto_completo}")
+                        print(f"Trajeto final: {trajeto_final}")
+                        print(f"Custo: {custo}")
                         print("\n")
 
                         print("3-Procura em profundidade(DFS)")
-                        trajeto_final,_,trajeto_completo= ap.depth_limited_dfs(grafo,origem,destino)
-                        print("Trajeto completo: "+trajeto_completo)
-                        print("Trajeto final: "+trajeto_final)
+                        trajeto_final,custo,trajeto_completo= ap.procura_em_profundidade(grafo,origem,destino)
+                        print(f"Trajeto completo: {trajeto_completo}")
+                        print(f"Trajeto final: {trajeto_final}")
+                        print(f"Custo: {custo}")
                         print("\n")
 
                         print("4-Procura Bidirecional")
-                        trajeto_final,_,trajeto_completo= ap.bidirectional_search(grafo,origem,destino)
-                        print("Trajeto completo: "+trajeto_completo)
-                        print("Trajeto final: "+trajeto_final)
+                        trajeto_final,custo,trajeto_completo= ap.bidirectional_search(grafo,origem,destino)
+                        print(f"Trajeto completo: {trajeto_completo}")
+                        print(f"Trajeto final: {trajeto_final}")
+                        print(f"Custo: {custo}")
                         print("\n")
 
                         print("5-Procura em largura(BFS)")
-                        trajeto_final,_,trajeto_completo= ap.bfs(grafo,origem,destino)
-                        print("Trajeto completo: "+trajeto_completo)
-                        print("Trajeto final: "+trajeto_final)
+                        trajeto_final,custo,trajeto_completo= ap.bfs(grafo,origem,destino)
+                        print(f"Trajeto completo: {trajeto_completo}")
+                        print(f"Trajeto final: {trajeto_final}")
+                        print(f"Custo: {custo}")
                         print("\n")
 
                         print("6-Procura Gulosa")
-                        trajeto_final,_,trajeto_completo= ap.greedy_shortest_path(grafo,origem,destino)
-                        print("Trajeto completo: "+trajeto_completo)
-                        print("Trajeto final: "+trajeto_final)
+                        trajeto_final,custo,trajeto_completo= ap.greedy_shortest_path(grafo,origem,destino)
+                        print(f"Trajeto completo: {trajeto_completo}")
+                        print(f"Trajeto final: {trajeto_final}")
+                        print(f"Custo: {custo}")
                         print("\n")
 
                         print("7-Procura A*")
-                        trajeto_final,_,trajeto_completo= ap.algoritmoAEstrela(grafo,origem,destino)
-                        print("Trajeto completo: "+trajeto_completo)
-                        print("Trajeto final: "+trajeto_final)
+                        trajeto_final,custo,trajeto_completo= ap.algoritmoAEstrela(grafo,origem,destino)
+                        print(f"Trajeto completo: {trajeto_completo}")
+                        print(f"Trajeto final: {trajeto_final}")
+                        print(f"Custo: {custo}")
                         print("\n")
 
-                    except:
-                        print("Nao foi possivel realizar a operação")
+                    #except:
+                    #    print("Nao foi possivel realizar a operação")
 
 
 
                 elif(i==13):
-                    print("\n------ALGORITMO-----")
-                    print("1-Dijkstra")
-                    print("2-Iterativo")
-                    print("3-Procura em profundidade(DFS)")
-                    print("4-Procura Bidirecional")
-                    print("5-Procura em largura(BFS)")
-                    print("6-Procura Gulosa")
-                    print("7-Procura A*")
+                            print("\n------ALGORITMO-----")
+                            print("1-Dijkstra")
+                            print("2-Iterativo")
+                            print("3-Procura em profundidade(DFS)")
+                            print("4-Procura Bidirecional")
+                            print("5-Procura em largura(BFS)")
+                            print("6-Procura Gulosa")
+                            print("7-Procura A*")
 
-                    try:
-                        opcao=int(input("Introduza uma das opções:"))
-                        volume=int(input("\nIntroduza o volume da encomenda:"))
-                        peso=float(input("\nIntroduza o peso da encomenda em Kg:"))
-                        tempo=int(input("\nQual o tempo máximo em minutos:"))
-                        terra=input("\nPara onde deseja encomendar:")
+                    #try:
+                            opcao=int(input("Introduza uma das opções:"))
+                            volume=int(input("\nIntroduza o volume da encomenda:"))
+                            peso=float(input("\nIntroduza o peso da encomenda em Kg:"))
+                            tempo=int(input("\nQual o tempo máximo em minutos:"))
+                            terra=input("\nPara onde deseja encomendar:")
 
-                        try:
+                        #try:
                             encomenda=en.Encomenda(peso,volume, tempo)
                             health_planet.add_encomenda(encomenda.id,encomenda)
                             if (peso>0 and peso<=100):
                                 #.....................Varios algoritmos.................
                                 if (opcao==1):
                                     try:
-                                        path1,dist = ap.dijkstra(grafo,"Armazem",terra)
-                                        path2,_=ap.dijkstra(grafo,terra,"Armazem")
+                                        path1,dist,nodos_percorridos = ap.dijkstra(grafo,"Armazem",terra)
+                                        path2,_,_=ap.dijkstra(grafo,terra,"Armazem")
                                         path=trajeto_completo_estafeta(path1,path2)
-                                        calculos (dist,meteorologia,altura_do_dia, tempo, peso, path,health_planet,grafo,encomenda.id)
+                                        calculos (dist,meteorologia,altura_do_dia, tempo, peso, path,health_planet,grafo,encomenda.id,nodos_percorridos)
                                     except:
                                         print("O destino selecionado não existe")
 
                                 elif (opcao==2):
-                                    try:
-                                        path1,dist = ap.iterative_deepening_dfs(grafo,"Armazem",terra)
-                                        path2,_=ap.iterative_deepening_dfs(grafo,terra,"Armazem")
+                                    #try:
+                                        path1,dist,nodos_percorridos = ap.iterative_deepening_dfs(grafo,"Armazem",terra)
+                                        path2,_,_=ap.iterative_deepening_dfs(grafo,terra,"Armazem")
                                         path=trajeto_completo_estafeta(path1,path2)
-                                        calculos(dist,meteorologia,altura_do_dia,tempo,peso,path,health_planet,grafo,encomenda.id)
-                                    except:
-                                        print("O destino selecionado não existe")
+                                        calculos(dist,meteorologia,altura_do_dia,tempo,peso,path,health_planet,grafo,encomenda.id,nodos_percorridos)
+                                    #except:
+                                    #    print("O destino selecionado não existe")
 
                                 elif (opcao==3):
-                                    try:
-                                        path1,dist = ap.depth_limited_dfs(grafo,"Armazem",terra)
-                                        path2,_=ap.depth_limited_dfs(grafo,terra,"Armazem")
+                                    #try:
+                                        path1,dist,nodos_percorridos = ap.procura_em_profundidade(grafo,"Armazem",terra)
+                                        path2,_,_=ap.procura_em_profundidade(grafo,terra,"Armazem")
                                         path=trajeto_completo_estafeta(path1,path2)
-                                        calculos (dist,meteorologia,altura_do_dia, tempo, peso, path,health_planet,grafo,encomenda.id)
-                                    except:
-                                        print("O destino selecionado não existe")
+                                        calculos (dist,meteorologia,altura_do_dia, tempo, peso, path,health_planet,grafo,encomenda.id,nodos_percorridos)
+                                    #except:
+                                    #    print("O destino selecionado não existe")
 
                                 elif (opcao==4):
                                     try:
-                                        path1,dist = ap.bidirectional_search(grafo,"Armazem",terra)
-                                        path2,_=ap.bidirectional_search(grafo,terra,"Armazem")
+                                        path1,dist,nodos_percorridos = ap.bidirectional_search(grafo,"Armazem",terra)
+                                        path2,_,_=ap.bidirectional_search(grafo,terra,"Armazem")
                                         path=trajeto_completo_estafeta(path1,path2)
-                                        calculos (dist,meteorologia,altura_do_dia, tempo, peso, path,health_planet,grafo,encomenda.id)
+                                        calculos (dist,meteorologia,altura_do_dia, tempo, peso, path,health_planet,grafo,encomenda.id,nodos_percorridos)
                                     except :
                                         print("O destino selecionado não existe")
 
                                 elif (opcao==5):
                                     try:
-                                        path1,dist = ap.bfs(grafo,"Armazem",terra)
-                                        path2,_=ap.bfs(grafo,terra,"Armazem")
+                                        path1,dist,nodos_percorridos = ap.bfs(grafo,"Armazem",terra)
+                                        path2,_,_=ap.bfs(grafo,terra,"Armazem")
                                         path=trajeto_completo_estafeta(path1,path2)
-                                        calculos (dist,meteorologia,altura_do_dia, tempo, peso, path,health_planet,grafo,encomenda.id)
+                                        calculos (dist,meteorologia,altura_do_dia, tempo, peso, path,health_planet,grafo,encomenda.id,nodos_percorridos)
                                     except :
                                         print("O destino selecionado não existe")
 
                                 elif (opcao==6):
                                     try:
-                                        path1,dist = ap.greedy_shortest_path(grafo,"Armazem",terra)
-                                        path2,_=ap.greedy_shortest_path(grafo,terra,"Armazem")
+                                        path1,dist,nodos_percorridos = ap.greedy_shortest_path(grafo,"Armazem",terra)
+                                        path2,_,_=ap.greedy_shortest_path(grafo,terra,"Armazem")
                                         path=trajeto_completo_estafeta(path1,path2)
-                                        calculos (dist,meteorologia,altura_do_dia, tempo, peso, path,health_planet,grafo,encomenda.id)
+                                        calculos (dist,meteorologia,altura_do_dia, tempo, peso, path,health_planet,grafo,encomenda.id,nodos_percorridos)
                                     except :
                                         print("O destino selecionado não existe")
 
                                 elif (opcao==7):
                                     try:
-                                        path1,dist = ap.algoritmoAEstrela(grafo,"Armazem",terra)
-                                        path2,_=ap.algoritmoAEstrela(grafo,terra,"Armazem")
+                                        path1,dist,nodos_percorridos = ap.algoritmoAEstrela(grafo,"Armazem",terra)
+                                        path2,_,_=ap.algoritmoAEstrela(grafo,terra,"Armazem")
                                         path=trajeto_completo_estafeta(path1,path2)
-                                        calculos (dist,meteorologia,altura_do_dia, tempo, peso, path,health_planet,grafo,encomenda.id)
+                                        calculos (dist,meteorologia,altura_do_dia, tempo, peso, path,health_planet,grafo,encomenda.id,nodos_percorridos)
                                     except :
                                         print("O destino selecionado não existe")
 
@@ -544,12 +550,12 @@ def main():
                             else:
                                     print("Peso impossível")
                                     health_planet.remove_encomenda(encomenda.id)
-                        except :
-                                print("Não foi possível registar a encomenda")
-                                health_planet.remove_encomenda(encomenda.id)
-                    except :
-                        print("Os valores introduzidos são inválidos")
-                        health_planet.remove_encomenda(encomenda.id)
+                        #except :
+                        #        print("Não foi possível registar a encomenda")
+                        #        health_planet.remove_encomenda(encomenda.id)
+                    #except :
+                    #    print("Os valores introduzidos são inválidos")
+                    #    health_planet.remove_encomenda(encomenda.id)
                 
 
                 elif (i==14):
@@ -627,9 +633,9 @@ def main():
                     print ("Introduza um valor válido")
             else:
                     encerrar_thread.set()
-        except ValueError:
-            print("Introduza um valor válido")
-            i=-2
+        #except ValueError:
+        #    print("Introduza um valor válido")
+        #    i=-2
 
 if __name__ == "__main__":
     main()

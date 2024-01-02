@@ -15,15 +15,20 @@ def dijkstra(graph, origem, destino):
 
     while not queue.empty():
         current_node = queue.get()
-        lista_completa.append(current_node)
 
-        for neighbor in nx.neighbors(graph, current_node):
-            weight = graph[current_node][neighbor]['weight']
-            distance = dist[current_node] + weight
-            if distance < dist[neighbor]:
-                dist[neighbor] = distance
-                predecessor[neighbor] = current_node
-                queue.put(neighbor)
+        if current_node not in lista_completa:
+            lista_completa.append(current_node)
+
+            if current_node == destino:
+                break
+
+            for neighbor in nx.neighbors(graph, current_node):
+                weight = graph[current_node][neighbor]['weight']
+                distance = dist[current_node] + weight
+                if distance < dist[neighbor]:
+                    dist[neighbor] = distance
+                    predecessor[neighbor] = current_node
+                    queue.put(neighbor)
 
     # Reconstrói o caminho mais curto
     if destino not in predecessor:  # Se não há caminho para o destino
@@ -62,6 +67,7 @@ def procura_em_profundidade(grafo, inicio, destino):
 
                 if vizinho == destino:
                     custo_total = sum(grafo[no_atual][vizinho]['weight'] for no_atual, vizinho in zip(novo_caminho, novo_caminho[1:]))
+                    lista_completa.append(vizinho)
                     return novo_caminho, custo_total, lista_completa
 
             visitados.add(no_atual)
@@ -192,17 +198,17 @@ def reconstruct_path(forward_parent, backward_parent, common_node):
 #......................................................................................
 def iterative_deepening_dfs(graph, start, goal):
     if start not in graph or goal not in graph:
-        raise ValueError("Start or goal node not in the graph")
+        return None,0,None
 
     depth_limit = 0
     visited_nodes = []
 
     while True:
-        result, visited = depth_limited_dfs(graph, start, goal, depth_limit)
+        caminho, custo, visited = depth_limited_dfs(graph, start, goal, depth_limit)
         visited_nodes.extend(visited)
 
-        if result is not None:
-            return result, visited_nodes
+        if caminho is not None:
+            return caminho, custo, visited_nodes
 
         depth_limit += 1
 
@@ -220,17 +226,17 @@ def depth_limited_dfs(graph, current, goal, depth_limit, path=None, cost=0, visi
         return path, cost, visited
 
     if depth_limit == 0:
-        return None, visited
+        return None, 0, visited
 
     for neighbor in graph.neighbors(current):
         if neighbor not in path:
             new_path = path + [neighbor]
             new_cost = cost + graph[current][neighbor].get('weight', 1)
-            result, visited = depth_limited_dfs(graph, neighbor, goal, depth_limit - 1, new_path, new_cost, visited)
-            if result is not None:
-                return result, visited
+            caminho, custo, visited = depth_limited_dfs(graph, neighbor, goal, depth_limit - 1, new_path, new_cost, visited)
+            if caminho is not None:
+                return caminho, custo, visited
 
-    return None, visited
+    return None,0, visited
 
 #.................................................................................................
 def greedy_shortest_path(graph, origem, destino):

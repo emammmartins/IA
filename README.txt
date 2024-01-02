@@ -10,6 +10,4 @@ Cenas a melhorar (para escrever no relatório):
 
 Formulação do problema
 
-Apresentação do caminho percorrido ao longo da execução do algoritmo
-
 Classificação é atribuída pelo cliente

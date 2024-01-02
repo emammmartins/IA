@@ -44,8 +44,6 @@ class Health_Planet:
         with self.lock_encomendas:
             if encomenda_id in self.dict_encomendas:
                 del self.dict_encomendas[encomenda_id]
-            else:
-                print(f"Encomenda com ID {encomenda_id} não encontrada.")
 
     def ver_encomendas(self):
         with self.lock_encomendas:

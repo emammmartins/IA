@@ -28,24 +28,24 @@ def atualiza_encomendas(encomenda,meio_de_transporte,grafo,meteorologia,altura_d
         trajeto_novo=path1
 
     if meio_de_transporte==1:
-        tempo_transporte,_=altera_velocidade(meteorologia,altura_do_dia,trajeto_novo, 10-(0.6*encomenda.peso), grafo)
-
-        tempo_total_viagem, vel_medias_novas=altera_velocidade(meteorologia,altura_do_dia,path, 10-(0.6*encomenda.peso), grafo)
+        tempo_novo_ida,tempo_novo_total,_=altera_velocidade(meteorologia,altura_do_dia,trajeto_novo, 10-(0.6*encomenda.peso), grafo)
+        tempo_ida,tempo_total, vel_medias_novas=altera_velocidade(meteorologia,altura_do_dia,path, 10-(0.6*encomenda.peso), grafo)
     elif meio_de_transporte==2:
-        tempo_transporte,_ =altera_velocidade(meteorologia,altura_do_dia,trajeto_novo, 35-(0.5*encomenda.peso), grafo)
-        tempo_total_viagem, vel_medias_novas=altera_velocidade(meteorologia,altura_do_dia,path, 35-(0.5*encomenda.peso), grafo)
+        tempo_novo_ida,tempo_novo_total,_ =altera_velocidade(meteorologia,altura_do_dia,trajeto_novo, 35-(0.5*encomenda.peso), grafo)
+        tempo_ida,tempo_total, vel_medias_novas=altera_velocidade(meteorologia,altura_do_dia,path, 35-(0.5*encomenda.peso), grafo)
     else:
-        tempo_transporte,_ =altera_velocidade(meteorologia,altura_do_dia,trajeto_novo, 50-(0.1*encomenda.peso), grafo)
-        tempo_total_viagem, vel_medias_novas=altera_velocidade(meteorologia,altura_do_dia,path, 50-(0.1*encomenda.peso), grafo)
+        tempo_novo_ida,tempo_novo_total,_ =altera_velocidade(meteorologia,altura_do_dia,trajeto_novo, 50-(0.1*encomenda.peso), grafo)
+        tempo_ida,tempo_total, vel_medias_novas=altera_velocidade(meteorologia,altura_do_dia,path, 50-(0.1*encomenda.peso), grafo)
 
-    return tempo_transporte,tempo_total_viagem, vel_medias_novas, path
+    return tempo_novo_total,tempo_total, vel_medias_novas, path
 
 def trajeto_completo_estafeta(lista1,lista2):
     lista_concatenada = lista1 + lista2[1:]
     return lista_concatenada
 
 def altera_velocidade(meteorologia,altura_do_dia,path, vel, grafo):
-    tempo = 0
+    tempo_ida = 0
+    tempo_total = 0
     vel_medias = []
 
     if meteorologia == 1:
@@ -76,50 +76,53 @@ def altera_velocidade(meteorologia,altura_do_dia,path, vel, grafo):
 
         vel_aresta -= vel_aresta * (grafo[path[posicao]][path[posicao + 1]]['transito'])
 
-        tempo += int(((distancia / vel_aresta) * 60) + 0.5)
+        if posicao < (len(path)-1)/2:
+            tempo_ida += int(((distancia / vel_aresta) * 60) + 0.5)
+            print (path[posicao])
+        tempo_total += int(((distancia / vel_aresta) * 60) + 0.5)
         vel_medias.append(vel_aresta)
         posicao += 1
         
-    return tempo/2, vel_medias
+    return tempo_ida, tempo_total, vel_medias
 
-def verifica_disponibilidade (transporte, tempo_transporte, velocidades_medias, tempo_pretendido,health_planet,caminho,queremosEletrico,id_encomenda,distancia):
+def verifica_disponibilidade (transporte, tempo_ida,tempo_total, velocidades_medias, tempo_pretendido,health_planet,caminho,queremosEletrico,id_encomenda,distancia):
     tempo_disponivel_eletrico, estafeta_disponivel_eletrico, tempo_disponivel_sem_ser_eletrico, estafeta_disponivel_eletrico_sem_ser_eletrico = health_planet.disponibilidade(transporte)
 
-    tempo_necessario_eletrico = (tempo_disponivel_eletrico + tempo_transporte)
-    tempo_necessario_sem_ser_eletrico = (tempo_disponivel_sem_ser_eletrico + tempo_transporte) 
+    tempo_necessario_eletrico = (tempo_disponivel_eletrico + tempo_ida)
+    tempo_necessario_sem_ser_eletrico = (tempo_disponivel_sem_ser_eletrico + tempo_ida) 
 
 
     if(queremosEletrico==True):
         if (tempo_pretendido >= tempo_necessario_eletrico):
-            health_planet.atualiza_inicial(estafeta_disponivel_eletrico,tempo_transporte,tempo_necessario_eletrico,velocidades_medias,caminho,id_encomenda,transporte,True,distancia) 
+            health_planet.atualiza_inicial(estafeta_disponivel_eletrico,tempo_total,tempo_necessario_eletrico,velocidades_medias,caminho,id_encomenda,transporte,True,distancia) 
             return tempo_necessario_eletrico
         elif(tempo_pretendido >= tempo_necessario_sem_ser_eletrico):
-            health_planet.atualiza_inicial(estafeta_disponivel_eletrico_sem_ser_eletrico,tempo_transporte,tempo_necessario_sem_ser_eletrico,velocidades_medias,caminho,id_encomenda,transporte,False,distancia) 
+            health_planet.atualiza_inicial(estafeta_disponivel_eletrico_sem_ser_eletrico,tempo_total,tempo_necessario_sem_ser_eletrico,velocidades_medias,caminho,id_encomenda,transporte,False,distancia) 
             return tempo_necessario_sem_ser_eletrico
         return -1
     else:
         if(tempo_pretendido >= tempo_necessario_sem_ser_eletrico):
-            health_planet.atualiza_inicial(estafeta_disponivel_eletrico_sem_ser_eletrico,tempo_transporte,tempo_necessario_sem_ser_eletrico,velocidades_medias,caminho,id_encomenda,transporte,False,distancia) 
+            health_planet.atualiza_inicial(estafeta_disponivel_eletrico_sem_ser_eletrico,tempo_total,tempo_necessario_sem_ser_eletrico,velocidades_medias,caminho,id_encomenda,transporte,False,distancia) 
             return tempo_necessario_sem_ser_eletrico
         elif(tempo_pretendido >= tempo_necessario_eletrico,distancia):
-            health_planet.atualiza_inicial(estafeta_disponivel_eletrico,tempo_transporte,tempo_necessario_eletrico,velocidades_medias,caminho,id_encomenda,transporte,True,distancia) 
+            health_planet.atualiza_inicial(estafeta_disponivel_eletrico,tempo_total,tempo_necessario_eletrico,velocidades_medias,caminho,id_encomenda,transporte,True,distancia) 
             return tempo_necessario_eletrico
         return -1
 
 def calculos(dist,meteorologia,altura_do_dia,tempo_pedido, peso, path,health_planet,grafo,id_encomenda):
 
-    tempo, velocidades_medias = altera_velocidade(meteorologia,altura_do_dia,path,10-(0.6*peso), grafo)
-    if (peso<=5 and tempo<tempo_pedido and (tempo_necessario := verifica_disponibilidade (1, tempo, velocidades_medias, tempo_pedido,health_planet,path,False,id_encomenda,dist))!= -1):
-        print(f"Demora {tempo} minutos a realizar a sua entrega de bicicleta pelo seguinte percurso: {path}, mas só é possível entregar daqui a {tempo_necessario} minutos")
+    tempo_ida,tempo_total, velocidades_medias = altera_velocidade(meteorologia,altura_do_dia,path,10-(0.6*peso), grafo)
+    if (peso<=5 and tempo_ida<tempo_pedido and (tempo_necessario := verifica_disponibilidade (1, tempo_ida,tempo_total, velocidades_medias, tempo_pedido,health_planet,path,False,id_encomenda,dist))!= -1):
+        print(f"Demora {tempo_ida} minutos a realizar a sua entrega de bicicleta pelo seguinte percurso: {path}, mas só é possível entregar daqui a {tempo_necessario} minutos")
 
     else:
-        tempo, velocidades_medias = altera_velocidade(meteorologia,altura_do_dia,path,35-(0.5*peso), grafo)
-        if(peso<=20 and tempo<tempo_pedido  and (tempo_necessario := verifica_disponibilidade (2, tempo, velocidades_medias, tempo_pedido,health_planet,path,True,id_encomenda,dist))!= -1):
-            print(f"Demora {tempo} minutos a realizar a sua entrega de moto pelo seguinte percurso: {path}, mas só é possível entregar daqui a {tempo_necessario} minutos")
+        tempo_ida,tempo_total, velocidades_medias = altera_velocidade(meteorologia,altura_do_dia,path,35-(0.5*peso), grafo)
+        if(peso<=20 and tempo_ida<tempo_pedido  and (tempo_necessario := verifica_disponibilidade (2, tempo_ida,tempo_total, velocidades_medias, tempo_pedido,health_planet,path,True,id_encomenda,dist))!= -1):
+            print(f"Demora {tempo_ida} minutos a realizar a sua entrega de moto pelo seguinte percurso: {path}, mas só é possível entregar daqui a {tempo_necessario} minutos")
         else:
-            tempo, velocidades_medias = altera_velocidade(meteorologia,altura_do_dia,path,50-(0.1*peso), grafo)
-            if (tempo<tempo_pedido and (tempo_necessario := verifica_disponibilidade (3, tempo, velocidades_medias, tempo_pedido,health_planet,path,True,id_encomenda,dist))!= -1):
-                print(f"Demora {tempo} minutos a realizar a sua entrega de carro pelo seguinte percurso: {path}, mas só é possível entregar daqui a {tempo_necessario} minutos")
+            tempo_ida,tempo_total, velocidades_medias = altera_velocidade(meteorologia,altura_do_dia,path,50-(0.1*peso), grafo)
+            if (tempo_ida<tempo_pedido and (tempo_necessario := verifica_disponibilidade (3, tempo_ida,tempo_total, velocidades_medias, tempo_pedido,health_planet,path,True,id_encomenda,dist))!= -1):
+                print(f"Demora {tempo_ida} minutos a realizar a sua entrega de carro pelo seguinte percurso: {path}, mas só é possível entregar daqui a {tempo_necessario} minutos")
             else:
                 print("Não é possível entregar a encomenda no tempo pretendido")
                 health_planet.remove_encomenda(id_encomenda)
@@ -353,8 +356,8 @@ def main():
                             tempo_transporte,tempo_total_viagem,vel_medias,path=atualiza_encomendas(estafeta.encomenda_atual,estafeta.meio_de_transporte,grafo,meteorologia,altura_do_dia)
 
                             estafeta.encomenda_atual.velocidades_medias=vel_medias
-                            estafeta.encomenda_atual.tempo_transporte=tempo_transporte*2
-                            estafeta.encomenda_atual.tempo_total_viagem=tempo_total_viagem*2
+                            estafeta.encomenda_atual.tempo_transporte=tempo_transporte
+                            estafeta.encomenda_atual.tempo_total_viagem=tempo_total_viagem
                             estafeta.encomenda_atual.caminho=path
 
                             #............................Atualizar encomendas em fila.................................
@@ -366,8 +369,8 @@ def main():
                                     tempo_transporte,tempo_total_viagem,vel_medias,path=atualiza_encomendas(elemento,estafeta.meio_de_transporte,grafo,meteorologia,altura_do_dia)
 
                                     elemento.velocidades_medias=vel_medias
-                                    elemento.tempo_transporte=tempo_transporte*2
-                                    elemento.tempo_total_viagem=tempo_total_viagem*2
+                                    elemento.tempo_transporte=tempo_transporte
+                                    elemento.tempo_total_viagem=tempo_total_viagem
                                     elemento.caminho=path
                                     
                                     estafeta.fila_encomendas.put()
@@ -466,13 +469,17 @@ def main():
 
                                 else:
                                     print("O algoritmo escolhido não é válido")
+                                    health_planet.remove_encomenda(encomenda.id)
                                 #........................................................                                
                             else:
                                     print("Peso impossível")
+                                    health_planet.remove_encomenda(encomenda.id)
                         except :
                                 print("Não foi possível registar a encomenda")
+                                health_planet.remove_encomenda(encomenda.id)
                     except :
                         print("Os valores introduzidos são inválidos")
+                        health_planet.remove_encomenda(encomenda.id)
                 
 
                 elif (i==12):
@@ -519,7 +526,7 @@ def main():
                             elif (opcao==4):
                                 tempo_atraso = health_planet.tempo_atraso_medio()
                                 if tempo_atraso != -1:
-                                    print (f"O tempo médio de entrega das encomendas é de {tempo_atraso} minutos")
+                                    print (f"O tempo médio de atraso das encomendas é de {tempo_atraso} minutos")
                                 else:
                                     print ("Não existem encomendas entregues")
 

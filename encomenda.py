@@ -142,8 +142,8 @@ class Encomenda:
         with self.lock_encomenda:
             self.id_estafeta = id_estafeta
             self.ultimo_local_passou="Armazem"
-            self.tempo_transporte=tempo*2 #ida e volta
-            self.tempo_total_viagem=tempo*2 #ida e volta
+            self.tempo_transporte=tempo
+            self.tempo_total_viagem=tempo
             self.tempo_previsto=tempo_necessario
             self.tempo_que_percorreu=0
             self.caminho=caminho

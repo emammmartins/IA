@@ -1,3 +1,4 @@
+from matplotlib.animation import FuncAnimation
 import algoritmos_procura as ap
 import cria_grafos as cg
 import health_planet as hp
@@ -129,6 +130,18 @@ def avanca_tempo_virtual(health_planet, grafo, encerrar_thread, grafo_cortadas):
         time.sleep(1)
         health_planet.atualiza_estado(grafo, grafo_cortadas) 
 
+def update(id_estafeta,health_planet,grafo,ax,pos):
+    encomenda = health_planet.dict_estafetas[id_estafeta].get_encomenda_atual()
+    if encomenda is None:
+        posicao = 'Armazem'
+    else:
+        posicao = encomenda.get_ultimo_local_passou()
+    
+    cores = ['blue' if node != posicao else 'red' for node in grafo.nodes()]
+    ax.clear()
+    nx.draw(grafo, pos=pos, with_labels=True, node_color=cores, font_weight='bold', ax=ax)
+    
+
     
 def main():
     health_planet = hp.Health_Planet()
@@ -139,6 +152,7 @@ def main():
     encerrar_thread = threading.Event()  # Cria um evento para encerrar a thread
     thread = threading.Thread(target=avanca_tempo_virtual, args=(health_planet, grafo, encerrar_thread, grafo_cortadas))
     thread.start()
+
     #encerrar_thread.set() #Se quisermos começar com o tempo parado
 
     meteorologia=1
@@ -157,9 +171,10 @@ def main():
         print("7-Avançar o tempo")
         print("8-Parar o tempo")
         print("9-Visualizar grafo")
-        print("10-Fazer Alterações")
-        print("11-Realizar encomenda")
-        print("12-Visualizar estatísticas")
+        print("10-Ver posicao de estafeta no grafo")
+        print("11-Fazer Alterações")
+        print("12-Realizar encomenda")
+        print("13-Visualizar estatísticas")
         
 
         try:
@@ -247,6 +262,14 @@ def main():
                         mpl.show()
                     except:
                         print("Não foi possível apresentar o grafo")
+                elif(i==10):  
+                    print("Feche a representação do grafo para continuar")
+                    id_estafeta = int(input("Introduza o valor do estafeta que quer observar: "))
+
+                    pos = nx.spring_layout(grafo)
+                    fig, ax = mpl.subplots()
+                    ani = FuncAnimation(fig, lambda frame: update(id_estafeta, health_planet, grafo,ax,pos), frames=10, interval=1000)
+                    mpl.show()
 
 
 
@@ -255,7 +278,7 @@ def main():
 
 
 
-                elif(i==10):#Alterar parametro
+                elif(i==11):#Alterar parametro
                     if not encerrar_thread.is_set():
                         encerrar_thread.set()
 
@@ -379,7 +402,7 @@ def main():
 
 
 
-                elif(i==11):
+                elif(i==12):
                     print("\n------ALGORITMO-----")
                     print("1-Dijkstra")
                     print("2-Interativo")
@@ -475,7 +498,7 @@ def main():
                         print("Os valores introduzidos são inválidos")
                 
 
-                elif (i==12):
+                elif (i==13):
                     opcao=-1
                     while(opcao!=0):
                             print("\n-----Estatísticas-----")

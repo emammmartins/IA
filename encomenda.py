@@ -69,6 +69,10 @@ class Encomenda:
                 return self.preco
             else:
                 return -1
+            
+    def get_ultimo_local_passou(self):
+        with self.lock_encomenda:
+            return self.ultimo_local_passou
     
     def aumenta_tempo_que_percorreu(self):
         with self.lock_encomenda:

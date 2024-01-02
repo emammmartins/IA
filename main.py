@@ -156,8 +156,6 @@ def main():
     thread = threading.Thread(target=avanca_tempo_virtual, args=(health_planet, grafo, encerrar_thread, grafo_cortadas))
     thread.start()
 
-    #encerrar_thread.set() #Se quisermos começar com o tempo parado
-
     meteorologia=1
     altura_do_dia=1
 
@@ -278,127 +276,128 @@ def main():
                         print("Nao foi possivel realizar a operacao")
 
                 elif(i==11):#Alterar parametro
-                    if not encerrar_thread.is_set():
-                        encerrar_thread.set()
+                    try:
+                        if not encerrar_thread.is_set():
+                            encerrar_thread.set()
 
-                    opcao=-1
-                    while(opcao!=0):
-                        print("\n------ALTERAR-----")
-                        print("0-Terminar alterações")
-                        print("1-Cortar estrada")
-                        print("2-Repor estrada")
-                        print("3-Alterar altura do dia")
-                        print("4-Alterar meteorologia")
-                        print("5-Alterar trânsito de uma estrada")
-                        opcao=int(input("Introduza a opção que pretende realizar: "))
-                        
-                        if (opcao==0):
-                            pass
-                        elif (opcao==1): 
-                            if(len(grafo.edges()) == 0):
-                                print("Não existem estradas que não estejam cortadas")
-                            else:
-                                cg.str_arestas_grafo(grafo)
-                                try:
-                                    id = int(input("Introduza a estrada que vai ser cortada:"))
-                                    if id>0 and id<=grafo.number_of_edges():
-                                        print(id)
-                                        cg.mover_aresta_entre_grafos(id,grafo,grafo_cortadas,True)
-                                    else:
-                                        print ("Introduza um valor válido")
-                                except:
-                                    print("Introduza um valor válido")
-                        elif(opcao==2):
-                            if(len(grafo_cortadas.edges()) == 0):
-                                print("Não existem estradas cortadas")
-                            else:
-                                cg.str_arestas_grafo(grafo_cortadas)
-                                try:
-                                    id = int(input("Introduza a estrada que vai ser reposta:"))
-                                    if id>0 and id<=grafo_cortadas.number_of_edges():
-                                        cg.mover_aresta_entre_grafos(id,grafo_cortadas,grafo,False)
-                                    else:
-                                        print ("Introduza um valor válido")
-                                except:
-                                    print("Introduza um valor válido")
-                        elif(opcao==3):
+                        opcao=-1
+                        while(opcao!=0):
                             try:
-                                altura_dia = int(input("Altura do dia: (1-Dia, 2-Noite): "))
-                                if (altura_dia==1 or altura_dia==2):
-                                    altura_do_dia=altura_dia
-                                    print("A altura do dia foi alterada com sucesso")
-                                else:
-                                    print("Valor inválido")
-                            except:
-                                print("Introduza um valor inteiro")
-                        elif(opcao==4):
-                            try:
-                                met = int(input("Condições meteorológicas (1-sol, 2-vento, 3-chuva, 4-nevoeiro, 5-tempestade): "))
-                                if(met>0 and met<6):
-                                    meteorologia=met
-                                    print("A meteorologia foi alterada com sucesso")
-                                else:
-                                    print("Valor não é válido")
-                            except:
-                                print("Introduza um valor inteiro")
-                        elif(opcao==5):
-                            if(len(grafo.edges()) == 0):
-                                print("O grafo atual não tem estradas")
-                            else:
-                                cg.str_arestas_grafo(grafo)
-                                try:
-                                    id = int(input("Introduza a estrada em que pretende alterar o trânsito:"))
-                                    if id>0 and id<=grafo.number_of_edges():
-                                        transito=float(input("Introduza o valor do trânsito (entre 0 e 0.9):"))
-                                        if (transito>=0 and transito<=0.9):
-                                            edges = list(grafo.edges(data=True))
-                                            aresta_selecionada = edges[id-1]  
-                                            origem = aresta_selecionada[0]
-                                            destino = aresta_selecionada[1]
-                                            #print(grafo[origem][destino]['transito'])
-                                            grafo[origem][destino]['transito']=transito
-                                            #print(grafo[origem][destino]['transito'])
-                                            print(f"O trânsito de {origem} para {destino} foi alterado para {transito}")
+                                print("\n------ALTERAR-----")
+                                print("0-Terminar alterações")
+                                print("1-Cortar estrada")
+                                print("2-Repor estrada")
+                                print("3-Alterar altura do dia")
+                                print("4-Alterar meteorologia")
+                                print("5-Alterar trânsito de uma estrada")
+                                opcao=int(input("Introduza a opção que pretende realizar: "))
+                                
+                                if (opcao==0):
+                                    pass
+                                elif (opcao==1): 
+                                    if(len(grafo.edges()) == 0):
+                                        print("Não existem estradas que não estejam cortadas")
+                                    else:
+                                        cg.str_arestas_grafo(grafo)
+                                        try:
+                                            id = int(input("Introduza a estrada que vai ser cortada:"))
+                                            if id>0 and id<=grafo.number_of_edges():
+                                                print(id)
+                                                cg.mover_aresta_entre_grafos(id,grafo,grafo_cortadas,True)
+                                            else:
+                                                print ("Introduza um valor válido")
+                                        except:
+                                            print("Introduza um valor válido")
+                                elif(opcao==2):
+                                    if(len(grafo_cortadas.edges()) == 0):
+                                        print("Não existem estradas cortadas")
+                                    else:
+                                        cg.str_arestas_grafo(grafo_cortadas)
+                                        try:
+                                            id = int(input("Introduza a estrada que vai ser reposta:"))
+                                            if id>0 and id<=grafo_cortadas.number_of_edges():
+                                                cg.mover_aresta_entre_grafos(id,grafo_cortadas,grafo,False)
+                                            else:
+                                                print ("Introduza um valor válido")
+                                        except:
+                                            print("Introduza um valor válido")
+                                elif(opcao==3):
+                                    try:
+                                        altura_dia = int(input("Altura do dia: (1-Dia, 2-Noite): "))
+                                        if (altura_dia==1 or altura_dia==2):
+                                            altura_do_dia=altura_dia
+                                            print("A altura do dia foi alterada com sucesso")
                                         else:
-                                            print("O trânsito tem de ser um valor entre 0 e 0.9")
+                                            print("Valor inválido")
+                                    except:
+                                        print("Introduza um valor inteiro")
+                                elif(opcao==4):
+                                    try:
+                                        met = int(input("Condições meteorológicas (1-sol, 2-vento, 3-chuva, 4-nevoeiro, 5-tempestade): "))
+                                        if(met>0 and met<6):
+                                            meteorologia=met
+                                            print("A meteorologia foi alterada com sucesso")
+                                        else:
+                                            print("Valor não é válido")
+                                    except:
+                                        print("Introduza um valor inteiro")
+                                elif(opcao==5):
+                                    if(len(grafo.edges()) == 0):
+                                        print("O grafo atual não tem estradas")
                                     else:
-                                        print ("Introduza um valor válido")
-                                except:
+                                        cg.str_arestas_grafo(grafo)
+                                        try:
+                                            id = int(input("Introduza a estrada em que pretende alterar o trânsito:"))
+                                            if id>0 and id<=grafo.number_of_edges():
+                                                transito=float(input("Introduza o valor do trânsito (entre 0 e 0.9):"))
+                                                if (transito>=0 and transito<=0.9):
+                                                    edges = list(grafo.edges(data=True))
+                                                    aresta_selecionada = edges[id-1]  
+                                                    origem = aresta_selecionada[0]
+                                                    destino = aresta_selecionada[1]
+                                                    grafo[origem][destino]['transito']=transito
+                                                    print(f"O trânsito de {origem} para {destino} foi alterado para {transito}")
+                                                else:
+                                                    print("O trânsito tem de ser um valor entre 0 e 0.9")
+                                            else:
+                                                print ("Introduza um valor válido")
+                                        except:
+                                            print("Introduza um valor válido")
+                                else:
                                     print("Introduza um valor válido")
-                        else:
-                            print("Introduza um valor válido")
-                            
-                    #O que temos de atualizar no estafeta
-                    for estafeta in health_planet.dict_estafetas.values():
-                        #..........................Atualizar encomenda atual.........................................
-                        if(estafeta.encomenda_atual!=None):
-                            tempo_transporte,tempo_total_viagem,vel_medias,path=atualiza_encomendas(estafeta.encomenda_atual,estafeta.meio_de_transporte,grafo,meteorologia,altura_do_dia)
-
-                            estafeta.encomenda_atual.velocidades_medias=vel_medias
-                            estafeta.encomenda_atual.tempo_transporte=tempo_transporte
-                            estafeta.encomenda_atual.tempo_total_viagem=tempo_total_viagem
-                            estafeta.encomenda_atual.caminho=path
-
-                            #............................Atualizar encomendas em fila.................................
-                            if(not estafeta.fila_encomendas.empty):
-                                tamanho_da_fila = estafeta.fila_encomendas.qsize()
-
-                                for i in range(tamanho_da_fila):
-                                    elemento = estafeta.fila_encomendas.get()
-                                    tempo_transporte,tempo_total_viagem,vel_medias,path=atualiza_encomendas(elemento,estafeta.meio_de_transporte,grafo,meteorologia,altura_do_dia)
-
-                                    elemento.velocidades_medias=vel_medias
-                                    elemento.tempo_transporte=tempo_transporte
-                                    elemento.tempo_total_viagem=tempo_total_viagem
-                                    elemento.caminho=path
+                            except:
+                                print("Não foi possível realizar a alteração")
                                     
-                                    estafeta.fila_encomendas.put()
+                            #O que temos de atualizar no estafeta
+                            for estafeta in health_planet.dict_estafetas.values():
+                                #..........................Atualizar encomenda atual.........................................
+                                if(estafeta.encomenda_atual!=None):
+                                    tempo_transporte,tempo_total_viagem,vel_medias,path=atualiza_encomendas(estafeta.encomenda_atual,estafeta.meio_de_transporte,grafo,meteorologia,altura_do_dia)
 
-                    #Para voltar a correr a thread
-                    encerrar_thread.clear()
-                #except:
-                    #print("Introduza um valor valido")
+                                    estafeta.encomenda_atual.velocidades_medias=vel_medias
+                                    estafeta.encomenda_atual.tempo_transporte=tempo_transporte
+                                    estafeta.encomenda_atual.tempo_total_viagem=tempo_total_viagem
+                                    estafeta.encomenda_atual.caminho=path
 
+                                    #............................Atualizar encomendas em fila.................................
+                                    if(not estafeta.fila_encomendas.empty):
+                                        tamanho_da_fila = estafeta.fila_encomendas.qsize()
+
+                                        for i in range(tamanho_da_fila):
+                                            elemento = estafeta.fila_encomendas.get()
+                                            tempo_transporte,tempo_total_viagem,vel_medias,path=atualiza_encomendas(elemento,estafeta.meio_de_transporte,grafo,meteorologia,altura_do_dia)
+
+                                            elemento.velocidades_medias=vel_medias
+                                            elemento.tempo_transporte=tempo_transporte
+                                            elemento.tempo_total_viagem=tempo_total_viagem
+                                            elemento.caminho=path
+                                            
+                                            estafeta.fila_encomendas.put()
+
+                            #Para voltar a correr a thread
+                            encerrar_thread.clear()
+                    except:
+                        print("Erro ao realizar as alterações")
 
 
                 elif(i==12):
@@ -504,6 +503,7 @@ def main():
                 elif (i==13):
                     opcao=-1
                     while(opcao!=0):
+                        try:
                             print("\n-----Estatísticas-----")
                             print("0-Regressar ao menu principal")
                             print("1-Classificação média dos estafetas")
@@ -517,7 +517,6 @@ def main():
                             print("9-Lista dos estafetas ordenados por número de encomendas efetuadas sem atrasos")
                             opcao=int(input("Introduza a opção da estatística que pretende consultar: "))
                         
-                        #try:
                             if (opcao==0):
                                 pass
 
@@ -567,8 +566,8 @@ def main():
                             else:
                                 print("Introdiza um valor válido")
                         
-                        #except:
-                        #    print ("Não foi possível apresentar a estatística pretendida")
+                        except:
+                            print ("Não foi possível apresentar a estatística pretendida")
                 
                 
                 

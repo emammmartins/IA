@@ -164,14 +164,10 @@ class Encomenda:
                 if self.chegou_ao_destino == False and posicao==self.destino:
                     self.destino = "Armazem"
                     self.chegou_ao_destino = True
-                    if (atraso:= self.tempo_que_percorreu-self.tempo_previsto) > 0:
-                        return atraso
-                    else:
-                        return 0
+                    return 0
                 
             else:
                 self.ultimo_local_passou="Armazem"
                 return -2
 
         return -1
-

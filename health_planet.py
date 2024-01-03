@@ -8,6 +8,9 @@ class Health_Planet:
         self.dict_encomendas = {}  # Mapa de encomendas com ID como chave
         self.lock_encomendas = threading.Lock()
 
+        self.encomendas_por_avaliar=[]
+        self.lock_encomendas_por_avaliar = threading.Lock()
+
         self.tempo_virtual=0
 
     def add_estafeta(self, estafeta_id, estafeta_data):
@@ -89,7 +92,9 @@ class Health_Planet:
                 encomenda = estafeta.get_encomenda_atual()
                 if encomenda is not None:
                     ultimo_lugar = encomenda.get_posicao(grafo,grafo_cortadas)
-                    estafeta.atualiza_estafeta_meio(ultimo_lugar)
+                    if estafeta.atualiza_estafeta_meio(ultimo_lugar):
+                        with self.lock_encomendas_por_avaliar:
+                            self.encomendas_por_avaliar.append(encomenda)
                 else:
                     estafeta.comecar_nova_encomenda()
         with self.lock_encomendas:
@@ -97,6 +102,25 @@ class Health_Planet:
                 if encomenda.get_chegou_ao_destino() == False:
                     encomenda.aumenta_tempo_que_percorreu()
 
+        
+    def imprime_encomendas_por_avaliar(self):
+        i=1
+        with self.lock_encomendas_por_avaliar:
+            for encomenda in self.encomendas_por_avaliar:
+                print (f"{i}- {encomenda}")
+                i += 1
+        return i-1
+
+    def regista_classificacao(self, nr_encomenda, classificacao):
+        with self.lock_encomendas_por_avaliar:
+            encomenda=self.encomendas_por_avaliar[nr_encomenda-1]
+            atraso=encomenda.get_atraso()
+            id_estafeta= encomenda.get_id_estafeta()
+            self.encomendas_por_avaliar.pop(nr_encomenda-1)
+        with self.lock_estafetas:
+            estafeta=self.dict_estafetas.get(id_estafeta)
+            classificacao_estafeta = estafeta.atualiza_classificacao(atraso,classificacao)
+        return classificacao_estafeta
 
      
                 

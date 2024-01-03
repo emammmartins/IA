@@ -115,24 +115,32 @@ class Estafeta:
             if self.pausa>0:
                 self.pausa-=1
             else:
-                if (atraso:=self.encomenda_atual.atualiza_encomenda_meio(posicao))>=0:
-                    if atraso > 0:
-                        self.n_viagens+=1
-                        atraso = atraso-5 #Tolerância de 5 minutos para atrasos
-                        if atraso<0:
-                            atraso=0
-                        classificacao = 5-(atraso*0.1)
-                        if classificacao<0:
-                            classificacao=0
-                        self.soma_classificacoes+=classificacao
-                    else:
-                        self.n_viagens+=1
-                        self.soma_classificacoes+=5
-                elif atraso==-2:
+                if (valor:=self.encomenda_atual.atualiza_encomenda_meio(posicao))==0:
+                    return True
+                elif valor==-2:
                     self.encomenda_atual = None
+        return False
 
     def comecar_nova_encomenda (self):
         with self.lock_estafeta:
             if self.pausa>0:
                 self.pausa-=1
             self.encomenda_atual = self.pop_encomenda()
+
+
+    def atualiza_classificacao (self,atraso,classificacao):
+        with self.lock_estafeta:
+            if atraso > 0:
+                self.n_viagens+=1
+                atraso = atraso-5 #Tolerância de 5 minutos para atrasos
+                if atraso<0:
+                    atraso=0
+                classificacao_nova = classificacao-(atraso*0.05)
+                if classificacao_nova<0:
+                    classificacao_nova=0
+                self.soma_classificacoes+=classificacao_nova
+            else:
+                self.n_viagens+=1
+                self.soma_classificacoes+=classificacao
+            return self.calcula_classificacao()
+        

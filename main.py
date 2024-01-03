@@ -175,7 +175,8 @@ def main():
             print("11-Fazer Alterações")
             print("12-Comparar algoritmos")
             print("13-Realizar encomenda")
-            print("14-Visualizar estatísticas")
+            print("14-Avaliar encomendas")
+            print("15-Visualizar estatísticas")
         
 
         #try:
@@ -559,6 +560,27 @@ def main():
                 
 
                 elif (i==14):
+                    #try:
+                        length = health_planet.imprime_encomendas_por_avaliar()
+                        if length == 0:
+                            print("Não existem encomendas por avaliar")
+                        else:
+                            id=int(input("Introduza o número da encomenda que pretende avaliar: "))
+                            if id>0 and id<=length:
+                                avaliacao = float(input("Indique a classificação que pretende dar (entre 0 e 5): "))
+                                if avaliacao<0 or avaliacao>5:
+                                    print("O valor introduzido não é válido")
+                                else:
+                                    classificacao_final = health_planet.regista_classificacao(id, avaliacao)
+                                    print(f"O estafeta que realizou a encomenda ficou com uma classificação de {classificacao_final}")
+                            else:
+                                print("Introduza um valor válido")
+
+                    #except:
+                    #    print("Não foi possível avaliar a encomenda")
+
+
+                elif (i==15):
                     opcao=-1
                     while(opcao!=0):
                         try:

@@ -113,24 +113,30 @@ def calculos(dist,meteorologia,altura_do_dia,tempo_pedido, peso, path,health_pla
 
     tempo_ida,tempo_total, velocidades_medias = altera_velocidade(meteorologia,altura_do_dia,path,10-(0.6*peso), grafo)
     if (peso<=5 and tempo_ida<tempo_pedido and (tempo_necessario := verifica_disponibilidade (1, tempo_ida,tempo_total, velocidades_medias, tempo_pedido,health_planet,path,False,id_encomenda,dist))!= -1):
-        print(f"Demora {tempo_ida} minutos a realizar a sua entrega de bicicleta pelo seguinte percurso de ida e volta: {path}, mas só é possível entregar daqui a {tempo_necessario} minutos\nPara obter este caminho, o algoritmo percorreu as seguintes freguesias {nodos_percorridos}")
+        preco = health_planet.get_preco_encomenda(id_encomenda)
+        print(f"Demora {tempo_ida} minutos a realizar a sua entrega de bicicleta pelo seguinte percurso de ida e volta: {path}, mas só é possível entregar daqui a {tempo_necessario} minutos, tendo um custo de {preco} euros\nPara obter este caminho, o algoritmo percorreu as seguintes freguesias {nodos_percorridos}")
 
     else:
         tempo_ida,tempo_total, velocidades_medias = altera_velocidade(meteorologia,altura_do_dia,path,35-(0.5*peso), grafo)
         if(peso<=20 and tempo_ida<tempo_pedido  and (tempo_necessario := verifica_disponibilidade (2, tempo_ida,tempo_total, velocidades_medias, tempo_pedido,health_planet,path,True,id_encomenda,dist))!= -1):
-            print(f"Demora {tempo_ida} minutos a realizar a sua entrega de moto pelo seguinte percurso de ida e volta: {path}, mas só é possível entregar daqui a {tempo_necessario} minutos\nPara obter este caminho, o algoritmo percorreu as seguintes freguesias {nodos_percorridos}")
+            preco = health_planet.get_preco_encomenda(id_encomenda)
+            print(f"Demora {tempo_ida} minutos a realizar a sua entrega de moto pelo seguinte percurso de ida e volta: {path}, mas só é possível entregar daqui a {tempo_necessario} minutos, tendo um custo de {preco} euros\nPara obter este caminho, o algoritmo percorreu as seguintes freguesias {nodos_percorridos}")
         else:
             tempo_ida,tempo_total, velocidades_medias = altera_velocidade(meteorologia,altura_do_dia,path,50-(0.1*peso), grafo)
             if (tempo_ida<tempo_pedido and (tempo_necessario := verifica_disponibilidade (3, tempo_ida,tempo_total, velocidades_medias, tempo_pedido,health_planet,path,True,id_encomenda,dist))!= -1):
-                print(f"Demora {tempo_ida} minutos a realizar a sua entrega de carro pelo seguinte percurso de ida e volta: {path}, mas só é possível entregar daqui a {tempo_necessario} minutos\nPara obter este caminho, o algoritmo percorreu as seguintes freguesias {nodos_percorridos}")
+                preco = health_planet.get_preco_encomenda(id_encomenda)
+                print(f"Demora {tempo_ida} minutos a realizar a sua entrega de carro pelo seguinte percurso de ida e volta: {path}, mas só é possível entregar daqui a {tempo_necessario} minutos, tendo um custo de {preco} euros\nPara obter este caminho, o algoritmo percorreu as seguintes freguesias {nodos_percorridos}")
             else:
                 print("Não é possível entregar a encomenda no tempo pretendido")
                 health_planet.remove_encomenda(id_encomenda)
 
 def avanca_tempo_virtual(health_planet, grafo, encerrar_thread, grafo_cortadas):
-    while not encerrar_thread.is_set():
-        time.sleep(1)
-        health_planet.atualiza_estado(grafo, grafo_cortadas) 
+    while True:
+        if not encerrar_thread.is_set():
+            time.sleep(1)
+            health_planet.atualiza_estado(grafo, grafo_cortadas)
+        else:
+            time.sleep(1)
 
 def update(id_estafeta,health_planet,grafo,ax,pos):
     encomenda = health_planet.dict_estafetas[id_estafeta].get_encomenda_atual()
@@ -152,7 +158,7 @@ def main():
     grafo_cortadas = nx.DiGraph()
 
     encerrar_thread = threading.Event()  # Cria um evento para encerrar a thread
-    thread = threading.Thread(target=avanca_tempo_virtual, args=(health_planet, grafo, encerrar_thread, grafo_cortadas))
+    thread = threading.Thread(target=avanca_tempo_virtual, args=(health_planet, grafo, encerrar_thread, grafo_cortadas),daemon=True)
     thread.start()
 
     meteorologia=1
@@ -278,8 +284,10 @@ def main():
 
                 elif(i==11):#Alterar parametro
                     try:
+                        correr_tempo = False
                         if not encerrar_thread.is_set():
                             encerrar_thread.set()
+                            correr_tempo = True
 
                         opcao=-1
                         while(opcao!=0):
@@ -369,34 +377,36 @@ def main():
                             except:
                                 print("Não foi possível realizar a alteração")
                                     
-                            #O que temos de atualizar no estafeta
-                            for estafeta in health_planet.dict_estafetas.values():
-                                #..........................Atualizar encomenda atual.........................................
-                                if(estafeta.encomenda_atual!=None):
-                                    tempo_transporte,tempo_total_viagem,vel_medias,path=atualiza_encomendas(estafeta.encomenda_atual,estafeta.meio_de_transporte,grafo,meteorologia,altura_do_dia)
+                        #O que temos de atualizar no estafeta
+                        for estafeta in health_planet.dict_estafetas.values():
+                            #..........................Atualizar encomenda atual.........................................
+                            if(estafeta.encomenda_atual!=None):
+                                tempo_transporte,tempo_total_viagem,vel_medias,path=atualiza_encomendas(estafeta.encomenda_atual,estafeta.meio_de_transporte,grafo,meteorologia,altura_do_dia)
 
-                                    estafeta.encomenda_atual.velocidades_medias=vel_medias
-                                    estafeta.encomenda_atual.tempo_transporte=tempo_transporte
-                                    estafeta.encomenda_atual.tempo_total_viagem=tempo_total_viagem
-                                    estafeta.encomenda_atual.caminho=path
+                                estafeta.encomenda_atual.velocidades_medias=vel_medias
+                                estafeta.encomenda_atual.tempo_transporte=tempo_transporte
+                                estafeta.encomenda_atual.tempo_total_viagem=tempo_total_viagem
+                                estafeta.encomenda_atual.caminho=path
 
-                                    #............................Atualizar encomendas em fila.................................
-                                    if(not estafeta.fila_encomendas.empty):
-                                        tamanho_da_fila = estafeta.fila_encomendas.qsize()
+                                #............................Atualizar encomendas em fila.................................
+                                if(not estafeta.fila_encomendas.empty):
+                                    tamanho_da_fila = estafeta.fila_encomendas.qsize()
 
-                                        for i in range(tamanho_da_fila):
-                                            elemento = estafeta.fila_encomendas.get()
-                                            tempo_transporte,tempo_total_viagem,vel_medias,path=atualiza_encomendas(elemento,estafeta.meio_de_transporte,grafo,meteorologia,altura_do_dia)
+                                    for i in range(tamanho_da_fila):
+                                        elemento = estafeta.fila_encomendas.get()
+                                        tempo_transporte,tempo_total_viagem,vel_medias,path=atualiza_encomendas(elemento,estafeta.meio_de_transporte,grafo,meteorologia,altura_do_dia)
 
-                                            elemento.velocidades_medias=vel_medias
-                                            elemento.tempo_transporte=tempo_transporte
-                                            elemento.tempo_total_viagem=tempo_total_viagem
-                                            elemento.caminho=path
-                                            
-                                            estafeta.fila_encomendas.put()
+                                        elemento.velocidades_medias=vel_medias
+                                        elemento.tempo_transporte=tempo_transporte
+                                        elemento.tempo_total_viagem=tempo_total_viagem
+                                        elemento.caminho=path
+                                        
+                                        estafeta.fila_encomendas.put()
 
-                            #Para voltar a correr a thread
+                        #Para voltar a correr a thread
+                        if correr_tempo:
                             encerrar_thread.clear()
+
                     except:
                         print("Erro ao realizar as alterações")
 

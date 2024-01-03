@@ -122,7 +122,10 @@ class Health_Planet:
             classificacao_estafeta = estafeta.atualiza_classificacao(atraso,classificacao)
         return classificacao_estafeta
 
-     
+    def get_preco_encomenda(self, id_encomenda):
+        with self.lock_encomendas:
+            encomenda=self.dict_encomendas.get(id_encomenda)
+            return encomenda.get_preco()
                 
     #Estatísticas
     #1

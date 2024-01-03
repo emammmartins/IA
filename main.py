@@ -166,26 +166,26 @@ def main():
 
     i=-2
     while(i!=0):
-            print("\n------MENU-----")
-            print("0-Sair")
-            print("1-Adicionar estafeta")
-            print("2-Visualizar estafetas")
-            print("3-Remover estafeta")
-            print("4-Atrasar estafeta")
-            print("5-Visualizar encomendas")
-            print("6-Visualizar fila de encomendas estafeta")
-            print("7-Avançar o tempo")
-            print("8-Parar o tempo")
-            print("9-Visualizar grafo")
-            print("10-Ver posicao de estafeta no grafo")
-            print("11-Fazer Alterações")
-            print("12-Comparar algoritmos")
-            print("13-Realizar encomenda")
-            print("14-Avaliar encomendas")
-            print("15-Visualizar estatísticas")
+        print("\n------MENU-----")
+        print("0-Sair")
+        print("1-Adicionar estafeta")
+        print("2-Visualizar estafetas")
+        print("3-Remover estafeta")
+        print("4-Atrasar estafeta")
+        print("5-Visualizar encomendas")
+        print("6-Visualizar fila de encomendas estafeta")
+        print("7-Avançar o tempo")
+        print("8-Parar o tempo")
+        print("9-Visualizar grafo")
+        print("10-Ver posicao de estafeta no grafo")
+        print("11-Fazer Alterações")
+        print("12-Comparar algoritmos")
+        print("13-Realizar encomenda")
+        print("14-Avaliar encomendas")
+        print("15-Visualizar estatísticas")
         
 
-        #try:
+        try:
             i=int(input("Introduza uma das opções: "))
             if (i!=0):
                 if (i==1):
@@ -311,7 +311,6 @@ def main():
                                         try:
                                             id = int(input("Introduza a estrada que vai ser cortada:"))
                                             if id>0 and id<=grafo.number_of_edges():
-                                                #print(id)
                                                 cg.mover_aresta_entre_grafos(id,grafo,grafo_cortadas,True)
                                             else:
                                                 print ("Introduza um valor válido")
@@ -413,7 +412,7 @@ def main():
                             encerrar_thread.clear()
 
                 elif(i==12):
-                    #try:
+                    try:
                         origem=input("\nOrigem: ")
                         destino=input("\nDestino: ")
 
@@ -466,29 +465,29 @@ def main():
                         print(f"Custo: {custo}")
                         print("\n")
 
-                    #except:
-                    #    print("Nao foi possivel realizar a operação")
+                    except:
+                        print("Nao foi possivel realizar a operação")
 
 
 
                 elif(i==13):
-                            print("\n------ALGORITMO-----")
-                            print("1-Dijkstra")
-                            print("2-Iterativo")
-                            print("3-Procura em profundidade(DFS)")
-                            print("4-Procura Bidirecional")
-                            print("5-Procura em largura(BFS)")
-                            print("6-Procura Gulosa")
-                            print("7-Procura A*")
+                    print("\n------ALGORITMO-----")
+                    print("1-Dijkstra")
+                    print("2-Iterativo")
+                    print("3-Procura em profundidade(DFS)")
+                    print("4-Procura Bidirecional")
+                    print("5-Procura em largura(BFS)")
+                    print("6-Procura Gulosa")
+                    print("7-Procura A*")
 
-                    #try:
-                            opcao=int(input("Introduza uma das opções:"))
-                            volume=int(input("\nIntroduza o volume da encomenda:"))
-                            peso=float(input("\nIntroduza o peso da encomenda em Kg:"))
-                            tempo=int(input("\nQual o tempo máximo em minutos:"))
-                            terra=input("\nPara onde deseja encomendar:")
+                    try:
+                        opcao=int(input("Introduza uma das opções:"))
+                        volume=int(input("\nIntroduza o volume da encomenda:"))
+                        peso=float(input("\nIntroduza o peso da encomenda em Kg:"))
+                        tempo=int(input("\nQual o tempo máximo em minutos:"))
+                        terra=input("\nPara onde deseja encomendar:")
 
-                        #try:
+                        try:
                             encomenda=en.Encomenda(peso,volume, tempo)
                             health_planet.add_encomenda(encomenda.id,encomenda)
                             if (peso>0 and peso<=100):
@@ -503,22 +502,22 @@ def main():
                                         print("O destino selecionado não existe")
 
                                 elif (opcao==2):
-                                    #try:
+                                    try:
                                         path1,dist,nodos_percorridos = ap.iterative_deepening_dfs(grafo,"Armazem",terra)
                                         path2,_,_=ap.iterative_deepening_dfs(grafo,terra,"Armazem")
                                         path=trajeto_completo_estafeta(path1,path2)
                                         calculos(dist,meteorologia,altura_do_dia,tempo,peso,path,health_planet,grafo,encomenda.id,nodos_percorridos)
-                                    #except:
-                                    #    print("O destino selecionado não existe")
+                                    except:
+                                        print("O destino selecionado não existe")
 
                                 elif (opcao==3):
-                                    #try:
+                                    try:
                                         path1,dist,nodos_percorridos = ap.procura_em_profundidade(grafo,"Armazem",terra)
                                         path2,_,_=ap.procura_em_profundidade(grafo,terra,"Armazem")
                                         path=trajeto_completo_estafeta(path1,path2)
                                         calculos (dist,meteorologia,altura_do_dia, tempo, peso, path,health_planet,grafo,encomenda.id,nodos_percorridos)
-                                    #except:
-                                    #    print("O destino selecionado não existe")
+                                    except:
+                                        print("O destino selecionado não existe")
 
                                 elif (opcao==4):
                                     try:
@@ -563,16 +562,16 @@ def main():
                             else:
                                     print("Peso impossível")
                                     health_planet.remove_encomenda(encomenda.id)
-                        #except :
-                        #        print("Não foi possível registar a encomenda")
-                        #        health_planet.remove_encomenda(encomenda.id)
-                    #except :
-                    #    print("Os valores introduzidos são inválidos")
-                    #    health_planet.remove_encomenda(encomenda.id)
+                        except :
+                                print("Não foi possível registar a encomenda")
+                                health_planet.remove_encomenda(encomenda.id)
+                    except :
+                        print("Os valores introduzidos são inválidos")
+                        health_planet.remove_encomenda(encomenda.id)
                 
 
                 elif (i==14):
-                    #try:
+                    try:
                         length = health_planet.imprime_encomendas_por_avaliar()
                         if length == 0:
                             print("Não existem encomendas por avaliar")
@@ -588,8 +587,8 @@ def main():
                             else:
                                 print("Introduza um valor válido")
 
-                    #except:
-                    #    print("Não foi possível avaliar a encomenda")
+                    except:
+                        print("Não foi possível avaliar a encomenda")
 
 
                 elif (i==15):
@@ -667,9 +666,9 @@ def main():
                     print ("Introduza um valor válido")
             else:
                     encerrar_thread.set()
-        #except ValueError:
-        #    print("Introduza um valor válido")
-        #    i=-2
+        except:
+            print("Introduza um valor válido")
+            i=-2
 
 if __name__ == "__main__":
     main()

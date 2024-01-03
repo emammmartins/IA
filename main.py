@@ -16,8 +16,8 @@ def atualiza_encomendas(encomenda,meio_de_transporte,grafo,meteorologia,altura_d
     ocorrencia = caminho_antigo.index(encomenda.ultimo_local_passou)
     if(encomenda.destino!="Armazem"):
         caminho_antigo = caminho_antigo[:ocorrencia]
-        path1,_ = ap.dijkstra(grafo,encomenda.ultimo_local_passou,encomenda.destino)
-        path2,_=ap.dijkstra(grafo,encomenda.destino,"Armazem")
+        path1,_,_ = ap.dijkstra(grafo,encomenda.ultimo_local_passou,encomenda.destino)
+        path2,_,_=ap.dijkstra(grafo,encomenda.destino,"Armazem")
         path=caminho_antigo+path1
         path=trajeto_completo_estafeta(path,path2)
         trajeto_novo=trajeto_completo_estafeta(path1,path2)
@@ -409,6 +409,8 @@ def main():
 
                     except:
                         print("Erro ao realizar as alterações")
+                        if correr_tempo:
+                            encerrar_thread.clear()
 
                 elif(i==12):
                     #try:

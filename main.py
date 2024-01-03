@@ -223,8 +223,11 @@ def main():
                             print("O estafeta não existe")
                         else:
                             atraso = int(input("Indique o tempo de atraso do estafeta: "))
-                            health_planet.dict_estafetas.get(id).aumenta_pausa(atraso)
-                            print(f"O estafeta {id} está {atraso} minutos atrasado")
+                            if(atraso>=0):
+                                health_planet.dict_estafetas.get(id).aumenta_pausa(atraso)
+                                print(f"O estafeta {id} está {atraso} minutos atrasado")
+                            else:
+                                print("o valor introduzido não é válido")
                     except:
                         print("Não foi possível registar o atraso do estafeta")
   

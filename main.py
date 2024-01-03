@@ -227,7 +227,7 @@ def main():
                                 health_planet.dict_estafetas.get(id).aumenta_pausa(atraso)
                                 print(f"O estafeta {id} está {atraso} minutos atrasado")
                             else:
-                                print("o valor introduzido não é válido")
+                                print("O valor introduzido não é válido")
                     except:
                         print("Não foi possível registar o atraso do estafeta")
   

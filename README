@@ -1,0 +1,9 @@
+1- Mostrar grafo para dizer que carrega logo
+2- Ver estafetas junto com adicionar/remover.
+3- Fazer encomenda para Espinho e fazer alteracoes. Mudar transito estrada 4 (esta a 0) e retirar 5. Visualizar estafeta e evr caminho novo e tempo novo (estafeta 2, 23 volume e 23 peso).
+4- Ver estafeta a andar no grafo (2).
+5- Mostrar o parar e avancar do tempo junto com o visualizar filas de encomendas. Atrasar um dos estafetas.
+6- Armazem -> Cividade para mostrar diferencas de algoritmos
+7- Avaliar encomendas
+8- Estatistica mostrar algumas e dizer que existem as outras.
+9- No final mudar para o cria_grafos_2 no import para mostrar que é escalavel.

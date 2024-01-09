@@ -1,9 +1,6 @@
 import networkx as nx
 import random
 
-import networkx as nx
-import random
-
 def cria_grafo(num_nodes=65, max_conexoes_por_no=4):
     G = nx.DiGraph()
 

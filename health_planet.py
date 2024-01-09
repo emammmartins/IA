@@ -20,7 +20,7 @@ class Health_Planet:
     def remove_estafeta(self, estafeta_id):
         with self.lock_estafetas:
             if estafeta_id in self.dict_estafetas.keys():
-                if self.dict_estafetas[estafeta_id].get_encomenda_atual() == None and self.dict_estafetas[estafeta_id].get_nr_encomendas_fila==0:
+                if self.dict_estafetas[estafeta_id].get_encomenda_atual() == None and self.dict_estafetas[estafeta_id].get_nr_encomendas_fila()==0:
                     del self.dict_estafetas[estafeta_id]
                     print("Estafeta removido com sucesso")
                 else:
